@@ -10,6 +10,7 @@ const EXAMPLE_LINKS = [
   { href: "/tanstack-ai-example", label: "TanStack AI example" },
   // { href: "/football-quiz", label: "Football Quiz & Trivia" }, // temporary commented
   { href: "/whoami", label: "Who Am I? (Multiplayer)" },
+  { href: "/standings-draft", label: "Standings Draft (Multiplayer)" },
 ] as const;
 
 const linkClassName =
