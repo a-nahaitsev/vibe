@@ -45,9 +45,11 @@ export default function StandingsDraftHomePage() {
       if (!res.ok) throw new Error(data.error ?? "Failed to create room");
       const rid = data.roomId;
       const pid = data.playerId;
+      const redirectUrl = `/standings-draft/room/${rid}?playerId=${encodeURIComponent(pid)}`;
+      console.log("[StandingsDraft] create: success", "roomId", rid, "playerId", pid, "redirect", redirectUrl);
       if (!rid || !pid) throw new Error("Invalid response: missing room or player id");
       saveRoomSession(rid, pid, name);
-      router.push(`/standings-draft/room/${rid}?playerId=${encodeURIComponent(pid)}`);
+      router.push(redirectUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed");
     } finally {
@@ -73,7 +75,10 @@ export default function StandingsDraftHomePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to join");
-      router.push(`/standings-draft/room/${roomId}?playerId=${data.playerId}`);
+      const pid = data.playerId;
+      const redirectUrl = `/standings-draft/room/${roomId}?playerId=${pid}`;
+      console.log("[StandingsDraft] join: success", "roomId", roomId, "playerId", pid, "redirect", redirectUrl);
+      router.push(redirectUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed");
     } finally {

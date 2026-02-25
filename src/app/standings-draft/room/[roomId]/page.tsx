@@ -48,14 +48,20 @@ export default function StandingsDraftRoomPage() {
 
   const fetchRoom = useCallback(async () => {
     if (!roomId) {
+      console.log("[StandingsDraft] fetchRoom: no roomId, skip");
       return;
     }
+    const url = `/api/standings-draft/room/${roomId}`;
+    console.log("[StandingsDraft] fetchRoom: GET", url);
     try {
-      const res = await fetch(`/api/standings-draft/room/${roomId}`);
+      const res = await fetch(url);
+      console.log("[StandingsDraft] fetchRoom: status", res.status, "roomId", roomId);
       if (res.status === 404) {
         consecutive404Ref.current += 1;
         const count = consecutive404Ref.current;
+        console.log("[StandingsDraft] fetchRoom: 404, consecutive count", count, "maxBeforeGiveUp", MAX_404_BEFORE_GIVE_UP);
         if (count >= MAX_404_BEFORE_GIVE_UP) {
+          console.log("[StandingsDraft] fetchRoom: giving up, set Room not found");
           setError("Room not found");
           setRoom(null);
           setReconnecting(false);
@@ -75,7 +81,9 @@ export default function StandingsDraftRoomPage() {
       setRoom(data);
       setError("");
       setReconnecting(false);
-    } catch {
+      console.log("[StandingsDraft] fetchRoom: success, phase", data?.phase);
+    } catch (err) {
+      console.log("[StandingsDraft] fetchRoom: catch", err);
       setRoom((prev) => {
         if (prev) {
           setReconnecting(true);
@@ -92,6 +100,7 @@ export default function StandingsDraftRoomPage() {
   }, [roomId]);
 
   useEffect(() => {
+    console.log("[StandingsDraft] room page mounted/updated, roomId", roomId, "playerId", playerId);
     fetchRoom();
     const t = setInterval(fetchRoom, POLL_INTERVAL_MS);
     return () => clearInterval(t);
@@ -322,6 +331,7 @@ export default function StandingsDraftRoomPage() {
   };
 
   if (loading && !room) {
+    console.log("[StandingsDraft] render: loading, no room");
     return (
       <div className="flex min-h-screen items-center justify-center p-6">
         <p className="text-zinc-500 dark:text-zinc-400">Loading room…</p>
@@ -330,6 +340,7 @@ export default function StandingsDraftRoomPage() {
   }
 
   if (error && !room) {
+    console.log("[StandingsDraft] render: showing error screen", "error", error, "roomId", roomId, "playerId", playerId);
     return (
       <div className="p-6">
         <Link href="/standings-draft" className="text-sm text-zinc-500 hover:underline">
