@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  getRoomSession,
+  saveRoomSession,
+  clearRoomSession,
+} from "./_lib/room-session";
 
 export default function StandingsDraftHomePage() {
   const router = useRouter();
@@ -11,6 +16,15 @@ export default function StandingsDraftHomePage() {
   const [joinName, setJoinName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [savedRoom, setSavedRoom] = useState<{
+    roomId: string;
+    playerId: string;
+    playerName: string;
+  } | null>(null);
+
+  useEffect(() => {
+    setSavedRoom(getRoomSession());
+  }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -32,6 +46,7 @@ export default function StandingsDraftHomePage() {
       const rid = data.roomId;
       const pid = data.playerId;
       if (!rid || !pid) throw new Error("Invalid response: missing room or player id");
+      saveRoomSession(rid, pid, name);
       router.push(`/standings-draft/room/${rid}?playerId=${encodeURIComponent(pid)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed");

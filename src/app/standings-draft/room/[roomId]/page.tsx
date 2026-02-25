@@ -2,28 +2,36 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StandingsDraftRoom, StandingRow } from "../../_lib/types";
 import { LEAGUES, LEAGUE_TO_COUNTRY } from "../../_lib/leagues";
 import {
   getCachedStandings,
   setCachedStandings,
 } from "../../_lib/standings-cache";
+import { saveRoomSession } from "../../_lib/room-session";
+import { useRouter } from "next/navigation";
 
 const POLL_INTERVAL_MS = 2000;
 const SEASONS = [2022, 2023, 2024] as const;
 const MIN_SUGGESTION_CHARS = 2;
 const MAX_SUGGESTIONS = 10;
 
+/** Consecutive 404s before we show "Room not found" (avoids flicker on transient failures). */
+const MAX_404_BEFORE_GIVE_UP = 3;
+
 export default function StandingsDraftRoomPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const roomId = params.roomId as string;
   const playerId = searchParams.get("playerId") ?? "";
 
   const [room, setRoom] = useState<StandingsDraftRoom | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reconnecting, setReconnecting] = useState(false);
+  const consecutive404Ref = useRef(0);
   const [actionLoading, setActionLoading] = useState(false);
   const [startSeason, setStartSeason] = useState<number>(2023);
   const [startLeagueId, setStartLeagueId] = useState<number>(39);
@@ -31,24 +39,56 @@ export default function StandingsDraftRoomPage() {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [suggestionHighlight, setSuggestionHighlight] = useState(0);
   const [teamNames, setTeamNames] = useState<string[]>([]);
+  const [joinName, setJoinName] = useState("");
+  const [joinLoading, setJoinLoading] = useState(false);
+  const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
+  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const guessInputRef = useRef<HTMLInputElement>(null);
 
   const fetchRoom = useCallback(async () => {
-    if (!roomId) return;
+    if (!roomId) {
+      return;
+    }
     try {
       const res = await fetch(`/api/standings-draft/room/${roomId}`);
       if (res.status === 404) {
-        setError("Room not found");
-        setRoom(null);
+        consecutive404Ref.current += 1;
+        const count = consecutive404Ref.current;
+        if (count >= MAX_404_BEFORE_GIVE_UP) {
+          setError("Room not found");
+          setRoom(null);
+          setReconnecting(false);
+        } else {
+          setRoom((prev) => {
+            if (prev) {
+              setReconnecting(true);
+            }
+            return prev;
+          });
+        }
+        setLoading(false);
         return;
       }
       const data = await res.json();
+      consecutive404Ref.current = 0;
       setRoom(data);
       setError("");
+      setReconnecting(false);
     } catch {
-      setError("Failed to load room");
+      setRoom((prev) => {
+        if (prev) {
+          setReconnecting(true);
+        }
+        return prev;
+      });
+      if (!room) {
+        setError("Failed to load room");
+      }
     } finally {
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- room omitted: we use setRoom(prev=>...) and must not recreate interval on every room update
   }, [roomId]);
 
   useEffect(() => {
@@ -57,20 +97,86 @@ export default function StandingsDraftRoomPage() {
     return () => clearInterval(t);
   }, [fetchRoom]);
 
+  useEffect(() => {
+    if (
+      room?.phase !== "playing" ||
+      typeof room?.turnEndsAt !== "number"
+    ) {
+      return;
+    }
+    const tick = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(tick);
+  }, [room?.phase, room?.turnEndsAt]);
+
   const isCreator = room?.creatorId === playerId;
   const me = room?.players.find((p) => p.playerId === playerId);
   const currentPlayer = room?.players[room?.currentPlayerIndex ?? 0];
   const isMyTurn = currentPlayer?.playerId === playerId;
   const country =
     room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
+  const needsToJoin = room && !me;
+
+  const joinLink =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/standings-draft/room/${roomId}`
+      : "";
+
+  const handleJoinInRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = joinName.trim();
+    if (!name || !roomId) {
+      return;
+    }
+    setJoinLoading(true);
+    try {
+      const res = await fetch("/api/standings-draft/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomId, playerName: name }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ?? "Failed to join");
+      }
+      const pid = data.playerId;
+      if (!pid) {
+        throw new Error("Invalid response");
+      }
+      saveRoomSession(roomId, pid, name);
+      router.push(
+        `/standings-draft/room/${roomId}?playerId=${encodeURIComponent(pid)}`
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to join");
+    } finally {
+      setJoinLoading(false);
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (!joinLink) {
+      return;
+    }
+    navigator.clipboard.writeText(joinLink).then(
+      () => {
+        setCopyLinkFeedback(true);
+        setTimeout(() => setCopyLinkFeedback(false), 2000);
+      },
+      () => {}
+    );
+  };
 
   useEffect(() => {
-    if (!country || room?.phase !== "playing") return;
+    if (!country || room?.phase !== "playing") {
+      return;
+    }
     let cancelled = false;
     fetch(`/api/standings-draft/teams?country=${country}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled && Array.isArray(data.names)) setTeamNames(data.names);
+        if (!cancelled && Array.isArray(data.names)) {
+          setTeamNames(data.names);
+        }
       })
       .catch(() => {});
     return () => {
@@ -79,21 +185,44 @@ export default function StandingsDraftRoomPage() {
   }, [country, room?.phase]);
 
   const suggestions = useMemo(() => {
-    if (guessInput.trim().length < MIN_SUGGESTION_CHARS) return [];
+    if (guessInput.trim().length < MIN_SUGGESTION_CHARS) {
+      return [];
+    }
     const q = guessInput.trim().toLowerCase();
     return teamNames
       .filter((name) => name.toLowerCase().includes(q))
       .slice(0, MAX_SUGGESTIONS);
   }, [teamNames, guessInput]);
+
   const showSuggestions =
     isMyTurn && suggestionsOpen && suggestions.length > 0;
+  const remainingSeconds =
+    room?.phase === "playing" &&
+    typeof room.turnEndsAt === "number" &&
+    typeof room.timerSeconds === "number"
+      ? Math.min(
+          room.timerSeconds,
+          Math.max(0, Math.ceil((room.turnEndsAt - now) / 1000))
+        )
+      : null;
   const highlightedIndex = Math.min(
     suggestionHighlight,
     Math.max(0, suggestions.length - 1)
   );
 
-  async function handleStart() {
-    if (!roomId || !playerId) return;
+  useEffect(() => {
+    if (room?.phase === "playing" && isMyTurn) {
+      const id = requestAnimationFrame(() => {
+        guessInputRef.current?.focus();
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [room?.phase, isMyTurn]);
+
+  const handleStart = async () => {
+    if (!roomId || !playerId) {
+      return;
+    }
     setActionLoading(true);
     try {
       const cached = getCachedStandings(startLeagueId, startSeason);
@@ -103,10 +232,12 @@ export default function StandingsDraftRoomPage() {
         league: number;
         standings?: StandingRow[];
         leagueName?: string;
+        timerSeconds?: number | null;
       } = {
         playerId,
         season: startSeason,
         league: startLeagueId,
+        timerSeconds: startTimerSeconds,
       };
       if (cached) {
         body.standings = cached.standings;
@@ -118,7 +249,9 @@ export default function StandingsDraftRoomPage() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to start");
+      if (!res.ok) {
+        throw new Error(data.error ?? "Failed to start");
+      }
       if (!cached && data.standings && data.leagueName) {
         setCachedStandings(
           startLeagueId,
@@ -133,11 +266,13 @@ export default function StandingsDraftRoomPage() {
     } finally {
       setActionLoading(false);
     }
-  }
+  };
 
-  async function handleSubmitGuess(teamName: string) {
+  const handleSubmitGuess = async (teamName: string) => {
     const trimmed = teamName.trim();
-    if (!roomId || !playerId || !trimmed) return;
+    if (!roomId || !playerId || !trimmed) {
+      return;
+    }
     setActionLoading(true);
     setGuessInput("");
     setSuggestionsOpen(false);
@@ -148,23 +283,27 @@ export default function StandingsDraftRoomPage() {
         body: JSON.stringify({ playerId, teamName: trimmed }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to pick");
+      if (!res.ok) {
+        throw new Error(data.error ?? "Failed to pick");
+      }
       await fetchRoom();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to pick");
     } finally {
       setActionLoading(false);
     }
-  }
+  };
 
-  function pickSuggestion(name: string) {
+  const pickSuggestion = (name: string) => {
     setGuessInput(name);
     setSuggestionsOpen(false);
     setSuggestionHighlight(0);
-  }
+  };
 
-  function handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!showSuggestions) return;
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions) {
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSuggestionHighlight((i) => Math.min(i + 1, suggestions.length - 1));
@@ -174,11 +313,13 @@ export default function StandingsDraftRoomPage() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       const toSubmit = suggestions[highlightedIndex] ?? guessInput.trim();
-      if (toSubmit) handleSubmitGuess(toSubmit);
+      if (toSubmit) {
+        handleSubmitGuess(toSubmit);
+      }
     } else if (e.key === "Escape") {
       setSuggestionsOpen(false);
     }
-  }
+  };
 
   if (loading && !room) {
     return (
@@ -199,35 +340,118 @@ export default function StandingsDraftRoomPage() {
     );
   }
 
-  if (!room) return null;
+  if (!room) {
+    return null;
+  }
+
+  if (needsToJoin) {
+    return (
+      <main className="min-h-screen bg-zinc-50 p-6 dark:bg-zinc-950">
+        <div className="mx-auto max-w-md space-y-6">
+          <Link
+            href="/standings-draft"
+            className="text-sm text-zinc-500 hover:underline"
+          >
+            ← Back to Standings Draft
+          </Link>
+          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+              Join this room
+            </h1>
+            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              You were invited to room <code className="font-mono">{roomId}</code>.
+              Enter your name to join.
+            </p>
+            {error && (
+              <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
+                {error}
+              </p>
+            )}
+            <form onSubmit={handleJoinInRoom} className="mt-4 space-y-3">
+              <label htmlFor="join-room-name" className="sr-only">
+                Your name
+              </label>
+              <input
+                id="join-room-name"
+                type="text"
+                value={joinName}
+                onChange={(e) => setJoinName(e.target.value)}
+                placeholder="Your name"
+                className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                disabled={joinLoading}
+                autoFocus
+              />
+              <button
+                type="submit"
+                disabled={joinLoading || !joinName.trim()}
+                className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+              >
+                {joinLoading ? "Joining…" : "Join room"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-zinc-50 p-4 dark:bg-zinc-950 md:p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Link href="/standings-draft" className="text-sm text-zinc-500 hover:underline">
-            ← Back
+      <div className="mx-auto max-w-4xl space-y-6 xl:max-w-7xl xl:grid xl:grid-cols-[1fr_1.1fr] xl:gap-8 xl:space-y-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 xl:col-span-2">
+          <Link
+            href="/standings-draft"
+            className="text-sm text-zinc-500 hover:underline"
+          >
+            Leave room
           </Link>
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
             Room: <code className="font-mono">{roomId}</code>
           </span>
         </div>
 
+        {reconnecting && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200 xl:col-span-2">
+            Reconnecting… You can keep playing; we&apos;ll sync when the connection is back.
+          </div>
+        )}
+
         {error && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300 xl:col-span-2">
             {error}
           </p>
         )}
 
         {/* Lobby */}
         {room.phase === "lobby" && (
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 xl:col-span-2">
             <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
               Waiting for players
             </h2>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Share the room code: <strong className="font-mono">{roomId}</strong>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+              Share this link with friends so they can join the room. They’ll
+              open the link, enter their name, and see the game.
             </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Room code: <code className="font-mono">{roomId}</code>
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+              >
+                {copyLinkFeedback ? "Copied!" : "Copy link"}
+              </button>
+              <a
+                href={joinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+              >
+                Open link in new tab
+              </a>
+            </div>
             <ul className="mt-4 space-y-2">
               {room.players.map((p) => (
                 <li
@@ -272,6 +496,21 @@ export default function StandingsDraftRoomPage() {
                     </option>
                   ))}
                 </select>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Timer per turn
+                </label>
+                <select
+                  value={startTimerSeconds === 60 ? "60" : ""}
+                  onChange={(e) =>
+                    setStartTimerSeconds(
+                      e.target.value === "60" ? 60 : null
+                    )
+                  }
+                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                >
+                  <option value="">No timer</option>
+                  <option value="60">1 min per answer</option>
+                </select>
                 <button
                   type="button"
                   onClick={handleStart}
@@ -285,51 +524,85 @@ export default function StandingsDraftRoomPage() {
           </div>
         )}
 
-        {/* Playing / Finished: standings table */}
+        {/* Playing / Finished: two columns on xl — left: controls, right: table */}
         {(room.phase === "playing" || room.phase === "finished") && room.standings.length > 0 && (
           <>
-            <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-              <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                {room.leagueName} {room.season}
-              </h2>
-              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                {room.revealedRanks.length} / {room.standings.length} teams revealed
-              </p>
-              {room.phase === "playing" && (
-                <p className="mt-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                  {isMyTurn
-                    ? "Your turn — type a team name to guess."
-                    : `Waiting for ${currentPlayer?.name ?? "…"} to guess.`}
+            <div className="flex flex-col gap-6 xl:min-w-0">
+              <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  {room.leagueName} {room.season}
+                </h2>
+                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                  {room.revealedRanks.length} / {room.standings.length} teams revealed
                 </p>
-              )}
-            </div>
+                {room.phase === "playing" && (
+                  <>
+                    <p className="mt-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                      {isMyTurn
+                        ? "Your turn — type a team name to guess."
+                        : `Waiting for ${currentPlayer?.name ?? "…"} to guess.`}
+                    </p>
+                    {remainingSeconds != null && (
+                      <p
+                        className={
+                          "mt-2 text-lg font-mono font-semibold " +
+                          (remainingSeconds === 0
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-zinc-700 dark:text-zinc-300")
+                        }
+                      >
+                        {remainingSeconds === 0
+                          ? "Time's up!"
+                          : `${Math.floor(remainingSeconds / 60)}:${String(remainingSeconds % 60).padStart(2, "0")}`}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
 
-            {/* Last pick feedback */}
-            {room.lastPick && room.phase === "playing" && (
+              {/* Last pick feedback */}
+              {room.lastPick && room.phase === "playing" && (
+                <div
+                  className={
+                    "rounded-xl border px-4 py-3 " +
+                    (room.lastPick.correct
+                      ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
+                      : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
+                  }
+                >
+                  <p className="text-sm text-zinc-800 dark:text-zinc-200">
+                    {room.lastPick.timeout ? (
+                      <>
+                        {room.players.find(
+                          (p) => p.playerId === room.lastPick!.playerId
+                        )?.name ?? "Someone"}{" "}
+                        ran out of time — 0 pts
+                      </>
+                    ) : (
+                      <>
+                        {room.players.find(
+                          (p) => p.playerId === room.lastPick!.playerId
+                        )?.name ?? "Someone"}{" "}
+                        guessed &ldquo;{room.lastPick.teamName}&rdquo; —{" "}
+                        {room.lastPick.correct ? (
+                          <>correct! +{room.lastPick.points} pts</>
+                        ) : (
+                          "wrong, 0 pts"
+                        )}
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
+
+              {/* Guess input (current player only) — pulse when your turn */}
+              {room.phase === "playing" && isMyTurn && (
               <div
                 className={
-                  "rounded-xl border px-4 py-3 " +
-                  (room.lastPick.correct
-                    ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
-                    : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
+                  "rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow dark:border-zinc-700 dark:bg-zinc-900 " +
+                  "animate-your-turn-pulse"
                 }
               >
-                <p className="text-sm text-zinc-800 dark:text-zinc-200">
-                  {room.players.find((p) => p.playerId === room.lastPick!.playerId)
-                    ?.name ?? "Someone"}{" "}
-                  guessed &ldquo;{room.lastPick.teamName}&rdquo; —{" "}
-                  {room.lastPick.correct ? (
-                    <>correct! +{room.lastPick.points} pts</>
-                  ) : (
-                    "wrong, 0 pts"
-                  )}
-                </p>
-              </div>
-            )}
-
-            {/* Guess input (current player only) */}
-            {room.phase === "playing" && isMyTurn && (
-              <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   Guess a team in the standings
                 </label>
@@ -338,6 +611,7 @@ export default function StandingsDraftRoomPage() {
                 </p>
                 <div className="relative mt-3">
                   <input
+                    ref={guessInputRef}
                     type="text"
                     value={guessInput}
                     onChange={(e) => {
@@ -393,38 +667,63 @@ export default function StandingsDraftRoomPage() {
               </div>
             )}
 
-            {/* Scores */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-              <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Scores (lower rank = more points)
-              </h3>
-              <ul className="mt-2 flex flex-wrap gap-4">
-                {room.players
-                  .slice()
-                  .sort((a, b) => b.score - a.score)
-                  .map((p) => (
-                    <li
-                      key={p.playerId}
-                      className={`flex items-center gap-2 rounded-lg px-3 py-1 ${
-                        p.playerId === playerId
-                          ? "bg-emerald-100 dark:bg-emerald-900/30"
-                          : "bg-zinc-100 dark:bg-zinc-800"
-                      }`}
-                    >
-                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {p.name}
-                        {p.playerId === room.creatorId ? " (host)" : ""}
-                      </span>
-                      <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {p.score} pts
-                      </span>
-                    </li>
-                  ))}
-              </ul>
+              {/* Scores — column layout, more points = higher position */}
+              <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Scores (lower rank = more points)
+                </h3>
+                <ul className="mt-2 flex flex-col gap-2">
+                  {room.players
+                    .slice()
+                    .sort((a, b) => b.score - a.score)
+                    .map((p) => (
+                      <li
+                        key={p.playerId}
+                        className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${
+                          p.playerId === playerId
+                            ? "bg-emerald-100 dark:bg-emerald-900/30"
+                            : "bg-zinc-100 dark:bg-zinc-800"
+                        }`}
+                      >
+                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                          {p.name}
+                          {p.playerId === room.creatorId ? " (host)" : ""}
+                        </span>
+                        <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                          {p.score} pts
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              {/* Winner */}
+              {room.phase === "finished" && (
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
+                  <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                    Game over
+                  </h2>
+                  <p className="mt-2 text-zinc-700 dark:text-zinc-300">
+                    Winner:{" "}
+                    <strong className="text-emerald-700 dark:text-emerald-400">
+                      {room.players.reduce((best, p) =>
+                        p.score > (best?.score ?? -1) ? p : best
+                      )?.name ?? "—"}
+                    </strong>{" "}
+                    with the most points.
+                  </p>
+                  <Link
+                    href="/standings-draft"
+                    className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                  >
+                    Leave room
+                  </Link>
+                </div>
+              )}
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+            {/* Table — right column on xl */}
+            <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 xl:min-w-0">
               <table className="w-full min-w-[600px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-zinc-200 dark:border-zinc-700">
@@ -450,30 +749,6 @@ export default function StandingsDraftRoomPage() {
                 </tbody>
               </table>
             </div>
-
-            {/* Winner */}
-            {room.phase === "finished" && (
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
-                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                  Game over
-                </h2>
-                <p className="mt-2 text-zinc-700 dark:text-zinc-300">
-                  Winner:{" "}
-                  <strong className="text-emerald-700 dark:text-emerald-400">
-                    {room.players.reduce((best, p) =>
-                      p.score > (best?.score ?? -1) ? p : best
-                    )?.name ?? "—"}
-                  </strong>{" "}
-                  with the most points.
-                </p>
-                <Link
-                  href="/standings-draft"
-                  className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
-                >
-                  Leave room
-                </Link>
-              </div>
-            )}
           </>
         )}
       </div>
@@ -481,13 +756,13 @@ export default function StandingsDraftRoomPage() {
   );
 }
 
-function StandingTableRow({
+const StandingTableRow = ({
   row,
   revealed,
 }: {
   row: StandingRow;
   revealed: boolean;
-}) {
+}) => {
   const { rank, team, points, goalsDiff, all, form } = row;
   const gd = goalsDiff >= 0 ? `+${goalsDiff}` : String(goalsDiff);
   const wdl = `${all.win}-${all.draw}-${all.lose}`;
@@ -520,4 +795,4 @@ function StandingTableRow({
       </td>
     </tr>
   );
-}
+};

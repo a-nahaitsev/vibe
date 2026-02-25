@@ -10,6 +10,8 @@ type StartBody = {
   league?: number;
   standings?: StandingRow[];
   leagueName?: string;
+  /** Turn timer in seconds; 60 = 1 min, null/omit = no timer. */
+  timerSeconds?: number | null;
 };
 
 function parseStandings(raw: unknown): StandingRow[] | null {
@@ -60,6 +62,8 @@ export async function POST(
       { status: 400 }
     );
   }
+
+  const timerSeconds = body.timerSeconds === 60 ? 60 : null;
 
   let standings: StandingRow[];
   let leagueName: string;
@@ -138,7 +142,8 @@ export async function POST(
     leagueId,
     standings,
     leagueName,
-    season
+    season,
+    timerSeconds
   );
   if (!result.ok) {
     return NextResponse.json(

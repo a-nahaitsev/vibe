@@ -32,6 +32,9 @@ export function createRoom(creatorName: string): { roomId: string; playerId: str
     revealedRanks: [],
     currentPlayerIndex: 0,
     lastPick: null,
+    timerSeconds: null,
+    turnStartedAt: null,
+    turnEndsAt: null,
     createdAt: Date.now(),
   };
   rooms.set(roomId, room);
@@ -51,8 +54,45 @@ export function joinRoom(roomId: string, playerName: string): { playerId: string
   return { playerId };
 }
 
+/** Process timeout on current turn: advance to next player, no points. Called from getRoom. */
+function processTimeoutIfNeeded(room: StandingsDraftRoom): void {
+  if (room.phase !== "playing") {
+    return;
+  }
+  if (
+    room.timerSeconds == null ||
+    room.turnEndsAt == null ||
+    Date.now() < room.turnEndsAt
+  ) {
+    return;
+  }
+  const currentPlayer = room.players[room.currentPlayerIndex];
+  room.lastPick = {
+    playerId: currentPlayer?.playerId ?? "",
+    teamName: "(time's up)",
+    correct: false,
+    points: 0,
+    timeout: true,
+  };
+  room.currentPlayerIndex =
+    (room.currentPlayerIndex + 1) % room.players.length;
+  const now = Date.now();
+  room.turnStartedAt = now;
+  room.turnEndsAt = room.timerSeconds
+    ? now + room.timerSeconds * 1000
+    : null;
+  const totalTeams = room.standings.length;
+  if (room.revealedRanks.length >= totalTeams) {
+    room.phase = "finished";
+  }
+}
+
 export function getRoom(roomId: string): StandingsDraftRoom | null {
-  return rooms.get(roomId) ?? null;
+  const room = rooms.get(roomId) ?? null;
+  if (room) {
+    processTimeoutIfNeeded(room);
+  }
+  return room;
 }
 
 export function startGame(
@@ -61,14 +101,25 @@ export function startGame(
   leagueId: number,
   standings: StandingRow[],
   leagueName: string,
-  season: Season
+  season: Season,
+  timerSeconds: number | null
 ): { ok: boolean; error?: string } {
   const room = rooms.get(roomId);
-  if (!room) return { ok: false, error: "Room not found" };
-  if (room.phase !== "lobby") return { ok: false, error: "Game already started" };
-  if (room.creatorId !== requestingPlayerId) return { ok: false, error: "Only host can start" };
-  if (room.players.length < 1) return { ok: false, error: "Need at least one player" };
-  if (!standings.length) return { ok: false, error: "No standings data" };
+  if (!room) {
+    return { ok: false, error: "Room not found" };
+  }
+  if (room.phase !== "lobby") {
+    return { ok: false, error: "Game already started" };
+  }
+  if (room.creatorId !== requestingPlayerId) {
+    return { ok: false, error: "Only host can start" };
+  }
+  if (room.players.length < 1) {
+    return { ok: false, error: "Need at least one player" };
+  }
+  if (!standings.length) {
+    return { ok: false, error: "No standings data" };
+  }
 
   room.phase = "playing";
   room.league = leagueId;
@@ -77,8 +128,13 @@ export function startGame(
   room.season = season;
   room.revealedRanks = [];
   room.lastPick = null;
+  room.timerSeconds = timerSeconds;
   room.players.forEach((p) => (p.score = 0));
   room.currentPlayerIndex = Math.floor(Math.random() * room.players.length);
+  const now = Date.now();
+  room.turnStartedAt = now;
+  room.turnEndsAt =
+    timerSeconds != null ? now + timerSeconds * 1000 : null;
   return { ok: true };
 }
 
@@ -108,6 +164,17 @@ export function pickByTeamName(
   );
   const alreadyRevealed = row && room.revealedRanks.includes(row.rank);
 
+  const advanceToNextTurn = () => {
+    const now = Date.now();
+    room.turnStartedAt = now;
+    room.turnEndsAt =
+      room.timerSeconds != null
+        ? now + room.timerSeconds * 1000
+        : null;
+    room.currentPlayerIndex =
+      (room.currentPlayerIndex + 1) % room.players.length;
+  };
+
   if (!row) {
     room.lastPick = {
       playerId,
@@ -115,8 +182,7 @@ export function pickByTeamName(
       correct: false,
       points: 0,
     };
-    room.currentPlayerIndex =
-      (room.currentPlayerIndex + 1) % room.players.length;
+    advanceToNextTurn();
     return { ok: true, correct: false, points: 0 };
   }
 
@@ -127,8 +193,7 @@ export function pickByTeamName(
       correct: false,
       points: 0,
     };
-    room.currentPlayerIndex =
-      (room.currentPlayerIndex + 1) % room.players.length;
+    advanceToNextTurn();
     return { ok: true, correct: false, points: 0 };
   }
 
@@ -148,7 +213,6 @@ export function pickByTeamName(
     return { ok: true, correct: true, points: row.rank };
   }
 
-  room.currentPlayerIndex =
-    (room.currentPlayerIndex + 1) % room.players.length;
+  advanceToNextTurn();
   return { ok: true, correct: true, points: row.rank };
 }

@@ -42,6 +42,14 @@ export interface StandingsDraftRoom {
     teamName: string;
     correct: boolean;
     points: number;
+    /** True when turn ended by timeout (no guess submitted). */
+    timeout?: boolean;
   } | null;
+  /** Timer per turn in seconds; null = no timer. */
+  timerSeconds: number | null;
+  /** Server timestamp (ms) when the current turn started. */
+  turnStartedAt: number | null;
+  /** Server timestamp (ms) when the current turn ends (turnStartedAt + timerSeconds*1000). */
+  turnEndsAt: number | null;
   createdAt: number;
 }
