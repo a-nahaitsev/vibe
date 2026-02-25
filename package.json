@@ -17,6 +17,7 @@
     "@tanstack/ai-react": "^0.5.4",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-table": "^8.21.3",
+    "@upstash/redis": "^1.36.2",
     "clsx": "^2.1.1",
     "joi": "^18.0.2",
     "next": "16.1.6",

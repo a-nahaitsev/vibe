@@ -15,6 +15,6 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  const { roomId, playerId } = createRoom(playerName);
+  const { roomId, playerId } = await createRoom(playerName);
   return NextResponse.json({ roomId, playerId });
 }

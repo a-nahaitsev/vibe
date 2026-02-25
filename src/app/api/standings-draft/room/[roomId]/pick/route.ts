@@ -26,7 +26,7 @@ export async function POST(
       { status: 400 }
     );
   }
-  const result = pickByTeamName(roomId, playerId, teamName);
+  const result = await pickByTeamName(roomId, playerId, teamName);
   if (!result.ok) {
     return NextResponse.json(
       { error: result.error ?? "Failed" },

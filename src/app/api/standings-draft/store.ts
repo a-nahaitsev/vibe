@@ -4,67 +4,23 @@ import type {
   Season,
   StandingRow,
 } from "@/app/standings-draft/_lib/types";
-
-// Use globalThis so the Map survives Next.js dev hot reload and re-initialization
-const globalForStore = globalThis as unknown as {
-  standingsDraftRooms?: Map<string, StandingsDraftRoom>;
-};
-const rooms =
-  globalForStore.standingsDraftRooms ?? new Map<string, StandingsDraftRoom>();
-if (!globalForStore.standingsDraftRooms) globalForStore.standingsDraftRooms = rooms;
+import { storageGet, storageSet } from "./storage";
 
 function generateId(prefix: string): string {
   return prefix + "-" + Math.random().toString(36).slice(2, 10);
 }
 
-export function createRoom(creatorName: string): { roomId: string; playerId: string } {
-  const roomId = generateId("sdraft");
-  const playerId = generateId("player");
-  const room: StandingsDraftRoom = {
-    roomId,
-    creatorId: playerId,
-    players: [{ playerId, name: creatorName, score: 0 }],
-    phase: "lobby",
-    league: 39,
-    season: 2022,
-    leagueName: "",
-    standings: [],
-    revealedRanks: [],
-    currentPlayerIndex: 0,
-    lastPick: null,
-    timerSeconds: null,
-    turnStartedAt: null,
-    turnEndsAt: null,
-    createdAt: Date.now(),
-  };
-  rooms.set(roomId, room);
-  return { roomId, playerId };
-}
-
-export function joinRoom(roomId: string, playerName: string): { playerId: string } | null {
-  const room = rooms.get(roomId);
-  if (!room || room.phase !== "lobby") return null;
-  const playerId = generateId("player");
-  const player: StandingsDraftPlayer = {
-    playerId,
-    name: playerName,
-    score: 0,
-  };
-  room.players.push(player);
-  return { playerId };
-}
-
-/** Process timeout on current turn: advance to next player, no points. Called from getRoom. */
-function processTimeoutIfNeeded(room: StandingsDraftRoom): void {
+/** Process timeout on current turn: advance to next player, no points. Returns true if room was mutated. */
+function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
   if (room.phase !== "playing") {
-    return;
+    return false;
   }
   if (
     room.timerSeconds == null ||
     room.turnEndsAt == null ||
     Date.now() < room.turnEndsAt
   ) {
-    return;
+    return false;
   }
   const currentPlayer = room.players[room.currentPlayerIndex];
   room.lastPick = {
@@ -85,17 +41,69 @@ function processTimeoutIfNeeded(room: StandingsDraftRoom): void {
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";
   }
+  return true;
 }
 
-export function getRoom(roomId: string): StandingsDraftRoom | null {
-  const room = rooms.get(roomId) ?? null;
-  if (room) {
-    processTimeoutIfNeeded(room);
+export async function createRoom(
+  creatorName: string
+): Promise<{ roomId: string; playerId: string }> {
+  const roomId = generateId("sdraft");
+  const playerId = generateId("player");
+  const room: StandingsDraftRoom = {
+    roomId,
+    creatorId: playerId,
+    players: [{ playerId, name: creatorName, score: 0 }],
+    phase: "lobby",
+    league: 39,
+    season: 2022,
+    leagueName: "",
+    standings: [],
+    revealedRanks: [],
+    currentPlayerIndex: 0,
+    lastPick: null,
+    timerSeconds: null,
+    turnStartedAt: null,
+    turnEndsAt: null,
+    createdAt: Date.now(),
+  };
+  await storageSet(room);
+  return { roomId, playerId };
+}
+
+export async function joinRoom(
+  roomId: string,
+  playerName: string
+): Promise<{ playerId: string } | null> {
+  const room = await storageGet(roomId);
+  if (!room || room.phase !== "lobby") {
+    return null;
+  }
+  const playerId = generateId("player");
+  const player: StandingsDraftPlayer = {
+    playerId,
+    name: playerName,
+    score: 0,
+  };
+  room.players.push(player);
+  await storageSet(room);
+  return { playerId };
+}
+
+export async function getRoom(
+  roomId: string
+): Promise<StandingsDraftRoom | null> {
+  const room = await storageGet(roomId);
+  if (!room) {
+    return null;
+  }
+  const mutated = processTimeoutIfNeeded(room);
+  if (mutated) {
+    await storageSet(room);
   }
   return room;
 }
 
-export function startGame(
+export async function startGame(
   roomId: string,
   requestingPlayerId: string,
   leagueId: number,
@@ -103,8 +111,8 @@ export function startGame(
   leagueName: string,
   season: Season,
   timerSeconds: number | null
-): { ok: boolean; error?: string } {
-  const room = rooms.get(roomId);
+): Promise<{ ok: boolean; error?: string }> {
+  const room = await storageGet(roomId);
   if (!room) {
     return { ok: false, error: "Room not found" };
   }
@@ -135,6 +143,7 @@ export function startGame(
   room.turnStartedAt = now;
   room.turnEndsAt =
     timerSeconds != null ? now + timerSeconds * 1000 : null;
+  await storageSet(room);
   return { ok: true };
 }
 
@@ -142,14 +151,23 @@ function normalizeTeamName(s: string): string {
   return s.trim().toLowerCase();
 }
 
-export function pickByTeamName(
+export async function pickByTeamName(
   roomId: string,
   playerId: string,
   teamName: string
-): { ok: boolean; error?: string; correct?: boolean; points?: number } {
-  const room = rooms.get(roomId);
-  if (!room) return { ok: false, error: "Room not found" };
-  if (room.phase !== "playing") return { ok: false, error: "Game not in play" };
+): Promise<{
+  ok: boolean;
+  error?: string;
+  correct?: boolean;
+  points?: number;
+}> {
+  const room = await storageGet(roomId);
+  if (!room) {
+    return { ok: false, error: "Room not found" };
+  }
+  if (room.phase !== "playing") {
+    return { ok: false, error: "Game not in play" };
+  }
 
   const currentPlayer = room.players[room.currentPlayerIndex];
   if (!currentPlayer || currentPlayer.playerId !== playerId) {
@@ -157,7 +175,9 @@ export function pickByTeamName(
   }
 
   const normalized = normalizeTeamName(teamName);
-  if (!normalized) return { ok: false, error: "Team name is required" };
+  if (!normalized) {
+    return { ok: false, error: "Team name is required" };
+  }
 
   const row = room.standings.find(
     (r) => normalizeTeamName(r.team.name) === normalized
@@ -183,6 +203,7 @@ export function pickByTeamName(
       points: 0,
     };
     advanceToNextTurn();
+    await storageSet(room);
     return { ok: true, correct: false, points: 0 };
   }
 
@@ -194,6 +215,7 @@ export function pickByTeamName(
       points: 0,
     };
     advanceToNextTurn();
+    await storageSet(room);
     return { ok: true, correct: false, points: 0 };
   }
 
@@ -210,9 +232,11 @@ export function pickByTeamName(
   const totalTeams = room.standings.length;
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";
+    await storageSet(room);
     return { ok: true, correct: true, points: row.rank };
   }
 
   advanceToNextTurn();
+  await storageSet(room);
   return { ok: true, correct: true, points: row.rank };
 }

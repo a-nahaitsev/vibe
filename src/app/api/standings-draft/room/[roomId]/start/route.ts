@@ -136,7 +136,7 @@ export async function POST(
       (response.league as { name?: string }).name ?? "Premier League";
   }
 
-  const result = startGame(
+  const result = await startGame(
     roomId,
     playerId,
     leagueId,
