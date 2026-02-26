@@ -17,6 +17,8 @@ export interface StandingsDraftPlayer {
   playerId: string;
   name: string;
   score: number;
+  /** Wrong answers this game (wrong team or already revealed). */
+  misses?: number;
   /** True if the player has used their Joker (Triple Captain) this game. */
   usedJoker?: boolean;
   /** True if the player has used their Badge Hint this game. */
@@ -27,6 +29,9 @@ export interface StandingsDraftPlayer {
   streakMilestones?: number[];
 }
 
+/** Miss limit: 3, 5, or null = unlimited. */
+export type MissLimit = 3 | 5 | null;
+
 export type StandingsDraftPhase = "lobby" | "playing" | "finished";
 
 export interface StandingsDraftRoom {
@@ -34,6 +39,8 @@ export interface StandingsDraftRoom {
   creatorId: string;
   players: StandingsDraftPlayer[];
   phase: StandingsDraftPhase;
+  /** Max wrong answers before player is out; null = unlimited. Set at game start. */
+  missLimit?: MissLimit;
   league: number;
   season: Season;
   leagueName: string;

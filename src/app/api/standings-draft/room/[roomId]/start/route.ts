@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { startGame } from "../../../store";
-import type { Season, StandingRow } from "@/app/standings-draft/_lib/types";
+import type { Season, StandingRow, MissLimit } from "@/app/standings-draft/_lib/types";
 
 const API_BASE = "https://v3.football.api-sports.io";
 
@@ -12,6 +12,8 @@ type StartBody = {
   leagueName?: string;
   /** Turn timer in seconds; 60 = 1 min, null/omit = no timer. */
   timerSeconds?: number | null;
+  /** Max wrong answers: 3, 5, or "unlimited" (null). */
+  missLimit?: 3 | 5 | "unlimited";
 };
 
 function parseStandings(raw: unknown): StandingRow[] | null {
@@ -64,6 +66,10 @@ export async function POST(
   }
 
   const timerSeconds = body.timerSeconds === 60 ? 60 : null;
+  const missLimit: MissLimit =
+    body.missLimit === 3 || body.missLimit === 5
+      ? body.missLimit
+      : null;
 
   let standings: StandingRow[];
   let leagueName: string;
@@ -143,7 +149,8 @@ export async function POST(
     standings,
     leagueName,
     season,
-    timerSeconds
+    timerSeconds,
+    missLimit
   );
   if (!result.ok) {
     return NextResponse.json(

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { StandingsDraftRoom, StandingRow } from "../../_lib/types";
+import type { StandingsDraftRoom, StandingRow, StandingsDraftPlayer } from "../../_lib/types";
 import { LEAGUES, LEAGUE_TO_COUNTRY } from "../../_lib/leagues";
+import { FcCancel } from "react-icons/fc";
 import {
   getCachedStandings,
   setCachedStandings,
@@ -45,6 +46,7 @@ export default function StandingsDraftRoomPage() {
   const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(
     null
   );
+  const [startMissLimit, setStartMissLimit] = useState<3 | 5 | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
@@ -137,6 +139,11 @@ export default function StandingsDraftRoomPage() {
   const me = room?.players.find((p) => p.playerId === playerId);
   const currentPlayer = room?.players[room?.currentPlayerIndex ?? 0];
   const isMyTurn = currentPlayer?.playerId === playerId;
+  const isPlayerOut = (p: StandingsDraftPlayer) =>
+    room != null &&
+    room.missLimit != null &&
+    (p.misses ?? 0) >= room.missLimit;
+  const iAmOut = me != null && isPlayerOut(me);
   const country = room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
   const needsToJoin = room && !me;
 
@@ -275,11 +282,13 @@ export default function StandingsDraftRoomPage() {
         standings?: StandingRow[];
         leagueName?: string;
         timerSeconds?: number | null;
+        missLimit?: 3 | 5 | "unlimited";
       } = {
         playerId,
         season: startSeason,
         league: startLeagueId,
         timerSeconds: startTimerSeconds,
+        missLimit: startMissLimit === null ? "unlimited" : startMissLimit,
       };
       if (cached) {
         body.standings = cached.standings;
@@ -572,6 +581,23 @@ export default function StandingsDraftRoomPage() {
                   <option value="">No timer</option>
                   <option value="60">1 min per answer</option>
                 </select>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Miss limit
+                </label>
+                <select
+                  value={startMissLimit === null ? "unlimited" : startMissLimit}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setStartMissLimit(
+                      v === "unlimited" ? null : (Number(v) as 3 | 5)
+                    );
+                  }}
+                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
+                >
+                  <option value="3">3 misses</option>
+                  <option value="5">5 misses</option>
+                  <option value="unlimited">Unlimited</option>
+                </select>
                 <button
                   type="button"
                   onClick={handleStart}
@@ -601,11 +627,13 @@ export default function StandingsDraftRoomPage() {
                   {room.phase === "playing" && (
                     <>
                       <p className="mt-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                        {isMyTurn
-                          ? "Your turn — type a team name to guess."
-                          : `Waiting for ${
-                              currentPlayer?.name ?? "…"
-                            } to guess.`}
+                        {iAmOut
+                          ? "You're out (miss limit reached)."
+                          : isMyTurn
+                            ? "Your turn — type a team name to guess."
+                            : `Waiting for ${
+                                currentPlayer?.name ?? "…"
+                              } to guess.`}
                       </p>
                       {remainingSeconds != null && (
                         <p
@@ -867,8 +895,8 @@ export default function StandingsDraftRoomPage() {
                 </div>
               )}
 
-                {/* Guess input (current player only) — pulse when your turn */}
-                {room.phase === "playing" && isMyTurn && (
+                {/* Guess input (current player only) — pulse when your turn; hidden when out */}
+                {room.phase === "playing" && isMyTurn && !iAmOut && (
                   <div
                     className={
                       "rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow dark:border-zinc-700 dark:bg-zinc-900 " +
@@ -1017,29 +1045,51 @@ export default function StandingsDraftRoomPage() {
                 <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                   <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Scores (closer position guess = more points)
+                    {room.missLimit != null && (
+                      <span className="ml-1 font-normal text-zinc-500 dark:text-zinc-400">
+                        · {room.missLimit} misses = out
+                      </span>
+                    )}
                   </h3>
                   <ul className="mt-2 flex flex-col gap-2">
                     {room.players
                       .slice()
                       .sort((a, b) => b.score - a.score)
-                      .map((p) => (
-                        <li
-                          key={p.playerId}
-                          className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${
-                            p.playerId === playerId
-                              ? "bg-emerald-100 dark:bg-emerald-900/30"
-                              : "bg-zinc-100 dark:bg-zinc-800"
-                          }`}
-                        >
-                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                            {p.name}
-                            {p.playerId === room.creatorId ? " (host)" : ""}
-                          </span>
-                          <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                            {p.score} pts
-                          </span>
-                        </li>
-                      ))}
+                      .map((p) => {
+                        const misses = p.misses ?? 0;
+                        const out = isPlayerOut(p);
+                        return (
+                          <li
+                            key={p.playerId}
+                            className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${
+                              p.playerId === playerId
+                                ? "bg-emerald-100 dark:bg-emerald-900/30"
+                                : "bg-zinc-100 dark:bg-zinc-800"
+                            } ${out ? "opacity-75" : ""}`}
+                          >
+                            <span className="flex flex-wrap items-center gap-1.5 font-medium text-zinc-900 dark:text-zinc-100">
+                              {p.name}
+                              {p.playerId === room.creatorId ? " (host)" : ""}
+                              {misses > 0 && (
+                                <span className="flex items-center gap-0.5" title={`${misses} miss${misses === 1 ? "" : "es"}`}>
+                                  {Array.from({ length: misses }, (_, i) => (
+                                    <FcCancel key={i} className="h-4 w-4" aria-hidden />
+                                  ))}
+                                </span>
+                              )}
+                              {room.missLimit != null && (
+                                <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
+                                  {misses}/{room.missLimit}
+                                  {out && " (out)"}
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                              {p.score} pts
+                            </span>
+                          </li>
+                        );
+                      })}
                   </ul>
                 </div>
 
@@ -1058,6 +1108,12 @@ export default function StandingsDraftRoomPage() {
                       </strong>{" "}
                       with the most points.
                     </p>
+                    {room.revealedRanks.length < room.standings.length && (
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                        Not all teams were guessed. Unguessed positions are
+                        highlighted in the table.
+                      </p>
+                    )}
                     <Link
                       href="/standings-draft"
                       className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
@@ -1096,11 +1152,16 @@ export default function StandingsDraftRoomPage() {
                   <tbody>
                     {room.standings.map((row) => {
                       const revealed = room.revealedRanks.includes(row.rank);
+                      const highlightUnrevealed =
+                        room.phase === "finished" &&
+                        room.revealedRanks.length < room.standings.length;
                       return (
                         <StandingTableRow
                           key={row.rank}
                           row={row}
                           revealed={revealed}
+                          highlightUnrevealed={highlightUnrevealed}
+                          showTeamAlways={room.phase === "finished"}
                         />
                       );
                     })}
@@ -1117,21 +1178,34 @@ export default function StandingsDraftRoomPage() {
 const StandingTableRow = ({
   row,
   revealed,
+  highlightUnrevealed = false,
+  showTeamAlways = false,
 }: {
   row: StandingRow;
   revealed: boolean;
+  highlightUnrevealed?: boolean;
+  /** When true (game finished), show team name/logo for every row; only unguessed rows get highlighted. */
+  showTeamAlways?: boolean;
 }) => {
   const { rank, team, points, goalsDiff, all, form } = row;
   const gd = goalsDiff >= 0 ? `+${goalsDiff}` : String(goalsDiff);
   const wdl = `${all.win}-${all.draw}-${all.lose}`;
+  const unguessed = !revealed;
+  const highlight = unguessed && highlightUnrevealed;
+  const showTeam = revealed || showTeamAlways;
 
   return (
-    <tr className="border-b border-zinc-100 dark:border-zinc-800">
+    <tr
+      className={
+        "border-b border-zinc-100 dark:border-zinc-800 " +
+        (highlight ? "bg-amber-100 dark:bg-amber-900/30" : "")
+      }
+    >
       <td className="p-2 font-medium text-zinc-900 dark:text-zinc-100">
         {rank}
       </td>
       <td className="p-2">
-        {revealed ? (
+        {showTeam ? (
           <span className="flex items-center gap-2 font-medium text-zinc-900 dark:text-zinc-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

@@ -3,6 +3,7 @@ import type {
   StandingsDraftPlayer,
   Season,
   StandingRow,
+  MissLimit,
 } from "@/app/standings-draft/_lib/types";
 import { storageGet, storageSet } from "./storage";
 
@@ -10,7 +11,35 @@ function generateId(prefix: string): string {
   return prefix + "-" + Math.random().toString(36).slice(2, 10);
 }
 
-/** Process timeout on current turn: advance to next player, no points. Returns true if room was mutated. */
+function isPlayerOut(room: StandingsDraftRoom, playerIndex: number): boolean {
+  const limit = room.missLimit;
+  if (limit == null) return false;
+  const p = room.players[playerIndex];
+  return (p?.misses ?? 0) >= limit;
+}
+
+/** Advance to next player, skipping those who are out (miss limit reached). If all are out, set phase to finished. */
+function advanceToNextTurn(room: StandingsDraftRoom): void {
+  delete room.badgeHintThisTurn;
+  const now = Date.now();
+  room.turnStartedAt = now;
+  room.turnEndsAt =
+    room.timerSeconds != null ? now + room.timerSeconds * 1000 : null;
+  const n = room.players.length;
+  let next = (room.currentPlayerIndex + 1) % n;
+  const start = next;
+  for (;;) {
+    if (!isPlayerOut(room, next)) break;
+    next = (next + 1) % n;
+    if (next === start) {
+      room.phase = "finished";
+      return;
+    }
+  }
+  room.currentPlayerIndex = next;
+}
+
+/** Process timeout on current turn: count as miss, advance to next player. Returns true if room was mutated. */
 function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
   if (room.phase !== "playing") {
     return false;
@@ -23,6 +52,7 @@ function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
     return false;
   }
   const currentPlayer = room.players[room.currentPlayerIndex];
+  currentPlayer.misses = (currentPlayer.misses ?? 0) + 1;
   room.lastPick = {
     playerId: currentPlayer?.playerId ?? "",
     teamName: "(time's up)",
@@ -30,18 +60,12 @@ function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
     points: 0,
     timeout: true,
   };
-  room.currentPlayerIndex =
-    (room.currentPlayerIndex + 1) % room.players.length;
-  delete room.badgeHintThisTurn;
-  const now = Date.now();
-  room.turnStartedAt = now;
-  room.turnEndsAt = room.timerSeconds
-    ? now + room.timerSeconds * 1000
-    : null;
   const totalTeams = room.standings.length;
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";
+    return true;
   }
+  advanceToNextTurn(room);
   return true;
 }
 
@@ -111,7 +135,8 @@ export async function startGame(
   standings: StandingRow[],
   leagueName: string,
   season: Season,
-  timerSeconds: number | null
+  timerSeconds: number | null,
+  missLimit?: MissLimit
 ): Promise<{ ok: boolean; error?: string }> {
   const room = await storageGet(roomId);
   if (!room) {
@@ -131,6 +156,7 @@ export async function startGame(
   }
 
   room.phase = "playing";
+  room.missLimit = missLimit ?? null;
   room.league = leagueId;
   room.standings = standings;
   room.leagueName = leagueName;
@@ -140,6 +166,7 @@ export async function startGame(
   room.timerSeconds = timerSeconds;
   room.players.forEach((p) => {
     p.score = 0;
+    p.misses = 0;
     p.usedJoker = false;
     p.usedBadgeHint = false;
     p.correctStreak = 0;
@@ -196,6 +223,12 @@ export async function pickByTeamName(
   if (!currentPlayer || currentPlayer.playerId !== playerId) {
     return { ok: false, error: "Not your turn" };
   }
+  if (
+    room.missLimit != null &&
+    (currentPlayer.misses ?? 0) >= room.missLimit
+  ) {
+    return { ok: false, error: "You're out (miss limit reached)" };
+  }
 
   if (useJoker && useBadgeHint) {
     return { ok: false, error: "Cannot use Joker and Badge Hint on the same turn" };
@@ -229,18 +262,6 @@ export async function pickByTeamName(
   );
   const alreadyRevealed = row && room.revealedRanks.includes(row.rank);
 
-  const advanceToNextTurn = () => {
-    delete room.badgeHintThisTurn;
-    const now = Date.now();
-    room.turnStartedAt = now;
-    room.turnEndsAt =
-      room.timerSeconds != null
-        ? now + room.timerSeconds * 1000
-        : null;
-    room.currentPlayerIndex =
-      (room.currentPlayerIndex + 1) % room.players.length;
-  };
-
   const applyJoker = useJoker === true;
   const applyBadgeHint = useBadgeHint === true;
   if (applyJoker) {
@@ -252,6 +273,7 @@ export async function pickByTeamName(
 
   if (!row) {
     currentPlayer.correctStreak = 0;
+    currentPlayer.misses = (currentPlayer.misses ?? 0) + 1;
     const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
     currentPlayer.score += points;
     room.lastPick = {
@@ -263,13 +285,20 @@ export async function pickByTeamName(
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
     };
-    advanceToNextTurn();
+    const totalTeams = room.standings.length;
+    if (room.revealedRanks.length >= totalTeams) {
+      room.phase = "finished";
+      await storageSet(room);
+      return { ok: true, correct: false, points };
+    }
+    advanceToNextTurn(room);
     await storageSet(room);
     return { ok: true, correct: false, points };
   }
 
   if (alreadyRevealed) {
     currentPlayer.correctStreak = 0;
+    currentPlayer.misses = (currentPlayer.misses ?? 0) + 1;
     const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
     currentPlayer.score += points;
     room.lastPick = {
@@ -281,7 +310,13 @@ export async function pickByTeamName(
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
     };
-    advanceToNextTurn();
+    const totalTeams = room.standings.length;
+    if (room.revealedRanks.length >= totalTeams) {
+      room.phase = "finished";
+      await storageSet(room);
+      return { ok: true, correct: false, points };
+    }
+    advanceToNextTurn(room);
     await storageSet(room);
     return { ok: true, correct: false, points };
   }
@@ -323,7 +358,7 @@ export async function pickByTeamName(
     return { ok: true, correct: true, points };
   }
 
-  advanceToNextTurn();
+  advanceToNextTurn(room);
   await storageSet(room);
   return { ok: true, correct: true, points };
 }
