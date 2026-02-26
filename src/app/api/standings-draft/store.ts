@@ -151,10 +151,16 @@ function normalizeTeamName(s: string): string {
   return s.trim().toLowerCase();
 }
 
+/** Margin-of-error points: actualRank - |actualRank - guessedRank|, min 0. */
+function marginPoints(actualRank: number, guessedRank: number): number {
+  return Math.max(0, actualRank - Math.abs(actualRank - guessedRank));
+}
+
 export async function pickByTeamName(
   roomId: string,
   playerId: string,
-  teamName: string
+  teamName: string,
+  guessedPlace: number
 ): Promise<{
   ok: boolean;
   error?: string;
@@ -179,6 +185,18 @@ export async function pickByTeamName(
     return { ok: false, error: "Team name is required" };
   }
 
+  const totalTeams = room.standings.length;
+  if (
+    typeof guessedPlace !== "number" ||
+    guessedPlace < 1 ||
+    guessedPlace > totalTeams
+  ) {
+    return { ok: false, error: "Pick a place from 1 to " + totalTeams };
+  }
+  if (room.revealedRanks.includes(guessedPlace)) {
+    return { ok: false, error: "That place was already guessed" };
+  }
+
   const row = room.standings.find(
     (r) => normalizeTeamName(r.team.name) === normalized
   );
@@ -197,6 +215,7 @@ export async function pickByTeamName(
 
   if (!row) {
     room.lastPick = {
+      guessedRank: guessedPlace,
       playerId,
       teamName: teamName.trim(),
       correct: false,
@@ -209,6 +228,7 @@ export async function pickByTeamName(
 
   if (alreadyRevealed) {
     room.lastPick = {
+      guessedRank: guessedPlace,
       playerId,
       teamName: teamName.trim(),
       correct: false,
@@ -219,24 +239,25 @@ export async function pickByTeamName(
     return { ok: true, correct: false, points: 0 };
   }
 
+  const points = marginPoints(row.rank, guessedPlace);
   room.revealedRanks.push(row.rank);
-  currentPlayer.score += row.rank;
+  currentPlayer.score += points;
   room.lastPick = {
     rank: row.rank,
+    guessedRank: guessedPlace,
     playerId,
     teamName: row.team.name,
     correct: true,
-    points: row.rank,
+    points,
   };
 
-  const totalTeams = room.standings.length;
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";
     await storageSet(room);
-    return { ok: true, correct: true, points: row.rank };
+    return { ok: true, correct: true, points };
   }
 
   advanceToNextTurn();
   await storageSet(room);
-  return { ok: true, correct: true, points: row.rank };
+  return { ok: true, correct: true, points };
 }

@@ -37,7 +37,10 @@ export interface StandingsDraftRoom {
   currentPlayerIndex: number;
   /** Last pick for UI feedback. */
   lastPick: {
+    /** Actual rank of the team (1..N). */
     rank?: number;
+    /** Position the player guessed (1..N). */
+    guessedRank?: number;
     playerId: string;
     teamName: string;
     correct: boolean;

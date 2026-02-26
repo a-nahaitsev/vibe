@@ -46,7 +46,6 @@ export default function StandingsDraftHomePage() {
       const rid = data.roomId;
       const pid = data.playerId;
       const redirectUrl = `/standings-draft/room/${rid}?playerId=${encodeURIComponent(pid)}`;
-      console.log("[StandingsDraft] create: success", "roomId", rid, "playerId", pid, "redirect", redirectUrl);
       if (!rid || !pid) throw new Error("Invalid response: missing room or player id");
       saveRoomSession(rid, pid, name);
       router.push(redirectUrl);
@@ -77,7 +76,6 @@ export default function StandingsDraftHomePage() {
       if (!res.ok) throw new Error(data.error ?? "Failed to join");
       const pid = data.playerId;
       const redirectUrl = `/standings-draft/room/${roomId}?playerId=${pid}`;
-      console.log("[StandingsDraft] join: success", "roomId", roomId, "playerId", pid, "redirect", redirectUrl);
       router.push(redirectUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed");
@@ -97,7 +95,7 @@ export default function StandingsDraftHomePage() {
             Standings Draft (Multiplayer)
           </h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Pick teams from the Premier League standings one by one. Lower position in the table = more points (1st = 1 pt, 20th = 20 pts). When all teams are revealed, the player with the most points wins.
+            Pick teams and guess their position in the standings. Points = how close your guess is (formula: rank − |rank − your guess|, min 0). E.g. team is 10th: guess 10th → 10 pts; guess 12th → 8 pts; guess 20th → 0 pts. Wrong team = 0. When all teams are revealed, the player with the most points wins.
           </p>
         </div>
 
@@ -117,7 +115,7 @@ export default function StandingsDraftHomePage() {
               value={createName}
               onChange={(e) => setCreateName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <button
@@ -143,7 +141,7 @@ export default function StandingsDraftHomePage() {
               value={joinRoomId}
               onChange={(e) => setJoinRoomId(e.target.value)}
               placeholder="Room code"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <input
@@ -151,13 +149,13 @@ export default function StandingsDraftHomePage() {
               value={joinName}
               onChange={(e) => setJoinName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               {loading ? "Joining…" : "Join game"}
             </button>

@@ -6,7 +6,7 @@ export async function POST(
   { params }: { params: Promise<{ roomId: string }> }
 ) {
   const { roomId } = await params;
-  let body: { playerId?: string; teamName?: string };
+  let body: { playerId?: string; teamName?: string; guessedPlace?: number };
   try {
     body = await request.json();
   } catch {
@@ -14,6 +14,12 @@ export async function POST(
   }
   const playerId = (body.playerId ?? "").trim();
   const teamName = typeof body.teamName === "string" ? body.teamName : "";
+  const guessedPlace =
+    typeof body.guessedPlace === "number"
+      ? body.guessedPlace
+      : typeof body.guessedPlace === "string"
+        ? parseInt(body.guessedPlace, 10)
+        : NaN;
   if (!playerId) {
     return NextResponse.json(
       { error: "playerId is required" },
@@ -26,7 +32,18 @@ export async function POST(
       { status: 400 }
     );
   }
-  const result = await pickByTeamName(roomId, playerId, teamName);
+  if (!Number.isInteger(guessedPlace) || guessedPlace < 1) {
+    return NextResponse.json(
+      { error: "guessedPlace is required (1 to league size)" },
+      { status: 400 }
+    );
+  }
+  const result = await pickByTeamName(
+    roomId,
+    playerId,
+    teamName,
+    guessedPlace
+  );
   if (!result.ok) {
     return NextResponse.json(
       { error: result.error ?? "Failed" },

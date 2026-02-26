@@ -130,7 +130,7 @@ export default function FootballQuizHome() {
         </Link>
         <Link
           href="/football-quiz/settings"
-          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600 dark:bg-zinc-800"
+          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
         >
           Settings
         </Link>

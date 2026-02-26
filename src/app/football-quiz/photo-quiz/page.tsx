@@ -133,7 +133,7 @@ export default function PhotoQuizPage() {
               value={guess}
               onChange={(e) => setGuess(e.target.value)}
               placeholder="Guess the player"
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={revealed}
             />
             {!revealed ? (

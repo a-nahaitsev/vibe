@@ -1,10 +1,21 @@
 @import "tailwindcss";
 
-/* Class-based dark mode for Football Quiz (and any subtree that toggles .dark on html) */
+/* Class-based dark mode: .dark on html is set by ThemeProvider (system/light/dark) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {
   font-family: system-ui, sans-serif;
+}
+
+/* Lighter text and placeholders in dark theme */
+.dark input,
+.dark textarea,
+.dark select {
+  @apply text-zinc-200;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  @apply text-zinc-400;
 }
 
 @keyframes your-turn-pulse {

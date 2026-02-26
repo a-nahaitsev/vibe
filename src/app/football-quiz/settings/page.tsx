@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useTheme } from "../_components/ThemeProvider";
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
+  const { theme, effectiveTheme, setTheme } = useTheme();
 
   return (
     <div className="space-y-6">
@@ -24,7 +24,7 @@ export default function SettingsPage() {
             onClick={() => setTheme("light")}
             className={
               "rounded-lg border px-4 py-2 text-sm font-medium " +
-              (theme === "light"
+              (theme === "light" || (theme === "system" && effectiveTheme === "light")
                 ? "border-emerald-500 bg-emerald-50 text-emerald-800 dark:border-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-200"
                 : "border-zinc-300 dark:border-zinc-600")
             }
@@ -36,7 +36,7 @@ export default function SettingsPage() {
             onClick={() => setTheme("dark")}
             className={
               "rounded-lg border px-4 py-2 text-sm font-medium " +
-              (theme === "dark"
+              (theme === "dark" || (theme === "system" && effectiveTheme === "dark")
                 ? "border-emerald-500 bg-emerald-50 text-emerald-800 dark:border-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-200"
                 : "border-zinc-300 dark:border-zinc-600")
             }

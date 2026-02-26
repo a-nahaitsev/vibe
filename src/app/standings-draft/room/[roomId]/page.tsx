@@ -44,24 +44,18 @@ export default function StandingsDraftRoomPage() {
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
   const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const guessInputRef = useRef<HTMLInputElement>(null);
 
   const fetchRoom = useCallback(async () => {
-    if (!roomId) {
-      console.log("[StandingsDraft] fetchRoom: no roomId, skip");
-      return;
-    }
+    if (!roomId) return;
     const url = `/api/standings-draft/room/${roomId}`;
-    console.log("[StandingsDraft] fetchRoom: GET", url);
     try {
       const res = await fetch(url);
-      console.log("[StandingsDraft] fetchRoom: status", res.status, "roomId", roomId);
       if (res.status === 404) {
         consecutive404Ref.current += 1;
         const count = consecutive404Ref.current;
-        console.log("[StandingsDraft] fetchRoom: 404, consecutive count", count, "maxBeforeGiveUp", MAX_404_BEFORE_GIVE_UP);
         if (count >= MAX_404_BEFORE_GIVE_UP) {
-          console.log("[StandingsDraft] fetchRoom: giving up, set Room not found");
           setError("Room not found");
           setRoom(null);
           setReconnecting(false);
@@ -81,9 +75,7 @@ export default function StandingsDraftRoomPage() {
       setRoom(data);
       setError("");
       setReconnecting(false);
-      console.log("[StandingsDraft] fetchRoom: success, phase", data?.phase);
     } catch (err) {
-      console.log("[StandingsDraft] fetchRoom: catch", err);
       setRoom((prev) => {
         if (prev) {
           setReconnecting(true);
@@ -100,7 +92,6 @@ export default function StandingsDraftRoomPage() {
   }, [roomId]);
 
   useEffect(() => {
-    console.log("[StandingsDraft] room page mounted/updated, roomId", roomId, "playerId", playerId);
     fetchRoom();
     const t = setInterval(fetchRoom, POLL_INTERVAL_MS);
     return () => clearInterval(t);
@@ -124,6 +115,24 @@ export default function StandingsDraftRoomPage() {
   const country =
     room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
   const needsToJoin = room && !me;
+
+  /** Places not yet revealed (available to guess). */
+  const availablePlaces = useMemo(() => {
+    if (!room?.standings.length) return [];
+    const n = room.standings.length;
+    return Array.from({ length: n }, (_, i) => i + 1).filter(
+      (r) => !room.revealedRanks.includes(r)
+    );
+  }, [room?.standings.length, room?.revealedRanks]);
+
+  useEffect(() => {
+    if (availablePlaces.length === 0) return;
+    setGuessedPlace((prev) => {
+      const p = prev === "" ? null : prev;
+      if (p === null || !availablePlaces.includes(p)) return availablePlaces[0] ?? "";
+      return prev;
+    });
+  }, [availablePlaces]);
 
   const joinLink =
     typeof window !== "undefined"
@@ -279,7 +288,11 @@ export default function StandingsDraftRoomPage() {
 
   const handleSubmitGuess = async (teamName: string) => {
     const trimmed = teamName.trim();
-    if (!roomId || !playerId || !trimmed) {
+    const place =
+      typeof guessedPlace === "number" && availablePlaces.includes(guessedPlace)
+        ? guessedPlace
+        : availablePlaces[0];
+    if (!roomId || !playerId || !trimmed || place == null) {
       return;
     }
     setActionLoading(true);
@@ -289,7 +302,11 @@ export default function StandingsDraftRoomPage() {
       const res = await fetch(`/api/standings-draft/room/${roomId}/pick`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId, teamName: trimmed }),
+        body: JSON.stringify({
+          playerId,
+          teamName: trimmed,
+          guessedPlace: place,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -331,7 +348,6 @@ export default function StandingsDraftRoomPage() {
   };
 
   if (loading && !room) {
-    console.log("[StandingsDraft] render: loading, no room");
     return (
       <div className="flex min-h-screen items-center justify-center p-6">
         <p className="text-zinc-500 dark:text-zinc-400">Loading room…</p>
@@ -340,7 +356,6 @@ export default function StandingsDraftRoomPage() {
   }
 
   if (error && !room) {
-    console.log("[StandingsDraft] render: showing error screen", "error", error, "roomId", roomId, "playerId", playerId);
     return (
       <div className="p-6">
         <Link href="/standings-draft" className="text-sm text-zinc-500 hover:underline">
@@ -388,7 +403,7 @@ export default function StandingsDraftRoomPage() {
                 value={joinName}
                 onChange={(e) => setJoinName(e.target.value)}
                 placeholder="Your name"
-                className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                 disabled={joinLoading}
                 autoFocus
               />
@@ -458,7 +473,7 @@ export default function StandingsDraftRoomPage() {
                 href={joinLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+                className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
               >
                 Open link in new tab
               </a>
@@ -485,7 +500,7 @@ export default function StandingsDraftRoomPage() {
                 <select
                   value={startLeagueId}
                   onChange={(e) => setStartLeagueId(Number(e.target.value))}
-                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                 >
                   {LEAGUES.map((l) => (
                     <option key={l.id} value={l.id}>
@@ -499,7 +514,7 @@ export default function StandingsDraftRoomPage() {
                 <select
                   value={startSeason}
                   onChange={(e) => setStartSeason(Number(e.target.value))}
-                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                 >
                   {SEASONS.map((s) => (
                     <option key={s} value={s}>
@@ -517,7 +532,7 @@ export default function StandingsDraftRoomPage() {
                       e.target.value === "60" ? 60 : null
                     )
                   }
-                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                  className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                 >
                   <option value="">No timer</option>
                   <option value="60">1 min per answer</option>
@@ -594,9 +609,18 @@ export default function StandingsDraftRoomPage() {
                         {room.players.find(
                           (p) => p.playerId === room.lastPick!.playerId
                         )?.name ?? "Someone"}{" "}
-                        guessed &ldquo;{room.lastPick.teamName}&rdquo; —{" "}
+                        guessed &ldquo;{room.lastPick.teamName}&rdquo;
+                        {room.lastPick.guessedRank != null && (
+                          <> at {room.lastPick.guessedRank}{room.lastPick.guessedRank === 1 ? "st" : room.lastPick.guessedRank === 2 ? "nd" : room.lastPick.guessedRank === 3 ? "rd" : "th"}</>
+                        )}
+                        {" — "}
                         {room.lastPick.correct ? (
-                          <>correct! +{room.lastPick.points} pts</>
+                          <>
+                            {room.lastPick.rank != null && room.lastPick.guessedRank != null && room.lastPick.rank !== room.lastPick.guessedRank
+                              ? `was ${room.lastPick.rank}${room.lastPick.rank === 1 ? "st" : room.lastPick.rank === 2 ? "nd" : room.lastPick.rank === 3 ? "rd" : "th"} → `
+                              : ""}
+                            +{room.lastPick.points} pts
+                          </>
                         ) : (
                           "wrong, 0 pts"
                         )}
@@ -615,13 +639,50 @@ export default function StandingsDraftRoomPage() {
                 }
               >
                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Guess a team in the standings
+                  Guess a team and its position
                 </label>
                 <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  Type at least 2 letters for suggestions. Wrong guess = 0 pts, turn passes.
+                  Points = rank − |rank − your guess| (min 0). E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 0. Wrong team = 0.
                 </p>
-                <div className="relative mt-3">
+                <div className="mt-3 space-y-3">
+                  <div>
+                    <label
+                      htmlFor="guess-place"
+                      className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+                    >
+                      Position (place) in table
+                    </label>
+                    <select
+                      id="guess-place"
+                      value={guessedPlace === "" ? "" : guessedPlace}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setGuessedPlace(v === "" ? "" : Number(v));
+                      }}
+                      className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
+                      disabled={actionLoading || availablePlaces.length === 0}
+                    >
+                      {availablePlaces.length === 0 ? (
+                        <option value="">No places left</option>
+                      ) : (
+                        availablePlaces.map((r) => (
+                          <option key={r} value={r}>
+                            {r}{r === 1 ? "st" : r === 2 ? "nd" : r === 3 ? "rd" : "th"}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="guess-team"
+                      className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+                    >
+                      Team name
+                    </label>
+                <div className="relative">
                   <input
+                    id="guess-team"
                     ref={guessInputRef}
                     type="text"
                     value={guessInput}
@@ -636,7 +697,7 @@ export default function StandingsDraftRoomPage() {
                     }
                     onKeyDown={handleInputKeyDown}
                     placeholder="Team name…"
-                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                     disabled={actionLoading}
                     autoComplete="off"
                   />
@@ -667,10 +728,17 @@ export default function StandingsDraftRoomPage() {
                     </ul>
                   )}
                 </div>
+                  </div>
+                </div>
                 <button
                   type="button"
                   onClick={() => handleSubmitGuess(guessInput.trim())}
-                  disabled={actionLoading || !guessInput.trim()}
+                  disabled={
+                    actionLoading ||
+                    !guessInput.trim() ||
+                    availablePlaces.length === 0 ||
+                    (guessedPlace !== "" && !availablePlaces.includes(guessedPlace))
+                  }
                   className="mt-3 w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                 >
                   Submit guess
@@ -681,7 +749,7 @@ export default function StandingsDraftRoomPage() {
               {/* Scores — column layout, more points = higher position */}
               <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                 <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Scores (lower rank = more points)
+                  Scores (closer position guess = more points)
                 </h3>
                 <ul className="mt-2 flex flex-col gap-2">
                   {room.players

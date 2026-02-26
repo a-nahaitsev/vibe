@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "./ThemeProvider";
+import { useTheme } from "@/components/ThemeProvider";
 
 const NAV_LINKS = [
   { href: "/football-quiz", label: "Home" },
@@ -24,7 +24,7 @@ const NAV_LINKS = [
 
 export function QuizNav() {
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  const { effectiveTheme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/95 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/95">
@@ -57,10 +57,10 @@ export function QuizNav() {
         <button
           type="button"
           onClick={toggleTheme}
-          className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-800"
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
+          aria-label={effectiveTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
         >
-          {theme === "dark" ? <><span role="img" aria-label="Sun">☀️</span> Light</> : <><span role="img" aria-label="Moon">🌙</span> Dark</>}
+          {effectiveTheme === "dark" ? <><span role="img" aria-label="Sun">☀️</span> Light</> : <><span role="img" aria-label="Moon">🌙</span> Dark</>}
         </button>
       </div>
     </header>

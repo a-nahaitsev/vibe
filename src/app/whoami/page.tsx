@@ -94,7 +94,7 @@ export default function WhoAmIHomePage() {
               value={createName}
               onChange={(e) => setCreateName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <button
@@ -120,7 +120,7 @@ export default function WhoAmIHomePage() {
               value={joinRoomId}
               onChange={(e) => setJoinRoomId(e.target.value)}
               placeholder="Room code"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <input
@@ -128,13 +128,13 @@ export default function WhoAmIHomePage() {
               value={joinName}
               onChange={(e) => setJoinName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+              className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               {loading ? "Joining…" : "Join game"}
             </button>

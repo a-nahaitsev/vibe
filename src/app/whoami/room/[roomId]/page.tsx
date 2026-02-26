@@ -272,7 +272,7 @@ export default function WhoAmIRoomPage() {
                     onBlur={() => setTimeout(() => setSuggestionsOpen(false), 150)}
                     onKeyDown={handleInputKeyDown}
                     placeholder="Your guess (player name)"
-                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                     disabled={actionLoading}
                     autoComplete="off"
                   />
@@ -316,7 +316,7 @@ export default function WhoAmIRoomPage() {
                     type="button"
                     onClick={() => handleSubmitAction("skip")}
                     disabled={actionLoading}
-                    className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+                    className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
                   >
                     Skip
                   </button>
