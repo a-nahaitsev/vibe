@@ -19,6 +19,8 @@ export interface StandingsDraftPlayer {
   score: number;
   /** True if the player has used their Joker (Triple Captain) this game. */
   usedJoker?: boolean;
+  /** True if the player has used their Badge Hint this game. */
+  usedBadgeHint?: boolean;
 }
 
 export type StandingsDraftPhase = "lobby" | "playing" | "finished";
@@ -51,6 +53,8 @@ export interface StandingsDraftRoom {
     timeout?: boolean;
     /** True when the pick was made with Joker (Triple Captain). */
     jokerUsed?: boolean;
+    /** True when the pick was made with Badge Hint. */
+    badgeHintUsed?: boolean;
   } | null;
   /** Timer per turn in seconds; null = no timer. */
   timerSeconds: number | null;

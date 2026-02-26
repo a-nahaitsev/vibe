@@ -11,6 +11,7 @@ export async function POST(
     teamName?: string;
     guessedPlace?: number;
     useJoker?: boolean;
+    useBadgeHint?: boolean;
   };
   try {
     body = await request.json();
@@ -26,6 +27,7 @@ export async function POST(
         ? parseInt(body.guessedPlace, 10)
         : NaN;
   const useJoker = body.useJoker === true;
+  const useBadgeHint = body.useBadgeHint === true;
   if (!playerId) {
     return NextResponse.json(
       { error: "playerId is required" },
@@ -49,7 +51,8 @@ export async function POST(
     playerId,
     teamName,
     guessedPlace,
-    useJoker
+    useJoker,
+    useBadgeHint
   );
   if (!result.ok) {
     return NextResponse.json(

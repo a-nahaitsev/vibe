@@ -140,6 +140,7 @@ export async function startGame(
   room.players.forEach((p) => {
     p.score = 0;
     p.usedJoker = false;
+    p.usedBadgeHint = false;
   });
   room.currentPlayerIndex = Math.floor(Math.random() * room.players.length);
   const now = Date.now();
@@ -166,7 +167,8 @@ export async function pickByTeamName(
   playerId: string,
   teamName: string,
   guessedPlace: number,
-  useJoker?: boolean
+  useJoker?: boolean,
+  useBadgeHint?: boolean
 ): Promise<{
   ok: boolean;
   error?: string;
@@ -186,8 +188,14 @@ export async function pickByTeamName(
     return { ok: false, error: "Not your turn" };
   }
 
+  if (useJoker && useBadgeHint) {
+    return { ok: false, error: "Cannot use Joker and Badge Hint on the same turn" };
+  }
   if (useJoker && currentPlayer.usedJoker) {
     return { ok: false, error: "Joker already used this game" };
+  }
+  if (useBadgeHint && currentPlayer.usedBadgeHint) {
+    return { ok: false, error: "Badge Hint already used this game" };
   }
 
   const normalized = normalizeTeamName(teamName);
@@ -224,8 +232,12 @@ export async function pickByTeamName(
   };
 
   const applyJoker = useJoker === true;
+  const applyBadgeHint = useBadgeHint === true;
   if (applyJoker) {
     currentPlayer.usedJoker = true;
+  }
+  if (applyBadgeHint) {
+    currentPlayer.usedBadgeHint = true;
   }
 
   if (!row) {
@@ -238,6 +250,7 @@ export async function pickByTeamName(
       correct: false,
       points,
       jokerUsed: applyJoker,
+      badgeHintUsed: applyBadgeHint,
     };
     advanceToNextTurn();
     await storageSet(room);
@@ -254,6 +267,7 @@ export async function pickByTeamName(
       correct: false,
       points,
       jokerUsed: applyJoker,
+      badgeHintUsed: applyBadgeHint,
     };
     advanceToNextTurn();
     await storageSet(room);
@@ -264,6 +278,7 @@ export async function pickByTeamName(
   if (applyJoker) {
     points = points * 3;
   }
+  /* Badge Hint does not multiply points — only Joker does */
   room.revealedRanks.push(row.rank);
   currentPlayer.score += points;
   room.lastPick = {
@@ -274,6 +289,7 @@ export async function pickByTeamName(
     correct: true,
     points,
     jokerUsed: applyJoker,
+    badgeHintUsed: applyBadgeHint,
   };
 
   if (room.revealedRanks.length >= totalTeams) {

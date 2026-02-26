@@ -48,6 +48,8 @@ export default function StandingsDraftRoomPage() {
   const [now, setNow] = useState(() => Date.now());
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
+  const [useBadgeHintForThisTurn, setUseBadgeHintForThisTurn] = useState(false);
+  const [badgeHintLogoUrl, setBadgeHintLogoUrl] = useState<string | null>(null);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
   const fetchRoom = useCallback(async () => {
@@ -306,6 +308,7 @@ export default function StandingsDraftRoomPage() {
           teamName: trimmed,
           guessedPlace: place,
           useJoker: useJokerForThisTurn,
+          useBadgeHint: useBadgeHintForThisTurn,
         }),
       });
       const data = await res.json();
@@ -313,6 +316,8 @@ export default function StandingsDraftRoomPage() {
         throw new Error(data.error ?? "Failed to pick");
       }
       setUseJokerForThisTurn(false);
+      setUseBadgeHintForThisTurn(false);
+      setBadgeHintLogoUrl(null);
       await fetchRoom();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to pick");
@@ -634,6 +639,7 @@ export default function StandingsDraftRoomPage() {
                             </>
                           )}
                           {room.lastPick.jokerUsed && " (Joker)"}
+                          {room.lastPick.badgeHintUsed && " (Badge Hint)"}
                           {" — "}
                           {room.lastPick.correct ? (
                             <>
@@ -688,13 +694,97 @@ export default function StandingsDraftRoomPage() {
                             <input
                               type="checkbox"
                               checked={useJokerForThisTurn}
-                              onChange={(e) =>
-                                setUseJokerForThisTurn(e.target.checked)
-                              }
-                              className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-800"
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setUseJokerForThisTurn(checked);
+                                if (checked) {
+                                  setUseBadgeHintForThisTurn(false);
+                                  setBadgeHintLogoUrl(null);
+                                }
+                              }}
+                              disabled={useBadgeHintForThisTurn}
+                              className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
                             />
                             Use this turn
                           </label>
+                        ) : (
+                          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                            Available
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                      <div>
+                        <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                          Badge Hint
+                        </span>
+                        <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                          Once per game. See a blurred club logo for one position. Can&apos;t use with Joker same turn.
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {me?.usedBadgeHint ? (
+                          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                            Used
+                          </span>
+                        ) : isMyTurn ? (
+                          <>
+                            <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                              <input
+                                type="checkbox"
+                                checked={useBadgeHintForThisTurn}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  setUseBadgeHintForThisTurn(checked);
+                                  if (checked) {
+                                    setUseJokerForThisTurn(false);
+                                    setBadgeHintLogoUrl(null);
+                                  }
+                                }}
+                                disabled={useJokerForThisTurn}
+                                className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
+                              />
+                              Use this turn
+                            </label>
+                            {useBadgeHintForThisTurn && availablePlaces.length > 0 && (
+                              <>
+                                <button
+                                  type="button"
+                                  disabled={badgeHintLogoUrl !== null}
+                                  onClick={() => {
+                                    const unrevealed = room.standings.filter(
+                                      (s) => !room.revealedRanks.includes(s.rank)
+                                    );
+                                    if (unrevealed.length === 0) return;
+                                    const randomRow =
+                                      unrevealed[
+                                        Math.floor(Math.random() * unrevealed.length)
+                                      ];
+                                    setBadgeHintLogoUrl(randomRow?.team.logo ?? null);
+                                  }}
+                                  className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
+                                >
+                                  Show badge
+                                </button>
+                                {badgeHintLogoUrl && (
+                                  <img
+                                    src={badgeHintLogoUrl}
+                                    alt="Blurred club badge hint"
+                                    width={24}
+                                    height={24}
+                                    className="h-6 w-6 select-none object-contain"
+                                    style={{
+                                      filter:
+                                        "blur(4px) contrast(0.85) brightness(0.95)",
+                                      imageRendering: "pixelated",
+                                    }}
+                                    draggable={false}
+                                  />
+                                )}
+                              </>
+                            )}
+                          </>
                         ) : (
                           <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                             Available
