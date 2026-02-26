@@ -42,7 +42,10 @@ export async function storageGet(roomId: string): Promise<StandingsDraftRoom | n
     const raw = await r.get(roomKey(roomId));
     if (raw == null) return null;
     try {
-      return JSON.parse(raw) as StandingsDraftRoom;
+      if (typeof raw === "string") {
+        return JSON.parse(raw) as StandingsDraftRoom;
+      }
+      return raw as StandingsDraftRoom;
     } catch {
       return null;
     }
