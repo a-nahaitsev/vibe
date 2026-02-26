@@ -137,7 +137,10 @@ export async function startGame(
   room.revealedRanks = [];
   room.lastPick = null;
   room.timerSeconds = timerSeconds;
-  room.players.forEach((p) => (p.score = 0));
+  room.players.forEach((p) => {
+    p.score = 0;
+    p.usedJoker = false;
+  });
   room.currentPlayerIndex = Math.floor(Math.random() * room.players.length);
   const now = Date.now();
   room.turnStartedAt = now;
@@ -151,16 +154,19 @@ function normalizeTeamName(s: string): string {
   return s.trim().toLowerCase();
 }
 
-/** Margin-of-error points: actualRank - |actualRank - guessedRank|, min 0. */
+/** Margin-of-error points: actualRank - |actualRank - guessedRank|, min 1 when team is correct (wrong team = 0). */
 function marginPoints(actualRank: number, guessedRank: number): number {
-  return Math.max(0, actualRank - Math.abs(actualRank - guessedRank));
+  return Math.max(1, actualRank - Math.abs(actualRank - guessedRank));
 }
+
+const JOKER_WRONG_PENALTY = 10;
 
 export async function pickByTeamName(
   roomId: string,
   playerId: string,
   teamName: string,
-  guessedPlace: number
+  guessedPlace: number,
+  useJoker?: boolean
 ): Promise<{
   ok: boolean;
   error?: string;
@@ -178,6 +184,10 @@ export async function pickByTeamName(
   const currentPlayer = room.players[room.currentPlayerIndex];
   if (!currentPlayer || currentPlayer.playerId !== playerId) {
     return { ok: false, error: "Not your turn" };
+  }
+
+  if (useJoker && currentPlayer.usedJoker) {
+    return { ok: false, error: "Joker already used this game" };
   }
 
   const normalized = normalizeTeamName(teamName);
@@ -213,33 +223,47 @@ export async function pickByTeamName(
       (room.currentPlayerIndex + 1) % room.players.length;
   };
 
+  const applyJoker = useJoker === true;
+  if (applyJoker) {
+    currentPlayer.usedJoker = true;
+  }
+
   if (!row) {
+    const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
+    currentPlayer.score += points;
     room.lastPick = {
       guessedRank: guessedPlace,
       playerId,
       teamName: teamName.trim(),
       correct: false,
-      points: 0,
+      points,
+      jokerUsed: applyJoker,
     };
     advanceToNextTurn();
     await storageSet(room);
-    return { ok: true, correct: false, points: 0 };
+    return { ok: true, correct: false, points };
   }
 
   if (alreadyRevealed) {
+    const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
+    currentPlayer.score += points;
     room.lastPick = {
       guessedRank: guessedPlace,
       playerId,
       teamName: teamName.trim(),
       correct: false,
-      points: 0,
+      points,
+      jokerUsed: applyJoker,
     };
     advanceToNextTurn();
     await storageSet(room);
-    return { ok: true, correct: false, points: 0 };
+    return { ok: true, correct: false, points };
   }
 
-  const points = marginPoints(row.rank, guessedPlace);
+  let points = marginPoints(row.rank, guessedPlace);
+  if (applyJoker) {
+    points = points * 3;
+  }
   room.revealedRanks.push(row.rank);
   currentPlayer.score += points;
   room.lastPick = {
@@ -249,6 +273,7 @@ export async function pickByTeamName(
     teamName: row.team.name,
     correct: true,
     points,
+    jokerUsed: applyJoker,
   };
 
   if (room.revealedRanks.length >= totalTeams) {

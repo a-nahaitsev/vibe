@@ -6,7 +6,12 @@ export async function POST(
   { params }: { params: Promise<{ roomId: string }> }
 ) {
   const { roomId } = await params;
-  let body: { playerId?: string; teamName?: string; guessedPlace?: number };
+  let body: {
+    playerId?: string;
+    teamName?: string;
+    guessedPlace?: number;
+    useJoker?: boolean;
+  };
   try {
     body = await request.json();
   } catch {
@@ -20,6 +25,7 @@ export async function POST(
       : typeof body.guessedPlace === "string"
         ? parseInt(body.guessedPlace, 10)
         : NaN;
+  const useJoker = body.useJoker === true;
   if (!playerId) {
     return NextResponse.json(
       { error: "playerId is required" },
@@ -42,7 +48,8 @@ export async function POST(
     roomId,
     playerId,
     teamName,
-    guessedPlace
+    guessedPlace,
+    useJoker
   );
   if (!result.ok) {
     return NextResponse.json(

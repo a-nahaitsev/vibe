@@ -95,7 +95,7 @@ export default function StandingsDraftHomePage() {
             Standings Draft (Multiplayer)
           </h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Pick teams and guess their position in the standings. Points = how close your guess is (formula: rank − |rank − your guess|, min 0). E.g. team is 10th: guess 10th → 10 pts; guess 12th → 8 pts; guess 20th → 0 pts. Wrong team = 0. When all teams are revealed, the player with the most points wins.
+            Pick teams and guess their position in the standings. Points = how close your guess is (formula: rank − |rank − your guess|, min 1 for correct team; wrong team = 0). E.g. team is 10th: guess 10th → 10 pts; guess 12th → 8 pts; guess 20th → 1 pt. Wrong team = 0. When all teams are revealed, the player with the most points wins.
           </p>
         </div>
 

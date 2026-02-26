@@ -42,9 +42,12 @@ export default function StandingsDraftRoomPage() {
   const [joinName, setJoinName] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
-  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(null);
+  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(
+    null
+  );
   const [now, setNow] = useState(() => Date.now());
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
+  const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
   const fetchRoom = useCallback(async () => {
@@ -88,7 +91,7 @@ export default function StandingsDraftRoomPage() {
     } finally {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- room omitted: we use setRoom(prev=>...) and must not recreate interval on every room update
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- room omitted: we use setRoom(prev=>...) and must not recreate interval on every room update
   }, [roomId]);
 
   useEffect(() => {
@@ -98,10 +101,7 @@ export default function StandingsDraftRoomPage() {
   }, [fetchRoom]);
 
   useEffect(() => {
-    if (
-      room?.phase !== "playing" ||
-      typeof room?.turnEndsAt !== "number"
-    ) {
+    if (room?.phase !== "playing" || typeof room?.turnEndsAt !== "number") {
       return;
     }
     const tick = setInterval(() => setNow(Date.now()), 1000);
@@ -112,8 +112,7 @@ export default function StandingsDraftRoomPage() {
   const me = room?.players.find((p) => p.playerId === playerId);
   const currentPlayer = room?.players[room?.currentPlayerIndex ?? 0];
   const isMyTurn = currentPlayer?.playerId === playerId;
-  const country =
-    room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
+  const country = room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
   const needsToJoin = room && !me;
 
   /** Places not yet revealed (available to guess). */
@@ -129,7 +128,8 @@ export default function StandingsDraftRoomPage() {
     if (availablePlaces.length === 0) return;
     setGuessedPlace((prev) => {
       const p = prev === "" ? null : prev;
-      if (p === null || !availablePlaces.includes(p)) return availablePlaces[0] ?? "";
+      if (p === null || !availablePlaces.includes(p))
+        return availablePlaces[0] ?? "";
       return prev;
     });
   }, [availablePlaces]);
@@ -212,8 +212,7 @@ export default function StandingsDraftRoomPage() {
       .slice(0, MAX_SUGGESTIONS);
   }, [teamNames, guessInput]);
 
-  const showSuggestions =
-    isMyTurn && suggestionsOpen && suggestions.length > 0;
+  const showSuggestions = isMyTurn && suggestionsOpen && suggestions.length > 0;
   const remainingSeconds =
     room?.phase === "playing" &&
     typeof room.turnEndsAt === "number" &&
@@ -306,12 +305,14 @@ export default function StandingsDraftRoomPage() {
           playerId,
           teamName: trimmed,
           guessedPlace: place,
+          useJoker: useJokerForThisTurn,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error ?? "Failed to pick");
       }
+      setUseJokerForThisTurn(false);
       await fetchRoom();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to pick");
@@ -358,7 +359,10 @@ export default function StandingsDraftRoomPage() {
   if (error && !room) {
     return (
       <div className="p-6">
-        <Link href="/standings-draft" className="text-sm text-zinc-500 hover:underline">
+        <Link
+          href="/standings-draft"
+          className="text-sm text-zinc-500 hover:underline"
+        >
           ← Back
         </Link>
         <p className="mt-4 text-red-600 dark:text-red-400">{error}</p>
@@ -385,8 +389,9 @@ export default function StandingsDraftRoomPage() {
               Join this room
             </h1>
             <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-              You were invited to room <code className="font-mono">{roomId}</code>.
-              Enter your name to join.
+              You were invited to room{" "}
+              <code className="font-mono">{roomId}</code>. Enter your name to
+              join.
             </p>
             {error && (
               <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
@@ -438,7 +443,8 @@ export default function StandingsDraftRoomPage() {
 
         {reconnecting && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200 xl:col-span-2">
-            Reconnecting… You can keep playing; we&apos;ll sync when the connection is back.
+            Reconnecting… You can keep playing; we&apos;ll sync when the
+            connection is back.
           </div>
         )}
 
@@ -528,9 +534,7 @@ export default function StandingsDraftRoomPage() {
                 <select
                   value={startTimerSeconds === 60 ? "60" : ""}
                   onChange={(e) =>
-                    setStartTimerSeconds(
-                      e.target.value === "60" ? 60 : null
-                    )
+                    setStartTimerSeconds(e.target.value === "60" ? 60 : null)
                   }
                   className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
                 >
@@ -551,285 +555,399 @@ export default function StandingsDraftRoomPage() {
         )}
 
         {/* Playing / Finished: two columns on xl — left: controls, right: table */}
-        {(room.phase === "playing" || room.phase === "finished") && room.standings.length > 0 && (
-          <>
-            <div className="flex flex-col gap-6 xl:min-w-0">
-              <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-                <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                  {room.leagueName} {room.season}
-                </h2>
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                  {room.revealedRanks.length} / {room.standings.length} teams revealed
-                </p>
-                {room.phase === "playing" && (
-                  <>
-                    <p className="mt-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      {isMyTurn
-                        ? "Your turn — type a team name to guess."
-                        : `Waiting for ${currentPlayer?.name ?? "…"} to guess.`}
-                    </p>
-                    {remainingSeconds != null && (
-                      <p
-                        className={
-                          "mt-2 text-lg font-mono font-semibold " +
-                          (remainingSeconds === 0
-                            ? "text-amber-600 dark:text-amber-400"
-                            : "text-zinc-700 dark:text-zinc-300")
-                        }
-                      >
-                        {remainingSeconds === 0
-                          ? "Time's up!"
-                          : `${Math.floor(remainingSeconds / 60)}:${String(remainingSeconds % 60).padStart(2, "0")}`}
+        {(room.phase === "playing" || room.phase === "finished") &&
+          room.standings.length > 0 && (
+            <>
+              <div className="flex flex-col gap-6 xl:min-w-0">
+                <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                  <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    {room.leagueName} {room.season}
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    {room.revealedRanks.length} / {room.standings.length} teams
+                    revealed
+                  </p>
+                  {room.phase === "playing" && (
+                    <>
+                      <p className="mt-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                        {isMyTurn
+                          ? "Your turn — type a team name to guess."
+                          : `Waiting for ${
+                              currentPlayer?.name ?? "…"
+                            } to guess.`}
                       </p>
-                    )}
-                  </>
+                      {remainingSeconds != null && (
+                        <p
+                          className={
+                            "mt-2 text-lg font-mono font-semibold " +
+                            (remainingSeconds === 0
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-zinc-700 dark:text-zinc-300")
+                          }
+                        >
+                          {remainingSeconds === 0
+                            ? "Time's up!"
+                            : `${Math.floor(remainingSeconds / 60)}:${String(
+                                remainingSeconds % 60
+                              ).padStart(2, "0")}`}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Last pick feedback */}
+                {room.lastPick && room.phase === "playing" && (
+                  <div
+                    className={
+                      "rounded-xl border px-4 py-3 " +
+                      (room.lastPick.correct
+                        ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
+                        : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
+                    }
+                  >
+                    <p className="text-sm text-zinc-800 dark:text-zinc-200">
+                      {room.lastPick.timeout ? (
+                        <>
+                          {room.players.find(
+                            (p) => p.playerId === room.lastPick!.playerId
+                          )?.name ?? "Someone"}{" "}
+                          ran out of time — 0 pts
+                        </>
+                      ) : (
+                        <>
+                          {room.players.find(
+                            (p) => p.playerId === room.lastPick!.playerId
+                          )?.name ?? "Someone"}{" "}
+                          guessed &ldquo;{room.lastPick.teamName}&rdquo;
+                          {room.lastPick.guessedRank != null && (
+                            <>
+                              {" "}
+                              at {room.lastPick.guessedRank}
+                              {room.lastPick.guessedRank === 1
+                                ? "st"
+                                : room.lastPick.guessedRank === 2
+                                ? "nd"
+                                : room.lastPick.guessedRank === 3
+                                ? "rd"
+                                : "th"}
+                            </>
+                          )}
+                          {room.lastPick.jokerUsed && " (Joker)"}
+                          {" — "}
+                          {room.lastPick.correct ? (
+                            <>
+                              {room.lastPick.rank != null &&
+                              room.lastPick.guessedRank != null &&
+                              room.lastPick.rank !== room.lastPick.guessedRank
+                                ? `was ${room.lastPick.rank}${
+                                    room.lastPick.rank === 1
+                                      ? "st"
+                                      : room.lastPick.rank === 2
+                                      ? "nd"
+                                      : room.lastPick.rank === 3
+                                      ? "rd"
+                                      : "th"
+                                  } → `
+                                : ""}
+                              {room.lastPick.points >= 0 ? "+" : ""}
+                              {room.lastPick.points} pts
+                            </>
+                          ) : (
+                            <>wrong, {room.lastPick.points} pts</>
+                          )}
+                        </>
+                      )}
+                  </p>
+                </div>
+              )}
+
+              {/* Bonuses / Multipliers panel */}
+              {(room.phase === "playing" || room.phase === "finished") && (
+                <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                  <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                    Bonuses
+                  </h3>
+                  <div className="mt-3 space-y-3">
+                    <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                      <div>
+                        <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                          Triple Captain (Joker)
+                        </span>
+                        <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                          Once per game. Right: 3× points. Wrong: −10 pts.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {me?.usedJoker ? (
+                          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                            Used
+                          </span>
+                        ) : isMyTurn ? (
+                          <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                            <input
+                              type="checkbox"
+                              checked={useJokerForThisTurn}
+                              onChange={(e) =>
+                                setUseJokerForThisTurn(e.target.checked)
+                              }
+                              className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-800"
+                            />
+                            Use this turn
+                          </label>
+                        ) : (
+                          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                            Available
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+                {/* Guess input (current player only) — pulse when your turn */}
+                {room.phase === "playing" && isMyTurn && (
+                  <div
+                    className={
+                      "rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow dark:border-zinc-700 dark:bg-zinc-900 " +
+                      "animate-your-turn-pulse"
+                    }
+                  >
+                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                      Guess a team and its position
+                    </label>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                      Points = rank − |rank − your guess| (min 1 for correct
+                      team).
+                      <span
+                        className="inline-flex cursor-help align-middle text-zinc-400 dark:text-zinc-500"
+                        title="E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 1 pt. Wrong team = 0."
+                        aria-label="Scoring example"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="h-4 w-4"
+                          aria-hidden
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                    </p>
+                    <div className="mt-3 space-y-3">
+                      <div>
+                        <label
+                          htmlFor="guess-place"
+                          className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+                        >
+                          Position (place) in table
+                        </label>
+                        <select
+                          id="guess-place"
+                          value={guessedPlace === "" ? "" : guessedPlace}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            setGuessedPlace(v === "" ? "" : Number(v));
+                          }}
+                          className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
+                          disabled={
+                            actionLoading || availablePlaces.length === 0
+                          }
+                        >
+                          {availablePlaces.length === 0 ? (
+                            <option value="">No places left</option>
+                          ) : (
+                            availablePlaces.map((r) => (
+                              <option key={r} value={r}>
+                                {r}
+                                {r === 1
+                                  ? "st"
+                                  : r === 2
+                                  ? "nd"
+                                  : r === 3
+                                  ? "rd"
+                                  : "th"}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="guess-team"
+                          className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+                        >
+                          Team name
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="guess-team"
+                            ref={guessInputRef}
+                            type="text"
+                            value={guessInput}
+                            onChange={(e) => {
+                              setGuessInput(e.target.value);
+                              setSuggestionsOpen(true);
+                              setSuggestionHighlight(0);
+                            }}
+                            onFocus={() => setSuggestionsOpen(true)}
+                            onBlur={() =>
+                              setTimeout(() => setSuggestionsOpen(false), 150)
+                            }
+                            onKeyDown={handleInputKeyDown}
+                            placeholder="Team name…"
+                            className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
+                            disabled={actionLoading}
+                            autoComplete="off"
+                          />
+                          {showSuggestions && (
+                            <ul
+                              className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-600 dark:bg-zinc-800"
+                              role="listbox"
+                            >
+                              {suggestions.map((name, i) => (
+                                <li
+                                  key={name}
+                                  role="option"
+                                  aria-selected={i === highlightedIndex}
+                                  className={
+                                    "cursor-pointer px-3 py-2 text-sm " +
+                                    (i === highlightedIndex
+                                      ? "bg-emerald-100 text-zinc-900 dark:bg-emerald-900/50 dark:text-zinc-100"
+                                      : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-700")
+                                  }
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    pickSuggestion(name);
+                                  }}
+                                >
+                                  {name}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleSubmitGuess(guessInput.trim())}
+                      disabled={
+                        actionLoading ||
+                        !guessInput.trim() ||
+                        availablePlaces.length === 0 ||
+                        (guessedPlace !== "" &&
+                          !availablePlaces.includes(guessedPlace))
+                      }
+                      className="mt-3 w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                    >
+                      Submit guess
+                    </button>
+                  </div>
+                )}
+
+                {/* Scores — column layout, more points = higher position */}
+                <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                  <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    Scores (closer position guess = more points)
+                  </h3>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {room.players
+                      .slice()
+                      .sort((a, b) => b.score - a.score)
+                      .map((p) => (
+                        <li
+                          key={p.playerId}
+                          className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${
+                            p.playerId === playerId
+                              ? "bg-emerald-100 dark:bg-emerald-900/30"
+                              : "bg-zinc-100 dark:bg-zinc-800"
+                          }`}
+                        >
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                            {p.name}
+                            {p.playerId === room.creatorId ? " (host)" : ""}
+                          </span>
+                          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                            {p.score} pts
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+
+                {/* Winner */}
+                {room.phase === "finished" && (
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
+                    <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                      Game over
+                    </h2>
+                    <p className="mt-2 text-zinc-700 dark:text-zinc-300">
+                      Winner:{" "}
+                      <strong className="text-emerald-700 dark:text-emerald-400">
+                        {room.players.reduce((best, p) =>
+                          p.score > (best?.score ?? -1) ? p : best
+                        )?.name ?? "—"}
+                      </strong>{" "}
+                      with the most points.
+                    </p>
+                    <Link
+                      href="/standings-draft"
+                      className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                    >
+                      Leave room
+                    </Link>
+                  </div>
                 )}
               </div>
 
-              {/* Last pick feedback */}
-              {room.lastPick && room.phase === "playing" && (
-                <div
-                  className={
-                    "rounded-xl border px-4 py-3 " +
-                    (room.lastPick.correct
-                      ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
-                      : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
-                  }
-                >
-                  <p className="text-sm text-zinc-800 dark:text-zinc-200">
-                    {room.lastPick.timeout ? (
-                      <>
-                        {room.players.find(
-                          (p) => p.playerId === room.lastPick!.playerId
-                        )?.name ?? "Someone"}{" "}
-                        ran out of time — 0 pts
-                      </>
-                    ) : (
-                      <>
-                        {room.players.find(
-                          (p) => p.playerId === room.lastPick!.playerId
-                        )?.name ?? "Someone"}{" "}
-                        guessed &ldquo;{room.lastPick.teamName}&rdquo;
-                        {room.lastPick.guessedRank != null && (
-                          <> at {room.lastPick.guessedRank}{room.lastPick.guessedRank === 1 ? "st" : room.lastPick.guessedRank === 2 ? "nd" : room.lastPick.guessedRank === 3 ? "rd" : "th"}</>
-                        )}
-                        {" — "}
-                        {room.lastPick.correct ? (
-                          <>
-                            {room.lastPick.rank != null && room.lastPick.guessedRank != null && room.lastPick.rank !== room.lastPick.guessedRank
-                              ? `was ${room.lastPick.rank}${room.lastPick.rank === 1 ? "st" : room.lastPick.rank === 2 ? "nd" : room.lastPick.rank === 3 ? "rd" : "th"} → `
-                              : ""}
-                            +{room.lastPick.points} pts
-                          </>
-                        ) : (
-                          "wrong, 0 pts"
-                        )}
-                      </>
-                    )}
-                  </p>
-                </div>
-              )}
-
-              {/* Guess input (current player only) — pulse when your turn */}
-              {room.phase === "playing" && isMyTurn && (
-              <div
-                className={
-                  "rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow dark:border-zinc-700 dark:bg-zinc-900 " +
-                  "animate-your-turn-pulse"
-                }
-              >
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Guess a team and its position
-                </label>
-                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  Points = rank − |rank − your guess| (min 0). E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 0. Wrong team = 0.
-                </p>
-                <div className="mt-3 space-y-3">
-                  <div>
-                    <label
-                      htmlFor="guess-place"
-                      className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
-                    >
-                      Position (place) in table
-                    </label>
-                    <select
-                      id="guess-place"
-                      value={guessedPlace === "" ? "" : guessedPlace}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setGuessedPlace(v === "" ? "" : Number(v));
-                      }}
-                      className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
-                      disabled={actionLoading || availablePlaces.length === 0}
-                    >
-                      {availablePlaces.length === 0 ? (
-                        <option value="">No places left</option>
-                      ) : (
-                        availablePlaces.map((r) => (
-                          <option key={r} value={r}>
-                            {r}{r === 1 ? "st" : r === 2 ? "nd" : r === 3 ? "rd" : "th"}
-                          </option>
-                        ))
-                      )}
-                    </select>
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="guess-team"
-                      className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
-                    >
-                      Team name
-                    </label>
-                <div className="relative">
-                  <input
-                    id="guess-team"
-                    ref={guessInputRef}
-                    type="text"
-                    value={guessInput}
-                    onChange={(e) => {
-                      setGuessInput(e.target.value);
-                      setSuggestionsOpen(true);
-                      setSuggestionHighlight(0);
-                    }}
-                    onFocus={() => setSuggestionsOpen(true)}
-                    onBlur={() =>
-                      setTimeout(() => setSuggestionsOpen(false), 150)
-                    }
-                    onKeyDown={handleInputKeyDown}
-                    placeholder="Team name…"
-                    className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder-zinc-400"
-                    disabled={actionLoading}
-                    autoComplete="off"
-                  />
-                  {showSuggestions && (
-                    <ul
-                      className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-600 dark:bg-zinc-800"
-                      role="listbox"
-                    >
-                      {suggestions.map((name, i) => (
-                        <li
-                          key={name}
-                          role="option"
-                          aria-selected={i === highlightedIndex}
-                          className={
-                            "cursor-pointer px-3 py-2 text-sm " +
-                            (i === highlightedIndex
-                              ? "bg-emerald-100 text-zinc-900 dark:bg-emerald-900/50 dark:text-zinc-100"
-                              : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-700")
-                          }
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            pickSuggestion(name);
-                          }}
-                        >
-                          {name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleSubmitGuess(guessInput.trim())}
-                  disabled={
-                    actionLoading ||
-                    !guessInput.trim() ||
-                    availablePlaces.length === 0 ||
-                    (guessedPlace !== "" && !availablePlaces.includes(guessedPlace))
-                  }
-                  className="mt-3 w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                >
-                  Submit guess
-                </button>
+              {/* Table — right column on xl */}
+              <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 xl:min-w-0">
+                <table className="w-full min-w-[600px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-zinc-200 dark:border-zinc-700">
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        #
+                      </th>
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        Team
+                      </th>
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        P
+                      </th>
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        GD
+                      </th>
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        W-D-L
+                      </th>
+                      <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">
+                        Form
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {room.standings.map((row) => {
+                      const revealed = room.revealedRanks.includes(row.rank);
+                      return (
+                        <StandingTableRow
+                          key={row.rank}
+                          row={row}
+                          revealed={revealed}
+                        />
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            )}
-
-              {/* Scores — column layout, more points = higher position */}
-              <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-                <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Scores (closer position guess = more points)
-                </h3>
-                <ul className="mt-2 flex flex-col gap-2">
-                  {room.players
-                    .slice()
-                    .sort((a, b) => b.score - a.score)
-                    .map((p) => (
-                      <li
-                        key={p.playerId}
-                        className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 ${
-                          p.playerId === playerId
-                            ? "bg-emerald-100 dark:bg-emerald-900/30"
-                            : "bg-zinc-100 dark:bg-zinc-800"
-                        }`}
-                      >
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                          {p.name}
-                          {p.playerId === room.creatorId ? " (host)" : ""}
-                        </span>
-                        <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                          {p.score} pts
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-
-              {/* Winner */}
-              {room.phase === "finished" && (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
-                  <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                    Game over
-                  </h2>
-                  <p className="mt-2 text-zinc-700 dark:text-zinc-300">
-                    Winner:{" "}
-                    <strong className="text-emerald-700 dark:text-emerald-400">
-                      {room.players.reduce((best, p) =>
-                        p.score > (best?.score ?? -1) ? p : best
-                      )?.name ?? "—"}
-                    </strong>{" "}
-                    with the most points.
-                  </p>
-                  <Link
-                    href="/standings-draft"
-                    className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
-                  >
-                    Leave room
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Table — right column on xl */}
-            <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 xl:min-w-0">
-              <table className="w-full min-w-[600px] text-left text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-200 dark:border-zinc-700">
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">#</th>
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">Team</th>
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">P</th>
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">GD</th>
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">W-D-L</th>
-                    <th className="p-2 font-medium text-zinc-700 dark:text-zinc-300">Form</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {room.standings.map((row) => {
-                    const revealed = room.revealedRanks.includes(row.rank);
-                    return (
-                      <StandingTableRow
-                        key={row.rank}
-                        row={row}
-                        revealed={revealed}
-                      />
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
+            </>
+          )}
       </div>
     </main>
   );
@@ -848,7 +966,9 @@ const StandingTableRow = ({
 
   return (
     <tr className="border-b border-zinc-100 dark:border-zinc-800">
-      <td className="p-2 font-medium text-zinc-900 dark:text-zinc-100">{rank}</td>
+      <td className="p-2 font-medium text-zinc-900 dark:text-zinc-100">
+        {rank}
+      </td>
       <td className="p-2">
         {revealed ? (
           <span className="flex items-center gap-2 font-medium text-zinc-900 dark:text-zinc-100">
