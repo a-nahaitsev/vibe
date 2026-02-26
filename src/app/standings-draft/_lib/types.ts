@@ -68,5 +68,7 @@ export interface StandingsDraftRoom {
   turnStartedAt: number | null;
   /** Server timestamp (ms) when the current turn ends (turnStartedAt + timerSeconds*1000). */
   turnEndsAt: number | null;
+  /** For Badge Hint: which logo we're showing this turn (cleared when turn advances). Never sent to client. */
+  badgeHintThisTurn?: { playerId: string; logoUrl: string };
   createdAt: number;
 }

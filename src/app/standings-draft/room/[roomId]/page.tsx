@@ -49,8 +49,31 @@ export default function StandingsDraftRoomPage() {
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
   const [useBadgeHintForThisTurn, setUseBadgeHintForThisTurn] = useState(false);
-  const [badgeHintLogoUrl, setBadgeHintLogoUrl] = useState<string | null>(null);
+  const [badgeHintImageUrl, setBadgeHintImageUrl] = useState<string | null>(null);
+  const [badgeHintLoading, setBadgeHintLoading] = useState(false);
   const guessInputRef = useRef<HTMLInputElement>(null);
+
+  // Revoke blob URL when cleared or replaced to avoid leaks
+  useEffect(() => {
+    return () => {
+      if (badgeHintImageUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(badgeHintImageUrl);
+      }
+    };
+  }, [badgeHintImageUrl]);
+
+  // Clear badge hint image when turn advances (no longer our turn)
+  const isMyTurnRef = useRef(false);
+  useEffect(() => {
+    const myTurn = room?.players[room?.currentPlayerIndex ?? 0]?.playerId === playerId;
+    if (isMyTurnRef.current && !myTurn && badgeHintImageUrl) {
+      if (badgeHintImageUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(badgeHintImageUrl);
+      }
+      setBadgeHintImageUrl(null);
+    }
+    isMyTurnRef.current = !!myTurn;
+  }, [room?.currentPlayerIndex, room?.players, playerId, badgeHintImageUrl]);
 
   const fetchRoom = useCallback(async () => {
     if (!roomId) return;
@@ -317,7 +340,10 @@ export default function StandingsDraftRoomPage() {
       }
       setUseJokerForThisTurn(false);
       setUseBadgeHintForThisTurn(false);
-      setBadgeHintLogoUrl(null);
+      if (badgeHintImageUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(badgeHintImageUrl);
+      }
+      setBadgeHintImageUrl(null);
       await fetchRoom();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to pick");
@@ -639,7 +665,10 @@ export default function StandingsDraftRoomPage() {
                             </>
                           )}
                           {room.lastPick.jokerUsed && " (Joker)"}
-                          {room.lastPick.badgeHintUsed && " (Badge Hint)"}
+                          {room.lastPick.badgeHintUsed &&
+                            (room.lastPick.correct
+                              ? " (Badge Hint — hint helped)"
+                              : " (Badge Hint — hint didn't help)")}
                           {" — "}
                           {room.lastPick.correct ? (
                             <>
@@ -703,7 +732,10 @@ export default function StandingsDraftRoomPage() {
                                 setUseJokerForThisTurn(checked);
                                 if (checked) {
                                   setUseBadgeHintForThisTurn(false);
-                                  setBadgeHintLogoUrl(null);
+                                  if (badgeHintImageUrl?.startsWith("blob:")) {
+                                    URL.revokeObjectURL(badgeHintImageUrl);
+                                  }
+                                  setBadgeHintImageUrl(null);
                                 }
                               }}
                               disabled={useBadgeHintForThisTurn}
@@ -743,7 +775,10 @@ export default function StandingsDraftRoomPage() {
                                   setUseBadgeHintForThisTurn(checked);
                                   if (checked) {
                                     setUseJokerForThisTurn(false);
-                                    setBadgeHintLogoUrl(null);
+                                    if (badgeHintImageUrl?.startsWith("blob:")) {
+                                      URL.revokeObjectURL(badgeHintImageUrl);
+                                    }
+                                    setBadgeHintImageUrl(null);
                                   }
                                 }}
                                 disabled={useJokerForThisTurn}
@@ -755,34 +790,35 @@ export default function StandingsDraftRoomPage() {
                               <>
                                 <button
                                   type="button"
-                                  disabled={badgeHintLogoUrl !== null}
-                                  onClick={() => {
-                                    const unrevealed = room.standings.filter(
-                                      (s) => !room.revealedRanks.includes(s.rank)
-                                    );
-                                    if (unrevealed.length === 0) return;
-                                    const randomRow =
-                                      unrevealed[
-                                        Math.floor(Math.random() * unrevealed.length)
-                                      ];
-                                    setBadgeHintLogoUrl(randomRow?.team.logo ?? null);
+                                  disabled={badgeHintImageUrl !== null || badgeHintLoading}
+                                  onClick={async () => {
+                                    if (!roomId || !playerId) return;
+                                    setBadgeHintLoading(true);
+                                    try {
+                                      const res = await fetch(
+                                        `/api/standings-draft/room/${roomId}/badge-hint?playerId=${encodeURIComponent(playerId)}`
+                                      );
+                                      if (!res.ok) return;
+                                      const blob = await res.blob();
+                                      if (badgeHintImageUrl?.startsWith("blob:")) {
+                                        URL.revokeObjectURL(badgeHintImageUrl);
+                                      }
+                                      setBadgeHintImageUrl(URL.createObjectURL(blob));
+                                    } finally {
+                                      setBadgeHintLoading(false);
+                                    }
                                   }}
                                   className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
                                 >
-                                  Show badge
+                                  {badgeHintLoading ? "Loading…" : "Show badge"}
                                 </button>
-                                {badgeHintLogoUrl && (
+                                {badgeHintImageUrl && (
                                   <img
-                                    src={badgeHintLogoUrl}
+                                    src={badgeHintImageUrl}
                                     alt="Blurred club badge hint"
-                                    width={60}
-                                    height={60}
-                                    className="h-[60px] w-[60px] select-none object-contain"
-                                    style={{
-                                      filter:
-                                        "blur(4px) contrast(0.85) brightness(0.95)",
-                                      imageRendering: "pixelated",
-                                    }}
+                                    width={100}
+                                    height={100}
+                                    className="h-[100px] w-[100px] select-none object-contain"
                                     draggable={false}
                                   />
                                 )}

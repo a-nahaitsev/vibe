@@ -10,5 +10,6 @@ export async function GET(
   if (!room) {
     return NextResponse.json({ error: "Room not found" }, { status: 404 });
   }
-  return NextResponse.json(room);
+  const { badgeHintThisTurn: _omit, ...roomForClient } = room;
+  return NextResponse.json(roomForClient);
 }

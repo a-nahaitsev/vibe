@@ -32,6 +32,7 @@ function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
   };
   room.currentPlayerIndex =
     (room.currentPlayerIndex + 1) % room.players.length;
+  delete room.badgeHintThisTurn;
   const now = Date.now();
   room.turnStartedAt = now;
   room.turnEndsAt = room.timerSeconds
@@ -229,6 +230,7 @@ export async function pickByTeamName(
   const alreadyRevealed = row && room.revealedRanks.includes(row.rank);
 
   const advanceToNextTurn = () => {
+    delete room.badgeHintThisTurn;
     const now = Date.now();
     room.turnStartedAt = now;
     room.turnEndsAt =
@@ -324,4 +326,50 @@ export async function pickByTeamName(
   advanceToNextTurn();
   await storageSet(room);
   return { ok: true, correct: true, points };
+}
+
+/** Get or set the badge-hint logo URL for the current turn. Only the current player can request; server picks a random unrevealed team and returns its logo URL (for server-side blur). */
+export async function getOrSetBadgeHintLogo(
+  roomId: string,
+  playerId: string
+): Promise<{ ok: boolean; logoUrl?: string; error?: string }> {
+  const room = await storageGet(roomId);
+  if (!room) {
+    return { ok: false, error: "Room not found" };
+  }
+  const mutated = processTimeoutIfNeeded(room);
+  if (mutated) {
+    await storageSet(room);
+  }
+  if (room.phase !== "playing") {
+    return { ok: false, error: "Game not in play" };
+  }
+  const currentPlayer = room.players[room.currentPlayerIndex];
+  if (!currentPlayer || currentPlayer.playerId !== playerId) {
+    return { ok: false, error: "Not your turn" };
+  }
+  if (currentPlayer.usedBadgeHint) {
+    return { ok: false, error: "Badge Hint already used this game" };
+  }
+  const unrevealed = room.standings.filter(
+    (s) => !room.revealedRanks.includes(s.rank)
+  );
+  if (unrevealed.length === 0) {
+    return { ok: false, error: "No unrevealed teams" };
+  }
+  if (
+    room.badgeHintThisTurn &&
+    room.badgeHintThisTurn.playerId === playerId
+  ) {
+    return { ok: true, logoUrl: room.badgeHintThisTurn.logoUrl };
+  }
+  const randomRow =
+    unrevealed[Math.floor(Math.random() * unrevealed.length)];
+  const logoUrl = randomRow?.team.logo ?? "";
+  if (!logoUrl) {
+    return { ok: false, error: "No logo URL" };
+  }
+  room.badgeHintThisTurn = { playerId, logoUrl };
+  await storageSet(room);
+  return { ok: true, logoUrl };
 }
