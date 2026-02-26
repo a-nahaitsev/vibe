@@ -46,8 +46,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setThemeState(getStoredTheme());
-    setMounted(true);
+    const id = setTimeout(() => {
+      setThemeState(getStoredTheme());
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   const effectiveTheme = theme === "system" && mounted
