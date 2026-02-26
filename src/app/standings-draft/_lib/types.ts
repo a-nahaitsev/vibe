@@ -21,6 +21,10 @@ export interface StandingsDraftPlayer {
   usedJoker?: boolean;
   /** True if the player has used their Badge Hint this game. */
   usedBadgeHint?: boolean;
+  /** Current consecutive correct guesses this game (resets on wrong). */
+  correctStreak?: number;
+  /** Streak milestones achieved this game (3 → +5, 5 → +10, 7 → +15). */
+  streakMilestones?: number[];
 }
 
 export type StandingsDraftPhase = "lobby" | "playing" | "finished";
@@ -55,6 +59,8 @@ export interface StandingsDraftRoom {
     jokerUsed?: boolean;
     /** True when the pick was made with Badge Hint. */
     badgeHintUsed?: boolean;
+    /** Extra points from correct-streak milestone this pick (3→5, 5→10, 7→15). */
+    streakBonus?: number;
   } | null;
   /** Timer per turn in seconds; null = no timer. */
   timerSeconds: number | null;

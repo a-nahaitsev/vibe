@@ -658,6 +658,10 @@ export default function StandingsDraftRoomPage() {
                                 : ""}
                               {room.lastPick.points >= 0 ? "+" : ""}
                               {room.lastPick.points} pts
+                              {room.lastPick.streakBonus != null &&
+                                room.lastPick.streakBonus > 0 && (
+                                  <> (Correct streak +{room.lastPick.streakBonus} pts)</>
+                                )}
                             </>
                           ) : (
                             <>wrong, {room.lastPick.points} pts</>
@@ -681,7 +685,7 @@ export default function StandingsDraftRoomPage() {
                           Triple Captain (Joker)
                         </span>
                         <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                          Once per game. Right: 3× points. Wrong: −10 pts.
+                          Once per game. Right: 2× points. Wrong: −10 pts.
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -771,9 +775,9 @@ export default function StandingsDraftRoomPage() {
                                   <img
                                     src={badgeHintLogoUrl}
                                     alt="Blurred club badge hint"
-                                    width={24}
-                                    height={24}
-                                    className="h-6 w-6 select-none object-contain"
+                                    width={60}
+                                    height={60}
+                                    className="h-[60px] w-[60px] select-none object-contain"
                                     style={{
                                       filter:
                                         "blur(4px) contrast(0.85) brightness(0.95)",
@@ -790,6 +794,37 @@ export default function StandingsDraftRoomPage() {
                             Available
                           </span>
                         )}
+                      </div>
+                    </div>
+                    <div className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                          <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            Correct streak
+                          </span>
+                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                            3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a row: +15 pts
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5 text-sm">
+                          {me != null && (
+                            <span className="text-zinc-600 dark:text-zinc-400">
+                              Current: <strong className="text-zinc-800 dark:text-zinc-200">{me.correctStreak ?? 0}</strong> in a row
+                            </span>
+                          )}
+                          <div className="flex items-center gap-3">
+                            {[3, 5, 7].map((m) => (
+                              <span key={m} className="flex items-center gap-1">
+                                <span className="text-zinc-600 dark:text-zinc-400">{m}→+{m === 3 ? 5 : m === 5 ? 10 : 15}</span>
+                                {me?.streakMilestones?.includes(m) && (
+                                  <svg className="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

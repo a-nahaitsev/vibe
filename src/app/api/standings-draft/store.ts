@@ -141,6 +141,8 @@ export async function startGame(
     p.score = 0;
     p.usedJoker = false;
     p.usedBadgeHint = false;
+    p.correctStreak = 0;
+    p.streakMilestones = [];
   });
   room.currentPlayerIndex = Math.floor(Math.random() * room.players.length);
   const now = Date.now();
@@ -161,6 +163,12 @@ function marginPoints(actualRank: number, guessedRank: number): number {
 }
 
 const JOKER_WRONG_PENALTY = 10;
+
+const STREAK_BONUSES: [number, number][] = [
+  [3, 5],
+  [5, 10],
+  [7, 15],
+];
 
 export async function pickByTeamName(
   roomId: string,
@@ -241,6 +249,7 @@ export async function pickByTeamName(
   }
 
   if (!row) {
+    currentPlayer.correctStreak = 0;
     const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
     currentPlayer.score += points;
     room.lastPick = {
@@ -258,6 +267,7 @@ export async function pickByTeamName(
   }
 
   if (alreadyRevealed) {
+    currentPlayer.correctStreak = 0;
     const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
     currentPlayer.score += points;
     room.lastPick = {
@@ -276,8 +286,20 @@ export async function pickByTeamName(
 
   let points = marginPoints(row.rank, guessedPlace);
   if (applyJoker) {
-    points = points * 3;
+    points = points * 2;
   }
+  const streak = (currentPlayer.correctStreak ?? 0) + 1;
+  currentPlayer.correctStreak = streak;
+  const milestones = currentPlayer.streakMilestones ?? [];
+  let streakBonusThisPick = 0;
+  for (const [milestone, bonus] of STREAK_BONUSES) {
+    if (streak >= milestone && !milestones.includes(milestone)) {
+      points += bonus;
+      streakBonusThisPick += bonus;
+      milestones.push(milestone);
+    }
+  }
+  currentPlayer.streakMilestones = milestones;
   /* Badge Hint does not multiply points — only Joker does */
   room.revealedRanks.push(row.rank);
   currentPlayer.score += points;
@@ -290,6 +312,7 @@ export async function pickByTeamName(
     points,
     jokerUsed: applyJoker,
     badgeHintUsed: applyBadgeHint,
+    ...(streakBonusThisPick > 0 && { streakBonus: streakBonusThisPick }),
   };
 
   if (room.revealedRanks.length >= totalTeams) {
