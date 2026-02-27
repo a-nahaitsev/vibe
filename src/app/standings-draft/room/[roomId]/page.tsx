@@ -15,12 +15,14 @@ import {
   FcLikePlaceholder,
   FcCheckmark,
   FcCancel,
+  FcInfo,
 } from "react-icons/fc";
 import {
   getCachedStandings,
   setCachedStandings,
 } from "../../_lib/standings-cache";
 import { saveRoomSession } from "../../_lib/room-session";
+import { InfoTooltip } from "../../_lib/InfoTooltip";
 import { useRouter } from "next/navigation";
 
 const POLL_INTERVAL_MS = 2000;
@@ -629,7 +631,7 @@ export default function StandingsDraftRoomPage() {
               <div className="flex flex-col gap-6 xl:min-w-0">
                 <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
                   <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                    {room.leagueName} {room.season}
+                    {room.leagueName} {room.season}/{room.season + 1}
                   </h2>
                   <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                     {room.revealedRanks.length} / {room.standings.length} teams
@@ -684,13 +686,15 @@ export default function StandingsDraftRoomPage() {
                     </h3>
                     <div className="mt-3 space-y-3">
                       <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
-                        <div>
+                        <div className="flex items-center gap-1.5">
                           <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                            Triple Captain (Joker)
+                            Double Joker
                           </span>
-                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                            Once per game. Right: 2× points. Wrong: −10 pts.
-                          </p>
+                          <InfoTooltip
+                            trigger={<FcInfo className="h-4 w-4" />}
+                            content="Once per game. Right: 2× points. Wrong: −10 pts."
+                            ariaLabel="Double Joker description"
+                          />
                         </div>
                         <div className="flex items-center gap-2">
                           {me?.usedJoker ? (
@@ -728,14 +732,21 @@ export default function StandingsDraftRoomPage() {
                         </div>
                       </div>
                       <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
-                        <div>
+                        <div className="flex items-center gap-1.5">
                           <span className="font-medium text-zinc-800 dark:text-zinc-200">
                             Badge Hint
                           </span>
-                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                            Once per game. See a blurred club logo for one
-                            position. Can&apos;t use with Joker same turn.
-                          </p>
+                          <InfoTooltip
+                            trigger={<FcInfo className="h-4 w-4" />}
+                            content={
+                              <>
+                                Once per game. See a blurred random club logo
+                                for one position. Can&apos;t use with Double
+                                Joker same turn.
+                              </>
+                            }
+                            ariaLabel="Badge Hint description"
+                          />
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
                           {me?.usedBadgeHint ? (
@@ -830,14 +841,15 @@ export default function StandingsDraftRoomPage() {
                       </div>
                       <div className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                         <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
+                          <div className="flex items-center gap-1.5">
                             <span className="font-medium text-zinc-800 dark:text-zinc-200">
                               Correct streak
                             </span>
-                            <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                              3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a
-                              row: +15 pts
-                            </p>
+                            <InfoTooltip
+                              trigger={<FcInfo className="h-4 w-4" />}
+                              content="3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a row: +15 pts"
+                              ariaLabel="Correct streak description"
+                            />
                           </div>
                           <div className="flex flex-col items-end gap-1.5 text-sm">
                             {me != null && (
@@ -849,32 +861,6 @@ export default function StandingsDraftRoomPage() {
                                 in a row
                               </span>
                             )}
-                            <div className="flex items-center gap-3">
-                              {[3, 5, 7].map((m) => (
-                                <span
-                                  key={m}
-                                  className="flex items-center gap-1"
-                                >
-                                  <span className="text-zinc-600 dark:text-zinc-400">
-                                    {m}→+{m === 3 ? 5 : m === 5 ? 10 : 15}
-                                  </span>
-                                  {me?.streakMilestones?.includes(m) && (
-                                    <svg
-                                      className="h-4 w-4 text-emerald-600 dark:text-emerald-400"
-                                      fill="currentColor"
-                                      viewBox="0 0 20 20"
-                                      aria-hidden
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clipRule="evenodd"
-                                      />
-                                    </svg>
-                                  )}
-                                </span>
-                              ))}
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -890,39 +876,23 @@ export default function StandingsDraftRoomPage() {
                       "animate-your-turn-pulse"
                     }
                   >
-                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                      Guess a team and its position
-                    </label>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-                      Points = rank − |rank − your guess| (min 1 for correct
-                      team).
-                      <span
-                        className="inline-flex cursor-help align-middle text-zinc-400 dark:text-zinc-500"
-                        title="E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 1 pt. Wrong team = 0."
-                        aria-label="Scoring example"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="h-4 w-4"
-                          aria-hidden
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                        Guess a team and its position in table
+                      </label>
+                      <InfoTooltip
+                        trigger={<FcInfo className="h-4 w-4" />}
+                        content="Points = rank − |rank − your guess| (min 1 for correct team). E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 1 pt. Wrong team = 0."
+                        ariaLabel="Scoring example"
+                      />
+                    </div>
                     <div className="mt-3 flex flex-row flex-wrap items-end gap-3">
                       <div className="w-fit shrink-0">
                         <label
                           htmlFor="guess-place"
                           className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
                         >
-                          Position (place) in table
+                          Position (place)
                         </label>
                         <select
                           id="guess-place"
@@ -1030,13 +1000,20 @@ export default function StandingsDraftRoomPage() {
 
                 {/* Scores — column layout, more points = higher position */}
                 <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-                  <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Scores (closer position guess = more points)
-                    {room.missLimit != null && (
-                      <span className="ml-1 font-normal text-zinc-500 dark:text-zinc-400">
-                        · {room.missLimit} misses = out
-                      </span>
-                    )}
+                  <h3 className="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    Scores
+                    <InfoTooltip
+                      trigger={<FcInfo className="h-4 w-4" />}
+                      content={
+                        <>
+                          Closer position guess = more points
+                          {room.missLimit != null && (
+                            <> · {room.missLimit} misses = out</>
+                          )}
+                        </>
+                      }
+                      ariaLabel="Scoring and miss limit"
+                    />
                   </h3>
                   <ul className="mt-2 flex flex-col gap-2">
                     {room.players
@@ -1209,7 +1186,7 @@ function PickLineContent({
           {ord(pick.guessedRank)}
         </>
       )}
-      {pick.jokerUsed && " (Joker)"}
+      {pick.jokerUsed && " (Double Joker)"}
       {pick.badgeHintUsed &&
         (pick.correct
           ? " (Badge Hint — hint helped)"
