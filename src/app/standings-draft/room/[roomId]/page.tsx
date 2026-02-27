@@ -849,7 +849,9 @@ export default function StandingsDraftRoomPage() {
                             {me != null && (
                               <StreakBadge
                                 streak={me.correctStreak ?? 0}
-                                text={`${me.correctStreak ?? 0} in a row streak`}
+                                text={`${
+                                  me.correctStreak ?? 0
+                                } in a row streak`}
                               />
                             )}
                           </div>
