@@ -23,6 +23,7 @@ import {
 } from "../../_lib/standings-cache";
 import { saveRoomSession } from "../../_lib/room-session";
 import { InfoTooltip } from "../../_lib/InfoTooltip";
+import { useSyncedTimer } from "../../_lib/useSyncedTimer";
 import { Timer } from "@/components/quiz/Timer";
 import { StreakBadge } from "@/components/quiz/StreakBadge";
 import { useRouter } from "next/navigation";
@@ -57,11 +58,8 @@ export default function StandingsDraftRoomPage() {
   const [joinName, setJoinName] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
-  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(
-    null
-  );
+  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(null);
   const [startMissLimit, setStartMissLimit] = useState<3 | 5 | null>(null);
-  const [now, setNow] = useState(() => Date.now());
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
   const [useBadgeHintForThisTurn, setUseBadgeHintForThisTurn] = useState(false);
@@ -69,6 +67,8 @@ export default function StandingsDraftRoomPage() {
     null
   );
   const [badgeHintLoading, setBadgeHintLoading] = useState(false);
+  /** Time left in seconds; derived from room.turnEndsAt (target timestamp) in a local interval. */
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
   // Revoke blob URL when cleared or replaced to avoid leaks
@@ -144,12 +144,27 @@ export default function StandingsDraftRoomPage() {
     return () => clearInterval(t);
   }, [fetchRoom]);
 
+  // Target timestamp: compute time left from turnEndsAt locally so the countdown is smooth and immune to poll timing
   useEffect(() => {
-    if (room?.phase !== "playing" || typeof room?.turnEndsAt !== "number") {
+    const endTime = room?.turnEndsAt;
+    if (room?.phase !== "playing" || typeof endTime !== "number") {
+      setTimeLeft(null);
       return;
     }
-    const tick = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(tick);
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const update = () => {
+      const diff = Math.max(
+        0,
+        Math.floor((endTime - Date.now()) / 1000)
+      );
+      setTimeLeft(diff);
+      if (diff === 0 && intervalId != null) clearInterval(intervalId);
+    };
+    update();
+    intervalId = setInterval(update, 100);
+    return () => {
+      if (intervalId != null) clearInterval(intervalId);
+    };
   }, [room?.phase, room?.turnEndsAt]);
 
   const isCreator = room?.creatorId === playerId;
@@ -262,12 +277,9 @@ export default function StandingsDraftRoomPage() {
   const showSuggestions = isMyTurn && suggestionsOpen && suggestions.length > 0;
   const remainingSeconds =
     room?.phase === "playing" &&
-    typeof room.turnEndsAt === "number" &&
-    typeof room.timerSeconds === "number"
-      ? Math.min(
-          room.timerSeconds,
-          Math.max(0, Math.ceil((room.turnEndsAt - now) / 1000))
-        )
+    room?.timerSeconds != null &&
+    room?.turnEndsAt != null
+      ? timeLeft
       : null;
   const highlightedIndex = Math.min(
     suggestionHighlight,

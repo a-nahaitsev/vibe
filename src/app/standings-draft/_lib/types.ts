@@ -74,6 +74,10 @@ export interface StandingsDraftRoom {
   turnStartedAt: number | null;
   /** Server timestamp (ms) when the current turn ends (turnStartedAt + timerSeconds*1000). */
   turnEndsAt: number | null;
+  /** Remaining seconds in the current turn, computed on the server for clients; null when no timer. */
+  remainingSeconds?: number | null;
+  /** Server time (ms) at last response; used with turnEndsAt for clock-skew correction. Only in API response. */
+  serverNow?: number;
   /** For Badge Hint: which logo we're showing this turn (cleared when turn advances). Never sent to client. */
   badgeHintThisTurn?: { playerId: string; logoUrl: string };
   createdAt: number;

@@ -11,5 +11,9 @@ export async function GET(
     return NextResponse.json({ error: "Room not found" }, { status: 404 });
   }
   const { badgeHintThisTurn: _omit, ...roomForClient } = room;
-  return NextResponse.json(roomForClient);
+  // Client uses turnEndsAt + serverNow for synced countdown (handles clock skew).
+  return NextResponse.json({
+    ...roomForClient,
+    serverNow: Date.now(),
+  });
 }
