@@ -23,13 +23,49 @@ import {
 } from "../../_lib/standings-cache";
 import { saveRoomSession } from "../../_lib/room-session";
 import { InfoTooltip } from "../../_lib/InfoTooltip";
-import { useSyncedTimer } from "../../_lib/useSyncedTimer";
 import { Timer } from "@/components/quiz/Timer";
 import { StreakBadge } from "@/components/quiz/StreakBadge";
 import { useRouter } from "next/navigation";
 
 const POLL_INTERVAL_MS = 2000;
 const SEASONS = [2022, 2023, 2024] as const;
+
+/** Synced timer: uses serverNow to correct for client clock skew. Returns seconds left, or null when inactive. */
+function useSyncedTimer(
+  serverNow: number | null | undefined,
+  endTime: number | null | undefined
+): number | null {
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof serverNow !== "number" || typeof endTime !== "number") {
+      return;
+    }
+    // Drift: how far off the local clock is (server time - client time at receive moment).
+    const drift = serverNow - Date.now();
+
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const update = () => {
+      const correctedNow = Date.now() + drift;
+      const diff = Math.max(0, Math.floor((endTime - correctedNow) / 1000));
+      setTimeLeft(diff);
+      if (diff === 0 && intervalId != null) clearInterval(intervalId);
+    };
+    // Schedule first update asynchronously to avoid setState-in-effect lint
+    const t = setTimeout(update, 0);
+    intervalId = setInterval(update, 100);
+    return () => {
+      clearTimeout(t);
+      if (intervalId != null) clearInterval(intervalId);
+    };
+  }, [serverNow, endTime]);
+
+  // When inputs are invalid, return null without touching state (avoids setState-in-effect)
+  if (typeof serverNow !== "number" || typeof endTime !== "number") {
+    return null;
+  }
+  return timeLeft;
+}
 const MIN_SUGGESTION_CHARS = 2;
 const MAX_SUGGESTIONS = 10;
 
@@ -58,7 +94,9 @@ export default function StandingsDraftRoomPage() {
   const [joinName, setJoinName] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
-  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(null);
+  const [startTimerSeconds, setStartTimerSeconds] = useState<number | null>(
+    null
+  );
   const [startMissLimit, setStartMissLimit] = useState<3 | 5 | null>(null);
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
@@ -67,8 +105,6 @@ export default function StandingsDraftRoomPage() {
     null
   );
   const [badgeHintLoading, setBadgeHintLoading] = useState(false);
-  /** Time left in seconds; derived from room.turnEndsAt (target timestamp) in a local interval. */
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
   // Revoke blob URL when cleared or replaced to avoid leaks
@@ -144,28 +180,7 @@ export default function StandingsDraftRoomPage() {
     return () => clearInterval(t);
   }, [fetchRoom]);
 
-  // Target timestamp: compute time left from turnEndsAt locally so the countdown is smooth and immune to poll timing
-  useEffect(() => {
-    const endTime = room?.turnEndsAt;
-    if (room?.phase !== "playing" || typeof endTime !== "number") {
-      setTimeLeft(null);
-      return;
-    }
-    let intervalId: ReturnType<typeof setInterval> | null = null;
-    const update = () => {
-      const diff = Math.max(
-        0,
-        Math.floor((endTime - Date.now()) / 1000)
-      );
-      setTimeLeft(diff);
-      if (diff === 0 && intervalId != null) clearInterval(intervalId);
-    };
-    update();
-    intervalId = setInterval(update, 100);
-    return () => {
-      if (intervalId != null) clearInterval(intervalId);
-    };
-  }, [room?.phase, room?.turnEndsAt]);
+  const timeLeft = useSyncedTimer(room?.serverNow, room?.turnEndsAt);
 
   const isCreator = room?.creatorId === playerId;
   const me = room?.players.find((p) => p.playerId === playerId);
@@ -279,7 +294,7 @@ export default function StandingsDraftRoomPage() {
     room?.phase === "playing" &&
     room?.timerSeconds != null &&
     room?.turnEndsAt != null
-      ? timeLeft
+      ? timeLeft ?? null
       : null;
   const highlightedIndex = Math.min(
     suggestionHighlight,
@@ -1038,7 +1053,14 @@ export default function StandingsDraftRoomPage() {
                           >
                             <span className="flex flex-wrap items-center gap-1.5 font-medium text-zinc-900 dark:text-zinc-100">
                               {p.name}
-                              {p.playerId === room.creatorId ? " (host)" : ""}
+                              {p.playerId === room.creatorId ? (
+                                <span className="text-sm text-zinc-600 dark:text-zinc-400 leading-6">
+                                  {" "}
+                                  (host)
+                                </span>
+                              ) : (
+                                ""
+                              )}
                               {room.missLimit != null && (
                                 <span
                                   className="flex items-center gap-0.5"

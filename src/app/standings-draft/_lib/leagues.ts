@@ -5,6 +5,10 @@ export const LEAGUE_TO_COUNTRY: Record<number, string> = {
   61: "France",
   78: "Germany",
   135: "Italy",
+  333: "Ukraine",
+  94: "Portugal",
+  88: "Netherlands",
+  144: "Belgium",
 } as const;
 
 export const LEAGUES = [
@@ -13,6 +17,10 @@ export const LEAGUES = [
   { id: 61, name: "Ligue 1", country: "France", flag: "🇫🇷" },
   { id: 78, name: "Bundesliga", country: "Germany", flag: "🇩🇪" },
   { id: 135, name: "Serie A", country: "Italy", flag: "🇮🇹" },
+  { id: 333, name: "Premier League", country: "Ukraine", flag: "🇺🇦" },
+  { id: 94, name: "Liga Portugal", country: "Portugal", flag: "🇵🇹" },
+  { id: 88, name: "Eredivisie", country: "Netherlands", flag: "🇳🇱" },
+  { id: 144, name: "Pro League", country: "Belgium", flag: "🇧🇪" },
 ] as const;
 
 export const LEAGUE_IDS = LEAGUES.map((l) => l.id);

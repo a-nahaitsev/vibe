@@ -5,8 +5,13 @@ import Spain from "@/lib/Spain.json";
 import France from "@/lib/France.json";
 import Germany from "@/lib/Germany.json";
 import Italy from "@/lib/Italy.json";
+import Ukraine from "@/lib/Ukraine.json";
+import Portugal from "@/lib/Portugal.json";
+import Netherlands from "@/lib/Netherlands.json";
+import Belgium from "@/lib/Belgium.json";
 
 const COUNTRIES = new Set(Object.values(LEAGUE_TO_COUNTRY));
+const VALID_COUNTRIES = Array.from(COUNTRIES).sort().join(", ");
 
 type TeamResponse = { response: Array<{ team: { name: string } }> };
 
@@ -16,6 +21,10 @@ const DATA: Record<string, TeamResponse> = {
   France: France as unknown as TeamResponse,
   Germany: Germany as unknown as TeamResponse,
   Italy: Italy as unknown as TeamResponse,
+  Ukraine: Ukraine as unknown as TeamResponse,
+  Portugal: Portugal as unknown as TeamResponse,
+  Netherlands: Netherlands as unknown as TeamResponse,
+  Belgium: Belgium as unknown as TeamResponse,
 };
 
 export async function GET(request: Request) {
@@ -23,7 +32,7 @@ export async function GET(request: Request) {
   const country = searchParams.get("country") ?? "";
   if (!COUNTRIES.has(country)) {
     return NextResponse.json(
-      { error: "country must be England, Spain, France, Germany, or Italy" },
+      { error: `country must be one of: ${VALID_COUNTRIES}` },
       { status: 400 }
     );
   }

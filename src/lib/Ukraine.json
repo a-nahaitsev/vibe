@@ -1,0 +1,4414 @@
+{
+  "get": "teams",
+  "parameters": {
+    "country": "Ukraine"
+  },
+  "errors": [],
+  "results": 220,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response": [
+    {
+      "team": {
+        "id": 550,
+        "name": "Shakhtar Donetsk",
+        "code": "SHA",
+        "country": "Ukraine",
+        "founded": 1936,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/550.png"
+      },
+      "venue": {
+        "id": 20114,
+        "name": "NSK Olimpiiskyi",
+        "address": "vul. Velyka Vasylkivska 55",
+        "city": "Kiev",
+        "capacity": 70050,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20114.png"
+      }
+    },
+    {
+      "team": {
+        "id": 572,
+        "name": "Dynamo Kyiv",
+        "code": "DIN",
+        "country": "Ukraine",
+        "founded": 1927,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/572.png"
+      },
+      "venue": {
+        "id": 20113,
+        "name": "Stadion Dynamo im. Valeriy Lobanovskyi",
+        "address": "vul. Hrushevskoho 3",
+        "city": "Kiev",
+        "capacity": 16873,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20113.png"
+      }
+    },
+    {
+      "team": {
+        "id": 599,
+        "name": "Zorya Luhansk",
+        "code": "ZOR",
+        "country": "Ukraine",
+        "founded": 1923,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/599.png"
+      },
+      "venue": {
+        "id": 22335,
+        "name": "Stadion Dynamo im. Valeriy Lobanovskyi",
+        "address": "vul. Hrushevskoho 3",
+        "city": "Kyiv",
+        "capacity": 16873,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22335.png"
+      }
+    },
+    {
+      "team": {
+        "id": 639,
+        "name": "Olimpik Donetsk",
+        "code": "OLI",
+        "country": "Ukraine",
+        "founded": 2001,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/639.png"
+      },
+      "venue": {
+        "id": 2416,
+        "name": "Stadion Dynamo im. Valery Lobanovsky",
+        "address": "vul. Hrushevskoho 3",
+        "city": "Kiev",
+        "capacity": 16873,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2416.png"
+      }
+    },
+    {
+      "team": {
+        "id": 772,
+        "name": "Ukraine",
+        "code": "UKR",
+        "country": "Ukraine",
+        "founded": 1991,
+        "national": true,
+        "logo": "https://media.api-sports.io/football/teams/772.png"
+      },
+      "venue": {
+        "id": 3989,
+        "name": "Estadio Enrique Roca de Murcia",
+        "address": "Ronda de Garay 14",
+        "city": "Murcia",
+        "capacity": 31179,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/3989.png"
+      }
+    },
+    {
+      "team": {
+        "id": 1121,
+        "name": "Vorskla Poltava",
+        "code": "VOR",
+        "country": "Ukraine",
+        "founded": 1955,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/1121.png"
+      },
+      "venue": {
+        "id": 20115,
+        "name": "Stadion Vorskla im. Oleksiya Butovskoho",
+        "address": "pl. Maydan Nezalezhnosti 16",
+        "city": "Poltava",
+        "capacity": 24795,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20115.png"
+      }
+    },
+    {
+      "team": {
+        "id": 2252,
+        "name": "FC Mariupol",
+        "code": "MAR",
+        "country": "Ukraine",
+        "founded": 1938,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/2252.png"
+      },
+      "venue": {
+        "id": 1594,
+        "name": "Stadion im. Volodymyra Boyka",
+        "address": "pr. Karpova 2",
+        "city": "Mariupol&apos;",
+        "capacity": 12680,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/1594.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3614,
+        "name": "Arsenal Kyiv",
+        "code": "ARS",
+        "country": "Ukraine",
+        "founded": 1934,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3614.png"
+      },
+      "venue": {
+        "id": 2417,
+        "name": "Stadion Kolos",
+        "address": "vul. Stadionna",
+        "city": "Boryspil&apos;",
+        "capacity": 5654,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2417.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3615,
+        "name": "Chornomorets",
+        "code": "ODE",
+        "country": "Ukraine",
+        "founded": 1936,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3615.png"
+      },
+      "venue": {
+        "id": 2418,
+        "name": "Stadion Chornomorets",
+        "address": "vul. Marazliivska",
+        "city": "Odesa",
+        "capacity": 34164,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2418.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3616,
+        "name": "Desna",
+        "code": "DES",
+        "country": "Ukraine",
+        "founded": 1960,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3616.png"
+      },
+      "venue": {
+        "id": 12044,
+        "name": "Olimpiysʹkyy Navchalʹno-Sportyvnyy Tsentr Chernihiv",
+        "address": "vul. Shevchenka 61",
+        "city": "Chernihiv",
+        "capacity": 14150,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12044.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3617,
+        "name": "Karpaty",
+        "code": "KAR",
+        "country": "Ukraine",
+        "founded": 1963,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3617.png"
+      },
+      "venue": {
+        "id": 20119,
+        "name": "Stadion Ukraina",
+        "address": "vul. Lipova aleya 5",
+        "city": "Lviv",
+        "capacity": 28051,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20119.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3618,
+        "name": "Lviv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2006,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3618.png"
+      },
+      "venue": {
+        "id": 2420,
+        "name": "Stadion Ukrajina",
+        "address": "Lipova Aleja 5",
+        "city": "L&apos;viv",
+        "capacity": 28051,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2420.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3619,
+        "name": "Oleksandria",
+        "code": "OLE",
+        "country": "Ukraine",
+        "founded": 1991,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3619.png"
+      },
+      "venue": {
+        "id": 20747,
+        "name": "CSC Nika",
+        "address": "vul. Shevchenka 58-6",
+        "city": "Aleksandriya",
+        "capacity": 7000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20747.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3620,
+        "name": "Ahrobiznes Volochysk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3620.png"
+      },
+      "venue": {
+        "id": 20191,
+        "name": "Stadion Yunist",
+        "address": "vul. Lysenka 2",
+        "city": "Volochysk",
+        "capacity": 2700,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20191.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3621,
+        "name": "Kramatorsk",
+        "code": "KRA",
+        "country": "Ukraine",
+        "founded": 1955,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3621.png"
+      },
+      "venue": {
+        "id": 2424,
+        "name": "Stadion Prapor",
+        "address": null,
+        "city": "Kramatorsk",
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2424.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3622,
+        "name": "Balkany Zorya",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3622.png"
+      },
+      "venue": {
+        "id": 2425,
+        "name": "Stadion im. Boris Tropanets",
+        "address": null,
+        "city": "Zorya",
+        "capacity": 3100,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2425.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3623,
+        "name": "Dnipro-1",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2017,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3623.png"
+      },
+      "venue": {
+        "id": 20748,
+        "name": "Dnipro Arena",
+        "address": "vul. Khersonska 7",
+        "city": "Dnipro",
+        "capacity": 31003,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20748.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3624,
+        "name": "Hirnyk-Sport",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1989,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3624.png"
+      },
+      "venue": {
+        "id": 20192,
+        "name": "Stadion Yunist",
+        "address": "vul. Dobrovolskoho 4",
+        "city": "Horishni Plavni",
+        "capacity": 2500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20192.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3625,
+        "name": "Inhulets",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2013,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3625.png"
+      },
+      "venue": {
+        "id": 19774,
+        "name": "Stadion Inhulets",
+        "address": "vul. Zlagody, 11A",
+        "city": "Petrove",
+        "capacity": 1900,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/19774.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3626,
+        "name": "Kobra",
+        "code": "HEL",
+        "country": "Ukraine",
+        "founded": 2002,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3626.png"
+      },
+      "venue": {
+        "id": 2429,
+        "name": "Helios-Arena",
+        "address": "Prospekt Illycha 1-a / vul. Hertsena",
+        "city": "Kharkiv",
+        "capacity": 2057,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2429.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3627,
+        "name": "Kolos Kovalivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3627.png"
+      },
+      "venue": {
+        "id": 20120,
+        "name": "Stadion Kolos",
+        "address": "vul. Dachna",
+        "city": "Kovalivka",
+        "capacity": 5050,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20120.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3628,
+        "name": "Metalist 1925 Kharkiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2016,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3628.png"
+      },
+      "venue": {
+        "id": 20121,
+        "name": "Stadion Metalist",
+        "address": "vul. Plechanivska 65",
+        "city": "Kharkiv",
+        "capacity": 41307,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20121.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3629,
+        "name": "Mykolaiv",
+        "code": "MYK",
+        "country": "Ukraine",
+        "founded": 1920,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3629.png"
+      },
+      "venue": {
+        "id": 2431,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Sportyvna 23",
+        "city": "Mykolajiv",
+        "capacity": 25175,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2431.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3630,
+        "name": "Obolon'-Brovar",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2013,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3630.png"
+      },
+      "venue": {
+        "id": 22339,
+        "name": "Obolon Arena",
+        "address": "vul. Pivnichna 26",
+        "city": "Kyiv",
+        "capacity": 5103,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22339.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3631,
+        "name": "Prykarpattia",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1998,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3631.png"
+      },
+      "venue": {
+        "id": 20123,
+        "name": "Miskyi Tsentralnyi Stadion Rukh",
+        "address": "vul. Vyacheslav Chornovola 128",
+        "city": "Ivano-Frankivsk",
+        "capacity": 16000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20123.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3632,
+        "name": "Ruh Lviv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3632.png"
+      },
+      "venue": {
+        "id": 20124,
+        "name": "Arena Lviv",
+        "address": "vul. Stryiska 199",
+        "city": "Lviv",
+        "capacity": 34915,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20124.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3633,
+        "name": "Sumy",
+        "code": "SUM",
+        "country": "Ukraine",
+        "founded": 2008,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3633.png"
+      },
+      "venue": {
+        "id": 2434,
+        "name": "Stadion Yuvilejnyj",
+        "address": "vul. Haharina 9",
+        "city": "Sumy",
+        "capacity": 27800,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2434.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3634,
+        "name": "Volyn",
+        "code": "VOL",
+        "country": "Ukraine",
+        "founded": 1960,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3634.png"
+      },
+      "venue": {
+        "id": 2435,
+        "name": "Stadion Avanhard",
+        "address": "Prospekt Peremohi 7-A",
+        "city": "Luts&apos;k",
+        "capacity": 12080,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2435.png"
+      }
+    },
+    {
+      "team": {
+        "id": 3635,
+        "name": "Zirka",
+        "code": "ZIR",
+        "country": "Ukraine",
+        "founded": 1922,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/3635.png"
+      },
+      "venue": {
+        "id": 2436,
+        "name": "Stadion Zirka",
+        "address": "vul. Haharina 1-A",
+        "city": "Kropyvnytskyi",
+        "capacity": 14628,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2436.png"
+      }
+    },
+    {
+      "team": {
+        "id": 4656,
+        "name": "Cherkashchyna-Akademiya",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2014,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/4656.png"
+      },
+      "venue": {
+        "id": 3508,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Smilyans&apos;ka 78",
+        "city": "Cherkasy",
+        "capacity": 10321,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/3508.png"
+      }
+    },
+    {
+      "team": {
+        "id": 4657,
+        "name": "Kremin'",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1959,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/4657.png"
+      },
+      "venue": {
+        "id": 3509,
+        "name": "Kremin'-Arena im. Olega Babaeva",
+        "address": "vul. Chkalova 6-A",
+        "city": "Kremenchuk",
+        "capacity": 2200,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/3509.png"
+      }
+    },
+    {
+      "team": {
+        "id": 4658,
+        "name": "Minai",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2015,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/4658.png"
+      },
+      "venue": {
+        "id": 3510,
+        "name": "Stadion Mynai",
+        "address": "Ploshcha Narodna 78",
+        "city": "Mynai",
+        "capacity": 1312,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/3510.png"
+      }
+    },
+    {
+      "team": {
+        "id": 5627,
+        "name": "Metalurh Zaporizhya",
+        "code": "MET",
+        "country": "Ukraine",
+        "founded": 2009,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/5627.png"
+      },
+      "venue": {
+        "id": 1597,
+        "name": "Slavutych-Arena",
+        "address": "vul. Valeryia Lobanovskogo 21",
+        "city": "Zaporizhzhia",
+        "capacity": 11883,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/1597.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6483,
+        "name": "Chayka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6483.png"
+      },
+      "venue": {
+        "id": 20193,
+        "name": "Tsentralnyi stadion im. Mikhaila Brukvenka",
+        "address": "vul. Bohdana Khmelnytskoho",
+        "city": "Makariv",
+        "capacity": 3100,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20193.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6484,
+        "name": "Alians Lypova Dolyna",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6484.png"
+      },
+      "venue": {
+        "id": 2434,
+        "name": "Stadion Yuvilejnyj",
+        "address": "vul. Haharina 9",
+        "city": "Sumy",
+        "capacity": 27800,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2434.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6485,
+        "name": "Avanhard Bziv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6485.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 6486,
+        "name": "Bukovyna",
+        "code": "BUK",
+        "country": "Ukraine",
+        "founded": 1952,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6486.png"
+      },
+      "venue": {
+        "id": 4761,
+        "name": "Stadion Bukovyna",
+        "address": "vul. Olhy Huzar 1",
+        "city": "Chernivtsi",
+        "capacity": 12076,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4761.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6487,
+        "name": "Dinaz Vyshhorod",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1999,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6487.png"
+      },
+      "venue": {
+        "id": 12061,
+        "name": "Stadion Dinaz",
+        "address": "ul. Fastova",
+        "city": "Demydiv",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12061.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6488,
+        "name": "Enerhiya Nova Kakhovka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1952,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6488.png"
+      },
+      "venue": {
+        "id": 4762,
+        "name": "Stadion Enerhiya",
+        "address": null,
+        "city": "Nova Kakhovka",
+        "capacity": 4000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4762.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6489,
+        "name": "Kryvbas KR",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2001,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6489.png"
+      },
+      "venue": {
+        "id": 22336,
+        "name": "Stadion Hirnyk",
+        "address": "vul. Kolonkivska 1",
+        "city": "Kryvyi Rih",
+        "capacity": 3219,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22336.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6490,
+        "name": "Kalush",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1947,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6490.png"
+      },
+      "venue": {
+        "id": 4764,
+        "name": "Stadion Khimik",
+        "address": null,
+        "city": "Kalush",
+        "capacity": 4500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4764.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6491,
+        "name": "Krystal",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1961,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6491.png"
+      },
+      "venue": {
+        "id": 4765,
+        "name": "Stadion Krystal",
+        "address": "vul. Kirova",
+        "city": "Kherson",
+        "capacity": 11000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4765.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6492,
+        "name": "Nikopol",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2009,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6492.png"
+      },
+      "venue": {
+        "id": 4766,
+        "name": "Stadion Elektrometalurh-NFZ",
+        "address": "vul. Elektrometalurhiv",
+        "city": "Nikopol&apos;",
+        "capacity": 7200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4766.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6493,
+        "name": "Nyva Ternopil",
+        "code": "NYV",
+        "country": "Ukraine",
+        "founded": 2016,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6493.png"
+      },
+      "venue": {
+        "id": 20125,
+        "name": "Ternopilskyi miskyi stadion im. Romana Shukhevycha",
+        "address": "vul. Stepana Bandery 15",
+        "city": "Ternopil",
+        "capacity": 15150,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20125.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6494,
+        "name": "Nyva Vinnytsya",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1958,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6494.png"
+      },
+      "venue": {
+        "id": 21918,
+        "name": "NTB Nyva Pole 1",
+        "address": "ul. Serhiia Zulinskoho, 29-A",
+        "city": "Vinnytsia",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/21918.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6495,
+        "name": "Podillya Khmelnytskyi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6495.png"
+      },
+      "venue": {
+        "id": 20126,
+        "name": "Stadion Podillia",
+        "address": "vul. Prokurivska 83",
+        "city": "Khmelnytskyi",
+        "capacity": 10500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20126.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6496,
+        "name": "Polessya",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6496.png"
+      },
+      "venue": {
+        "id": 11948,
+        "name": "Tsentralnyi Stadion",
+        "address": "vul. Feshchenka-Chopivskoho 18",
+        "city": "Zhytomyr",
+        "capacity": 5928,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/11948.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6497,
+        "name": "Real Pharm",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2000,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6497.png"
+      },
+      "venue": {
+        "id": 4770,
+        "name": "Stadion FSK Ivan",
+        "address": "vul. Vapnyana 52",
+        "city": "Odesa",
+        "capacity": 1200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4770.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6498,
+        "name": "Tavriya",
+        "code": "TAV",
+        "country": "Ukraine",
+        "founded": 1958,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6498.png"
+      },
+      "venue": {
+        "id": 4771,
+        "name": "Stadion Mashynobudivnyk",
+        "address": "provulok Sadovyj",
+        "city": "Beryslav",
+        "capacity": 1500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4771.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6499,
+        "name": "Uzhhorod",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2015,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6499.png"
+      },
+      "venue": {
+        "id": 10795,
+        "name": "Stadion Avanhard",
+        "address": "vul. Ivana Franka 1",
+        "city": "Uzhhorod",
+        "capacity": 10200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/10795.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6500,
+        "name": "VPK-Ahro Shevchenkivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2010,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6500.png"
+      },
+      "venue": {
+        "id": 4772,
+        "name": "Kolos Arena",
+        "address": "Vul. Haharina",
+        "city": "Mahdalynivka",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4772.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6501,
+        "name": "Veres Rivne",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2018,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6501.png"
+      },
+      "venue": {
+        "id": 20308,
+        "name": "Stadion Avanhard",
+        "address": "pr. Peremohy 7-A",
+        "city": "Lutsk",
+        "capacity": 12080,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20308.png"
+      }
+    },
+    {
+      "team": {
+        "id": 6502,
+        "name": "Vovchansk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/6502.png"
+      },
+      "venue": {
+        "id": 2429,
+        "name": "Helios-Arena",
+        "address": "Prospekt Illycha 1-a / vul. Hertsena",
+        "city": "Kharkiv",
+        "capacity": 2057,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2429.png"
+      }
+    },
+    {
+      "team": {
+        "id": 7929,
+        "name": "Shakhtar Donetsk U19",
+        "code": "SHA",
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/7929.png"
+      },
+      "venue": {
+        "id": 5705,
+        "name": "CS Shakhtar",
+        "address": null,
+        "city": "Donetsk",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/5705.png"
+      }
+    },
+    {
+      "team": {
+        "id": 8228,
+        "name": "Ukraine U21",
+        "code": "UKR",
+        "country": "Ukraine",
+        "founded": 1991,
+        "national": true,
+        "logo": "https://media.api-sports.io/football/teams/8228.png"
+      },
+      "venue": {
+        "id": 20122,
+        "name": "Obolon Arena",
+        "address": "vul. Pivnichna 26",
+        "city": "Kyiv",
+        "capacity": 5103,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20122.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9146,
+        "name": "Obolon'-Brovar II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9146.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 9147,
+        "name": "Avanhard II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9147.png"
+      },
+      "venue": {
+        "id": 9543,
+        "name": "Stadion Prapor",
+        "address": null,
+        "city": "Kramatorsk",
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/9543.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9148,
+        "name": "Chornomorets II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9148.png"
+      },
+      "venue": {
+        "id": 9541,
+        "name": "SK Lyustdorf",
+        "address": "per. Yuzhnosanatornyj 21",
+        "city": "Odesa",
+        "capacity": 500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/9541.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9149,
+        "name": "Mykolaiv II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9149.png"
+      },
+      "venue": {
+        "id": 9547,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Sportyvna 23",
+        "city": "Mykolajiv",
+        "capacity": 25175,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/9547.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9150,
+        "name": "Myr",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1994,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9150.png"
+      },
+      "venue": {
+        "id": 6334,
+        "name": "Stadion Zatys",
+        "address": null,
+        "city": "Hornostayivka",
+        "capacity": 1400,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/6334.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9151,
+        "name": "Dnipro Dnipropetrovsk",
+        "code": "DNE",
+        "country": "Ukraine",
+        "founded": 1918,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9151.png"
+      },
+      "venue": {
+        "id": 2426,
+        "name": "Dnipro Arena",
+        "address": "vul. Khersonska 7",
+        "city": "Dnipropetrovs&apos;k",
+        "capacity": 31003,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2426.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9152,
+        "name": "Inhulets II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9152.png"
+      },
+      "venue": {
+        "id": 6335,
+        "name": "Stadion im. O.G. Povoroznyuka",
+        "address": null,
+        "city": "Volodymyrivka",
+        "capacity": 1500,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/6335.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9153,
+        "name": "Sudnobudivnyk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2016,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9153.png"
+      },
+      "venue": {
+        "id": 2431,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Sportyvna 23",
+        "city": "Mykolajiv",
+        "capacity": 25175,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2431.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9154,
+        "name": "Cherkaskyi Dnipro",
+        "code": "SLA",
+        "country": "Ukraine",
+        "founded": 2010,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9154.png"
+      },
+      "venue": {
+        "id": 3508,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Smilyans&apos;ka 78",
+        "city": "Cherkasy",
+        "capacity": 10321,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/3508.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9155,
+        "name": "Arsenal Bila Tserkva",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2006,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9155.png"
+      },
+      "venue": {
+        "id": 6336,
+        "name": "Stadion Trudovi rezervy",
+        "address": "vul. Jarmarkova 4",
+        "city": "Bila Tserkva",
+        "capacity": 15500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/6336.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9156,
+        "name": "Cherkaskyi Dnipro II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9156.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 9157,
+        "name": "Skala Stryi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2004,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9157.png"
+      },
+      "venue": {
+        "id": 6337,
+        "name": "Stadion Medyk",
+        "address": null,
+        "city": "Morshyn",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/6337.png"
+      }
+    },
+    {
+      "team": {
+        "id": 9158,
+        "name": "Ternopil'",
+        "code": "TER",
+        "country": "Ukraine",
+        "founded": 2007,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/9158.png"
+      },
+      "venue": {
+        "id": 6338,
+        "name": "Stadion Mis'kyj",
+        "address": "vul. Stefana Bandery 5",
+        "city": "Ternopil&apos;",
+        "capacity": 15150,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/6338.png"
+      }
+    },
+    {
+      "team": {
+        "id": 10305,
+        "name": "Ukraine U20",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1991,
+        "national": true,
+        "logo": "https://media.api-sports.io/football/teams/10305.png"
+      },
+      "venue": {
+        "id": 22470,
+        "name": "Bellis Hotel Sports Center - Field 1",
+        "address": "Kadriye Mah. Taşlıburun Mevkii, Serik, Belek",
+        "city": "Antalya",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22470.png"
+      }
+    },
+    {
+      "team": {
+        "id": 10352,
+        "name": "Ukraine U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1991,
+        "national": true,
+        "logo": "https://media.api-sports.io/football/teams/10352.png"
+      },
+      "venue": {
+        "id": 1593,
+        "name": "NSK Olimpijs'kyj (old)",
+        "address": "vul. Chervonoarmijs&apos;ka 55",
+        "city": "Kiev",
+        "capacity": 83450,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/1593.png"
+      }
+    },
+    {
+      "team": {
+        "id": 10697,
+        "name": "Metalist",
+        "code": "MET",
+        "country": "Ukraine",
+        "founded": 1925,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/10697.png"
+      },
+      "venue": {
+        "id": 1595,
+        "name": "Oblasny SportKomplex Metalist",
+        "address": "vul. Plechanivska 65",
+        "city": "Kharkiv",
+        "capacity": 41307,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/1595.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13221,
+        "name": "Lebedin",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13221.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13222,
+        "name": "Naftovyk-Ukrnafta",
+        "code": "NAF",
+        "country": "Ukraine",
+        "founded": 1980,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13222.png"
+      },
+      "venue": {
+        "id": 8317,
+        "name": "Stadion Naftovyk",
+        "address": "vul. Pushkina 5",
+        "city": "Okhtyrka",
+        "capacity": 5256,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8317.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13223,
+        "name": "Viktoriya Mykolaivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13223.png"
+      },
+      "venue": {
+        "id": 20771,
+        "name": "Stadion Yuvileinyi",
+        "address": "vul. Haharina 9",
+        "city": "Sumy",
+        "capacity": 25830,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20771.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13224,
+        "name": "Demnya",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13224.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13225,
+        "name": "Poltava",
+        "code": "POL",
+        "country": "Ukraine",
+        "founded": 2007,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13225.png"
+      },
+      "venue": {
+        "id": 8318,
+        "name": "Stadion Lokomotiv",
+        "address": "vul. Proletars&apos;kaya 29-6",
+        "city": "Poltava",
+        "capacity": 3700,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8318.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13226,
+        "name": "Stal Kamianske",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1926,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13226.png"
+      },
+      "venue": {
+        "id": 8319,
+        "name": "Stadion Metallurh",
+        "address": "vul. Dzeruhyns&apos;kogo 7",
+        "city": "Kamyans&apos;ke",
+        "capacity": 2900,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8319.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13227,
+        "name": "Zhemchuzhyna Odesa",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13227.png"
+      },
+      "venue": {
+        "id": 8320,
+        "name": "Stadion Spartak",
+        "address": "vul. Kanatnaja 79",
+        "city": "Odessa",
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8320.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13228,
+        "name": "Ahrobiznes TSK Romny",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13228.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13229,
+        "name": "Hirnyk Sosnivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13229.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13230,
+        "name": "Barsa Sumy",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13230.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13231,
+        "name": "Hoverla",
+        "code": "HOV",
+        "country": "Ukraine",
+        "founded": 1946,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13231.png"
+      },
+      "venue": {
+        "id": 8321,
+        "name": "Stadion Avanhard",
+        "address": "vul. Ivana Franka 1",
+        "city": "Uzhhorod",
+        "capacity": 10200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8321.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13232,
+        "name": "Metalurh Donetsk",
+        "code": "DON",
+        "country": "Ukraine",
+        "founded": 1996,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13232.png"
+      },
+      "venue": {
+        "id": 8322,
+        "name": "Stadion Metalurh",
+        "address": "vul. Kujbysheva 25a",
+        "city": "Donets&apos;k",
+        "capacity": 5094,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8322.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13233,
+        "name": "Stal Alchevsk",
+        "code": "STA",
+        "country": "Ukraine",
+        "founded": 1935,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13233.png"
+      },
+      "venue": {
+        "id": 4771,
+        "name": "Stadion Mashynobudivnyk",
+        "address": null,
+        "city": "Karlivka",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4771.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13234,
+        "name": "Yednist'",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2005,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13234.png"
+      },
+      "venue": {
+        "id": 8323,
+        "name": "Stadion Plysky",
+        "address": null,
+        "city": null,
+        "capacity": 2200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8323.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13235,
+        "name": "Dynamo Khmelnytskyi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13235.png"
+      },
+      "venue": {
+        "id": 4768,
+        "name": "Stadion Podillya",
+        "address": "vul. Prokurivs&apos;ka",
+        "city": "Khmelnytskyi",
+        "capacity": 10500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4768.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13236,
+        "name": "Enerhiya Mykolajiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2011,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13236.png"
+      },
+      "venue": {
+        "id": 2431,
+        "name": "Tsentralnyi miskyi Stadion",
+        "address": "vul. Sportyvna 23",
+        "city": "Mykolajiv",
+        "capacity": 25175,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2431.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13237,
+        "name": "Karlivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2011,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13237.png"
+      },
+      "venue": {
+        "id": 4771,
+        "name": "Stadion Mashynobudivnyk",
+        "address": null,
+        "city": "Karlivka",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4771.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13238,
+        "name": "Nove Zhyttia Andriivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13238.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13239,
+        "name": "ODEK Orzhiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13239.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13240,
+        "name": "Sevastopol",
+        "code": "SEV",
+        "country": "Ukraine",
+        "founded": 2002,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13240.png"
+      },
+      "venue": {
+        "id": 8325,
+        "name": "SK Sevastopol'",
+        "address": "Heroiv Sevastopolia 13",
+        "city": "Sevastopol&apos;",
+        "capacity": 5864,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8325.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13241,
+        "name": "Shakhtar Sverdlovsk",
+        "code": "SHA",
+        "country": "Ukraine",
+        "founded": 1946,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13241.png"
+      },
+      "venue": {
+        "id": 8326,
+        "name": "Stadion im. M. Horyushkina",
+        "address": "vul. Engel&apos;sa 17",
+        "city": "Sverdlovs&apos;k",
+        "capacity": 10000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8326.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13242,
+        "name": "Tytan Armyansk",
+        "code": "TIT",
+        "country": "Ukraine",
+        "founded": 1969,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13242.png"
+      },
+      "venue": {
+        "id": 8327,
+        "name": "Stadion Khimik",
+        "address": "Simferopol&apos;s&apos;ke shose 6",
+        "city": "Armyans&apos;k",
+        "capacity": 3450,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8327.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13243,
+        "name": "UkrAhroKom",
+        "code": "HOL",
+        "country": "Ukraine",
+        "founded": 2008,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13243.png"
+      },
+      "venue": {
+        "id": 2422,
+        "name": "KSK Nika",
+        "address": "vul. Shevchenka 58-6",
+        "city": "Aleksandriya",
+        "capacity": 7000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2422.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13244,
+        "name": "Bastion",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13244.png"
+      },
+      "venue": {
+        "id": 8328,
+        "name": "Stadion Shkil'nyi",
+        "address": null,
+        "city": null,
+        "capacity": 1250,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8328.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13245,
+        "name": "Bucha",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13245.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13246,
+        "name": "Hvardiyets Hvardiyske",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13246.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13247,
+        "name": "Krymteplitsia",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1999,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13247.png"
+      },
+      "venue": {
+        "id": 8329,
+        "name": "Stadion KT Sport-Arena",
+        "address": null,
+        "city": null,
+        "capacity": 3250,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8329.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13248,
+        "name": "Kryvbas",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1959,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13248.png"
+      },
+      "venue": {
+        "id": 8322,
+        "name": "Stadion Metalurh",
+        "address": null,
+        "city": null,
+        "capacity": 29783,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8322.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13249,
+        "name": "Obolon'",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1992,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13249.png"
+      },
+      "venue": {
+        "id": 8330,
+        "name": "Obolon' Arena",
+        "address": null,
+        "city": null,
+        "capacity": 5103,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8330.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13250,
+        "name": "Odesa",
+        "code": "FCO",
+        "country": "Ukraine",
+        "founded": 1947,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13250.png"
+      },
+      "venue": {
+        "id": 8331,
+        "name": "Stadion Spartak",
+        "address": null,
+        "city": null,
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8331.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13251,
+        "name": "SKA Odesa",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13251.png"
+      },
+      "venue": {
+        "id": 8331,
+        "name": "Stadion Spartak",
+        "address": null,
+        "city": null,
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8331.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13252,
+        "name": "Zhemchuzhyna Yalta",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2010,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13252.png"
+      },
+      "venue": {
+        "id": 8332,
+        "name": "Stadion Avanhard",
+        "address": "vul. Krasnoarmis&apos;ka",
+        "city": "Yalta",
+        "capacity": 5800,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8332.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13253,
+        "name": "Berehvideyk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13253.png"
+      },
+      "venue": {
+        "id": 8333,
+        "name": "Stadion Druzhba, Berehove",
+        "address": null,
+        "city": null,
+        "capacity": 2500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8333.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13254,
+        "name": "Enerhetyk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1946,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13254.png"
+      },
+      "venue": {
+        "id": 8334,
+        "name": "Stadion Enerhetik",
+        "address": null,
+        "city": null,
+        "capacity": 4500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8334.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13255,
+        "name": "Prykarpattya Ivano-Frank",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2004,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13255.png"
+      },
+      "venue": {
+        "id": 8335,
+        "name": "Stadion Rukh",
+        "address": null,
+        "city": null,
+        "capacity": 16000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8335.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13256,
+        "name": "SKAD-Yalpuh",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2011,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13256.png"
+      },
+      "venue": {
+        "id": 8336,
+        "name": "Stadion UPD",
+        "address": null,
+        "city": null,
+        "capacity": 5000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8336.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13257,
+        "name": "Slovkhlib Slov'ians'k",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1999,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13257.png"
+      },
+      "venue": {
+        "id": 8337,
+        "name": "Stadion Khymik, Slov'ians'k",
+        "address": null,
+        "city": null,
+        "capacity": 8000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8337.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13258,
+        "name": "Zhytychi Zhytomyr",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2005,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13258.png"
+      },
+      "venue": {
+        "id": null,
+        "name": "\n    ",
+        "address": null,
+        "city": null,
+        "capacity": 0,
+        "surface": "\n    ",
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 13259,
+        "name": "Illichivets' II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1938,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13259.png"
+      },
+      "venue": {
+        "id": 8338,
+        "name": "Stadion Zakhidnyi",
+        "address": "vul. 60-lchchya SRSR 13",
+        "city": "Mariupol&apos;",
+        "capacity": 3206,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8338.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13260,
+        "name": "Teplovyk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13260.png"
+      },
+      "venue": {
+        "id": 2432,
+        "name": "Miskyi Tsentral'nyi Stadion Rukh",
+        "address": "vul. Vyacheslav Chornovola 128",
+        "city": "Ivano-Frankivs&apos;k",
+        "capacity": 16000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2432.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13261,
+        "name": "Shakhtar Donetsk III",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13261.png"
+      },
+      "venue": {
+        "id": 8339,
+        "name": "STB Kirsha",
+        "address": null,
+        "city": "Donets&apos;k",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8339.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13262,
+        "name": "Obolon II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1992,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13262.png"
+      },
+      "venue": {
+        "id": 8340,
+        "name": "Stadion UTB Obolon'",
+        "address": null,
+        "city": null,
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8340.png"
+      }
+    },
+    {
+      "team": {
+        "id": 13263,
+        "name": "Dynamo Kyiv II",
+        "code": "DIN",
+        "country": "Ukraine",
+        "founded": 1927,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/13263.png"
+      },
+      "venue": {
+        "id": 8341,
+        "name": "NTB Dynamo",
+        "address": "Stolichne Shose 45",
+        "city": "Koncha-Zaspa",
+        "capacity": 750,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8341.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14141,
+        "name": "Orenburg II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14141.png"
+      },
+      "venue": {
+        "id": 1342,
+        "name": "Stadion Gazovik",
+        "address": "Tsvetnoy bulvar&apos; 31",
+        "city": "Rostoshi",
+        "capacity": 10046,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/1342.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14433,
+        "name": "Chernihiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14433.png"
+      },
+      "venue": {
+        "id": 20194,
+        "name": "Stadion Yunist",
+        "address": "pr. Peremohy 110",
+        "city": "Chernihiv",
+        "capacity": 3000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/20194.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14434,
+        "name": "Epitsentr Dunayivtsi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14434.png"
+      },
+      "venue": {
+        "id": 20125,
+        "name": "Ternopilskyi miskyi stadion im. Romana Shukhevycha",
+        "address": "vul. Stepana Bandery 15",
+        "city": "Ternopil",
+        "capacity": 15150,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20125.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14435,
+        "name": "Karpaty Halych",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14435.png"
+      },
+      "venue": {
+        "id": 10797,
+        "name": "Stadion Kolos Halych",
+        "address": "Vulytsya Bohdana Khmelʹnytsʹkoho, 1",
+        "city": "Halych",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/10797.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14436,
+        "name": "MSK Dnipro Cherkasy",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2018,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14436.png"
+      },
+      "venue": {
+        "id": 12063,
+        "name": "Cherkasy Arena",
+        "address": "vul. Smilyans&apos;ka 78",
+        "city": "Cherkasy",
+        "capacity": 10321,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12063.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14437,
+        "name": "Metal Kharkiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2020,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14437.png"
+      },
+      "venue": {
+        "id": 10795,
+        "name": "Stadion Avanhard",
+        "address": "vul. Ivana Franka 1",
+        "city": "Uzhhorod",
+        "capacity": 10200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/10795.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14438,
+        "name": "Olimpiya Savyntsi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14438.png"
+      },
+      "venue": {
+        "id": 22337,
+        "name": "Stadion Park Molodizhnyi",
+        "address": "vul. Panasa Myrnoho",
+        "city": "Dnipro",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/22337.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14439,
+        "name": "Peremoga",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2017,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14439.png"
+      },
+      "venue": {
+        "id": 12069,
+        "name": "Stadion Trudovi rezervy",
+        "address": "vul. Geroev Staliningrada 23",
+        "city": "Dnipropetrovs&apos;k",
+        "capacity": 8000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/12069.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14440,
+        "name": "Rubikon",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14440.png"
+      },
+      "venue": {
+        "id": 12064,
+        "name": "Knyazha-Arena",
+        "address": "vul. Festival&apos;naya 6",
+        "city": "Shchaslyve",
+        "capacity": 3000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12064.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14441,
+        "name": "Yarud Mariupol'",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14441.png"
+      },
+      "venue": {
+        "id": 22338,
+        "name": "Stadion SKIF",
+        "address": "vul. Cheremshyny 17",
+        "city": "Lviv",
+        "capacity": 3742,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22338.png"
+      }
+    },
+    {
+      "team": {
+        "id": 14926,
+        "name": "Desna U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14926.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14927,
+        "name": "Dnipro-1 U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14927.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14928,
+        "name": "Dynamo Kyiv U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14928.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14929,
+        "name": "Inhulets' U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14929.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14930,
+        "name": "Kolos Kovalivka U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14930.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14931,
+        "name": "Lviv U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14931.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14932,
+        "name": "Mariupol' U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14932.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14933,
+        "name": "Minai U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14933.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14934,
+        "name": "Oleksandria U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14934.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14935,
+        "name": "Olimpik Donetsk U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14935.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14936,
+        "name": "Rukh Vynnyky U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14936.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14937,
+        "name": "Shakhtar Donetsk U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14937.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14938,
+        "name": "Vorskla U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14938.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 14939,
+        "name": "Zorya Luhansk U21",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/14939.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 15099,
+        "name": "Volyn Lutsk II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/15099.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 17160,
+        "name": "AFSK Kyiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17160.png"
+      },
+      "venue": {
+        "id": 12065,
+        "name": "Stadion AFSC Kyiv",
+        "address": "Klovs&apos;kyi descent, 5",
+        "city": "Kyiv",
+        "capacity": 2500,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/12065.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17161,
+        "name": "LNZ Cherkasy",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17161.png"
+      },
+      "venue": {
+        "id": 12063,
+        "name": "Cherkasy Arena",
+        "address": "vul. Smilyanska 78",
+        "city": "Cherkasy",
+        "capacity": 10321,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12063.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17162,
+        "name": "Livyi Bereh",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17162.png"
+      },
+      "venue": {
+        "id": 20196,
+        "name": "Stadion Livyi Bereh",
+        "address": "vul. Sportyvna 8, Mlynovo",
+        "city": "Kyiv",
+        "capacity": 4700,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/20196.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17163,
+        "name": "Lyubomyr Stavyshche",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17163.png"
+      },
+      "venue": {
+        "id": 12066,
+        "name": "Stadion Kolos Stavyshche",
+        "address": null,
+        "city": "Stavyshche",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12066.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17164,
+        "name": "Munkács",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17164.png"
+      },
+      "venue": {
+        "id": 12067,
+        "name": "Stadion Avanhard",
+        "address": "Pershotravneva Street",
+        "city": "Mukacheve",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12067.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17165,
+        "name": "SK Poltava",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2011,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17165.png"
+      },
+      "venue": {
+        "id": 22341,
+        "name": "Stadion Zirka im. Stanislava Berezkina",
+        "address": "vul. Haharina 1-A",
+        "city": "Kropyvnytskyi",
+        "capacity": 13305,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22341.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17166,
+        "name": "Skoruk Tomakivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17166.png"
+      },
+      "venue": {
+        "id": 4766,
+        "name": "Stadion Elektrometalurh-NFZ",
+        "address": "vul. Elektrometalurhiv",
+        "city": "Nikopol&apos;",
+        "capacity": 7200,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/4766.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17167,
+        "name": "Trostianets",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17167.png"
+      },
+      "venue": {
+        "id": 12070,
+        "name": "Stadion imeni V. Kutsa",
+        "address": "vul. Keniha 11",
+        "city": "Trostianets",
+        "capacity": 1124,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12070.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17234,
+        "name": "Feniks Pidmonastyr",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17234.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 17680,
+        "name": "Kyzyltash",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17680.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 17683,
+        "name": "SKCHF Sevastopol",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2014,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17683.png"
+      },
+      "venue": {
+        "id": 8325,
+        "name": "SK Sevastopol'",
+        "address": "Heroiv Sevastopolia 13",
+        "city": "Sevastopol&apos;",
+        "capacity": 5864,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/8325.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17684,
+        "name": "TSK Simferopol",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2014,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17684.png"
+      },
+      "venue": {
+        "id": 12373,
+        "name": "Respublikanskiy sportivnyj kompleks Lokomotiv",
+        "address": "vul. A. Pushkina 46",
+        "city": "Simferopol&apos;",
+        "capacity": 19978,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12373.png"
+      }
+    },
+    {
+      "team": {
+        "id": 17983,
+        "name": "Ukraine U17",
+        "code": "UKR",
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/17983.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 19651,
+        "name": "BKS Sparta Katowice",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/19651.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 20240,
+        "name": "Rukh Vynnyky U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/20240.png"
+      },
+      "venue": {
+        "id": 2433,
+        "name": "Stadion im. Bohdan Markevycha",
+        "address": "vul. Sportova 2",
+        "city": "Vynnyky",
+        "capacity": 3500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2433.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21203,
+        "name": "Khust City",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21203.png"
+      },
+      "venue": {
+        "id": 19984,
+        "name": "Stadion Karpaty",
+        "address": "Vulytsya Borkanyuka, 15",
+        "city": "Khust",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/19984.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21317,
+        "name": "Kremin' II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21317.png"
+      },
+      "venue": {
+        "id": 3509,
+        "name": "Kremin'-Arena im. Olega Babaeva",
+        "address": "vul. Chkalova 6-A",
+        "city": "Kremenchuk",
+        "capacity": 2200,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/3509.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21318,
+        "name": "Metalurh Zaporizhya II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21318.png"
+      },
+      "venue": {
+        "id": 1597,
+        "name": "Slavutych-Arena",
+        "address": "vul. Valeryia Lobanovskogo 21",
+        "city": "Zaporozhye",
+        "capacity": 11883,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/1597.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21319,
+        "name": "Nyva Buzova",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21319.png"
+      },
+      "venue": {
+        "id": 19985,
+        "name": "Stadion Yuvilejnyj",
+        "address": null,
+        "city": "Bucha",
+        "capacity": 5000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/19985.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21320,
+        "name": "VAST",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21320.png"
+      },
+      "venue": {
+        "id": 12061,
+        "name": "Stadion Dinaz",
+        "address": "ul. Fastova",
+        "city": "Demidov",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/12061.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21321,
+        "name": "Zvyahel",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2007,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21321.png"
+      },
+      "venue": {
+        "id": 19658,
+        "name": "Stadion Avanhard",
+        "address": "vul. Zhytomyrska 13",
+        "city": "Zviahel",
+        "capacity": 5000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/19658.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21585,
+        "name": "Kryvbas W",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21585.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 21952,
+        "name": "Fazenda Chernivtsi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21952.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 21953,
+        "name": "Kudrivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1982,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21953.png"
+      },
+      "venue": {
+        "id": 22339,
+        "name": "Obolon Arena",
+        "address": "vul. Pivnichna 26",
+        "city": "Kyiv",
+        "capacity": 5103,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22339.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21954,
+        "name": "Lokomotiv Kyiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1919,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21954.png"
+      },
+      "venue": {
+        "id": 21083,
+        "name": "Stadion NTK im. B. M. Bannikova",
+        "address": "per. Laboratornyj 7b",
+        "city": "Kyiv",
+        "capacity": 1945,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21083.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21955,
+        "name": "Shturm Ivankiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21955.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 21956,
+        "name": "Skala 1911 Stryi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2023,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21956.png"
+      },
+      "venue": {
+        "id": 21084,
+        "name": "Stadion Sokil",
+        "address": "vul. Shashkevycha 18",
+        "city": "Stryi",
+        "capacity": 6000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21084.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21957,
+        "name": "UCSA",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21957.png"
+      },
+      "venue": {
+        "id": 21083,
+        "name": "Stadion NTK im. B. M. Bannikova",
+        "address": "per. Laboratornyj 7b",
+        "city": "Kyiv",
+        "capacity": 1945,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21083.png"
+      }
+    },
+    {
+      "team": {
+        "id": 21975,
+        "name": "Karpaty II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 1997,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21975.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 21976,
+        "name": "Rukh Vynnyky II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/21976.png"
+      },
+      "venue": {
+        "id": 2433,
+        "name": "Stadion im. Bohdan Markevycha",
+        "address": "vul. Sportova 2",
+        "city": "Vynnyky",
+        "capacity": 3500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/2433.png"
+      }
+    },
+    {
+      "team": {
+        "id": 22100,
+        "name": "Druzhba",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/22100.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 22339,
+        "name": "Vorskla Poltava W",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/22339.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 22343,
+        "name": "Ukraine U18",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/22343.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 23073,
+        "name": "Chornomorets U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23073.png"
+      },
+      "venue": {
+        "id": 20818,
+        "name": "UTB Chernomorets",
+        "address": "vul. Admirala Azarova",
+        "city": "Odesa",
+        "capacity": 1250,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20818.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23074,
+        "name": "Dnipro-1 U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23074.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 23075,
+        "name": "Kolos Kovalivka U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23075.png"
+      },
+      "venue": {
+        "id": 20819,
+        "name": "NTB Kolos",
+        "address": "ul. Mala Kilt͡seva 10/1",
+        "city": "Kyiv",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20819.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23076,
+        "name": "Kryvbas 2020 U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": 2001,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23076.png"
+      },
+      "venue": {
+        "id": 22045,
+        "name": "Stadion Sparta",
+        "address": "vul. Chumatska 7",
+        "city": "Kryvyi Rih",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/22045.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23077,
+        "name": "LNZ Cherkasy U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23077.png"
+      },
+      "venue": {
+        "id": 22046,
+        "name": "Stadion Geronimivka",
+        "address": null,
+        "city": "Heronymivka",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22046.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23078,
+        "name": "Metalist 1925 U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23078.png"
+      },
+      "venue": {
+        "id": 22047,
+        "name": "NTB Dynamo",
+        "address": "Stolichne Shose 45",
+        "city": "Koncha-Zaspa",
+        "capacity": 750,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22047.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23079,
+        "name": "Minaj U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23079.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 23080,
+        "name": "Obolon' Kyiv U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23080.png"
+      },
+      "venue": {
+        "id": 22048,
+        "name": "NTB Kolos",
+        "address": "vul. Mala Kiltseva 10/1",
+        "city": "Sofiyivska Borshchahivka",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/22048.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23081,
+        "name": "Oleksandria U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23081.png"
+      },
+      "venue": {
+        "id": 21308,
+        "name": "KSK Nika - Iskusstvennoe futbolnoe pole",
+        "address": "ul. Pershotravneva",
+        "city": "Oleksandriia",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/21308.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23082,
+        "name": "Veres Rivne U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23082.png"
+      },
+      "venue": {
+        "id": 22049,
+        "name": "NTB Veres",
+        "address": "vul. Zakhysnykiv Mariupolya",
+        "city": "Rivne",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/22049.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23083,
+        "name": "Vorskla U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23083.png"
+      },
+      "venue": {
+        "id": 20821,
+        "name": "Stadion Ltava",
+        "address": "Krutyi Bereh",
+        "city": "Poltava",
+        "capacity": 1500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20821.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23084,
+        "name": "Zhytomyr U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23084.png"
+      },
+      "venue": {
+        "id": 21921,
+        "name": "SOB FK Polissya 1",
+        "address": null,
+        "city": "Hlubochytsia",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21921.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23085,
+        "name": "Zorya Luhansk U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/23085.png"
+      },
+      "venue": {
+        "id": 20822,
+        "name": "Stadion Avanhard",
+        "address": "vul. Oboronna 4-b",
+        "city": "Luhansk",
+        "capacity": 22288,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/20822.png"
+      }
+    },
+    {
+      "team": {
+        "id": 23313,
+        "name": "Ukraine U23",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": true,
+        "logo": "https://media.api-sports.io/football/teams/23313.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 24176,
+        "name": "Inhulets' U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24176.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 24177,
+        "name": "Karpaty Lviv U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24177.png"
+      },
+      "venue": {
+        "id": 21309,
+        "name": "Stadion Lokomotyv",
+        "address": "vul. Hrushevskoho 58",
+        "city": "Rava-Ruska",
+        "capacity": 3000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21309.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24566,
+        "name": "Kulykiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24566.png"
+      },
+      "venue": {
+        "id": 21085,
+        "name": "Arena Kulykiv",
+        "address": null,
+        "city": "Kulykiv",
+        "capacity": 2000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21085.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24567,
+        "name": "Mykolaiv Lviv Oblast",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24567.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 24568,
+        "name": "Probiy Horodenka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24568.png"
+      },
+      "venue": {
+        "id": 22340,
+        "name": "Probiy-Arena",
+        "address": "vul. T.Shevchnko 10",
+        "city": "Horodenka",
+        "capacity": 2500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22340.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24569,
+        "name": "Revera Ivano-Frankivsk",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24569.png"
+      },
+      "venue": {
+        "id": 21087,
+        "name": "Stadion IFNTUNH",
+        "address": "vul. Berehova",
+        "city": "Ivano-Frankivsk",
+        "capacity": 4000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21087.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24570,
+        "name": "Vilkhivtsi",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24570.png"
+      },
+      "venue": {
+        "id": 21088,
+        "name": "Stadion Vil'khivtsi",
+        "address": null,
+        "city": "Vil&apos;khivtsi",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21088.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24585,
+        "name": "Kolos Kovalivka II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24585.png"
+      },
+      "venue": {
+        "id": 19985,
+        "name": "Stadion Yuvilejnyj",
+        "address": null,
+        "city": "Bucha",
+        "capacity": 5000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/19985.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24586,
+        "name": "Metalist 1925 II Kharkiv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24586.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 24587,
+        "name": "Nyva Ternopil II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24587.png"
+      },
+      "venue": {
+        "id": 21919,
+        "name": "Stadioni Im. Leva Brovarsʹkoho",
+        "address": "vul. Kopernika 13",
+        "city": "Sambir",
+        "capacity": 2500,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21919.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24588,
+        "name": "Oleksandria II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24588.png"
+      },
+      "venue": {
+        "id": 21920,
+        "name": "KSK Olimp",
+        "address": "prospekt Budivelnykiv",
+        "city": "Oleksandriia",
+        "capacity": 2460,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21920.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24589,
+        "name": "Polissya II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24589.png"
+      },
+      "venue": {
+        "id": 21921,
+        "name": "SOB FK Polissya 1",
+        "address": null,
+        "city": "Hlubochytsia",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21921.png"
+      }
+    },
+    {
+      "team": {
+        "id": 24590,
+        "name": "Vorskla Poltava II",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/24590.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26187,
+        "name": "Atlet",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26187.png"
+      },
+      "venue": {
+        "id": 21922,
+        "name": "Stadion Atlet",
+        "address": "Zroshuvalna",
+        "city": "Kyiv",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/21922.png"
+      }
+    },
+    {
+      "team": {
+        "id": 26188,
+        "name": "Lisne",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26188.png"
+      },
+      "venue": {
+        "id": 21923,
+        "name": "Buzova Arena",
+        "address": null,
+        "city": "Buzova",
+        "capacity": 1000,
+        "surface": "artificial turf",
+        "image": "https://media.api-sports.io/football/venues/21923.png"
+      }
+    },
+    {
+      "team": {
+        "id": 26189,
+        "name": "Penuel",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26189.png"
+      },
+      "venue": {
+        "id": 21924,
+        "name": "Stadion Svitlo",
+        "address": null,
+        "city": "Kryvyi Rih",
+        "capacity": 1000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21924.png"
+      }
+    },
+    {
+      "team": {
+        "id": 26190,
+        "name": "Rebel",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26190.png"
+      },
+      "venue": {
+        "id": 21925,
+        "name": "Stadion Shkilnyi",
+        "address": null,
+        "city": "Illichivsk",
+        "capacity": 1250,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/21925.png"
+      }
+    },
+    {
+      "team": {
+        "id": 26235,
+        "name": "Epitsentr U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26235.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26236,
+        "name": "Kudrivka U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26236.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26237,
+        "name": "SK Poltava U19",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26237.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26298,
+        "name": "Metalist 1925 W",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26298.png"
+      },
+      "venue": {
+        "id": 22135,
+        "name": "Kniazha-Arena",
+        "address": "vul. Festyvalna 6",
+        "city": "Shchaslyve",
+        "capacity": 3000,
+        "surface": "grass",
+        "image": "https://media.api-sports.io/football/venues/22135.png"
+      }
+    },
+    {
+      "team": {
+        "id": 26388,
+        "name": "Mayak Sarny",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26388.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26448,
+        "name": "Denykhivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26448.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26449,
+        "name": "Naftovik Dolyna",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26449.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26450,
+        "name": "Iron",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26450.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26451,
+        "name": "Karbon Cherkasy",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26451.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26452,
+        "name": "Kormil Yavoriv",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26452.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26453,
+        "name": "Korosten / AN",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26453.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26454,
+        "name": "Polonne",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26454.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26455,
+        "name": "Stavky",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26455.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26456,
+        "name": "Tyshkivka",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26456.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26739,
+        "name": "Bukovyna 2",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26739.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26740,
+        "name": "Livyi Bereg 2",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26740.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    },
+    {
+      "team": {
+        "id": 26758,
+        "name": "Lozova",
+        "code": null,
+        "country": "Ukraine",
+        "founded": null,
+        "national": false,
+        "logo": "https://media.api-sports.io/football/teams/26758.png"
+      },
+      "venue": {
+        "id": null,
+        "name": null,
+        "address": null,
+        "city": null,
+        "capacity": null,
+        "surface": null,
+        "image": null
+      }
+    }
+  ]
+}

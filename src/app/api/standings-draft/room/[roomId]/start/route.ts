@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { startGame } from "../../../store";
-import type { Season, StandingRow, MissLimit } from "@/app/standings-draft/_lib/types";
+import type {
+  Season,
+  StandingRow,
+  MissLimit,
+} from "@/app/standings-draft/_lib/types";
+import { LEAGUE_IDS } from "@/app/standings-draft/_lib/leagues";
 
 const API_BASE = "https://v3.football.api-sports.io";
 
@@ -45,18 +50,14 @@ export async function POST(
   const playerId = (body.playerId ?? "").trim();
   const season = body.season as Season | undefined;
   const leagueId = typeof body.league === "number" ? body.league : 39;
-  const allowedLeagues = [39, 140, 61, 78, 135];
   if (!playerId) {
     return NextResponse.json(
       { error: "playerId is required" },
       { status: 400 }
     );
   }
-  if (!allowedLeagues.includes(leagueId)) {
-    return NextResponse.json(
-      { error: "Invalid league" },
-      { status: 400 }
-    );
+  if (!(LEAGUE_IDS as readonly number[]).includes(leagueId)) {
+    return NextResponse.json({ error: "Invalid league" }, { status: 400 });
   }
   if (!season || ![2022, 2023, 2024].includes(season)) {
     return NextResponse.json(
@@ -67,9 +68,7 @@ export async function POST(
 
   const timerSeconds = body.timerSeconds === 60 ? 60 : null;
   const missLimit: MissLimit =
-    body.missLimit === 3 || body.missLimit === 5
-      ? body.missLimit
-      : null;
+    body.missLimit === 3 || body.missLimit === 5 ? body.missLimit : null;
 
   let standings: StandingRow[];
   let leagueName: string;
@@ -127,17 +126,19 @@ export async function POST(
         { status: 404 }
       );
     }
-    standings = response.league.standings[0].map((r: Record<string, unknown>) => ({
-      rank: r.rank as number,
-      team: r.team as { id: number; name: string; logo: string },
-      points: r.points as number,
-      goalsDiff: r.goalsDiff as number,
-      group: (r.group as string) ?? "",
-      form: (r.form as string) ?? null,
-      all: r.all as StandingRow["all"],
-      home: r.home as StandingRow["home"],
-      away: r.away as StandingRow["away"],
-    }));
+    standings = response.league.standings[0].map(
+      (r: Record<string, unknown>) => ({
+        rank: r.rank as number,
+        team: r.team as { id: number; name: string; logo: string },
+        points: r.points as number,
+        goalsDiff: r.goalsDiff as number,
+        group: (r.group as string) ?? "",
+        form: (r.form as string) ?? null,
+        all: r.all as StandingRow["all"],
+        home: r.home as StandingRow["home"],
+        away: r.away as StandingRow["away"],
+      })
+    );
     leagueName =
       (response.league as { name?: string }).name ?? "Premier League";
   }

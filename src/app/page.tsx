@@ -13,15 +13,22 @@ const EXAMPLE_LINKS = [
   { href: "/standings-draft", label: "Standings Draft (Multiplayer)" },
 ] as const;
 
+// Temporary: only show Standings Draft on the welcome page
+const VISIBLE_LINKS = EXAMPLE_LINKS.filter(
+  (link) => link.href === "/standings-draft"
+);
+
 const linkClassName =
   "rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
-      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Welcome</h1>
+      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        Welcome
+      </h1>
       <div className="flex flex-wrap justify-center gap-3">
-        {EXAMPLE_LINKS.map(({ href, label }) => (
+        {VISIBLE_LINKS.map(({ href, label }) => (
           <Link key={href} href={href} className={linkClassName}>
             {label}
           </Link>
