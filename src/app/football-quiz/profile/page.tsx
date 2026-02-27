@@ -10,7 +10,10 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link href="/football-quiz" className="text-sm text-zinc-500 hover:underline">
+        <Link
+          href="/football-quiz"
+          className="text-sm text-zinc-500 hover:underline"
+        >
           ← Back to Home
         </Link>
       </div>
@@ -20,23 +23,38 @@ export default function ProfilePage() {
       <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-900">
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-2xl dark:bg-emerald-900/50">
-            <span role="img" aria-label="User">👤</span>
+            <span role="img" aria-label="User">
+              👤
+            </span>
           </div>
           <div>
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {displayName}
             </h2>
-            <StreakBadge streak={streak} text={`${streak} day streak`} className="mt-1" />
+            <StreakBadge
+              streak={streak}
+              text={`${streak} day streak`}
+              className="mt-1"
+            />
           </div>
         </div>
         <dl className="mt-6 grid gap-2 sm:grid-cols-2">
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">Total score</dt>
-          <dd className="font-medium text-zinc-900 dark:text-zinc-100">{totalScore}</dd>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">Favorite club</dt>
-          <dd className="font-medium text-zinc-900 dark:text-zinc-100">{favoriteClub}</dd>
+          <dt className="text-sm text-zinc-500 dark:text-zinc-400">
+            Total score
+          </dt>
+          <dd className="font-medium text-zinc-900 dark:text-zinc-100">
+            {totalScore}
+          </dd>
+          <dt className="text-sm text-zinc-500 dark:text-zinc-400">
+            Favorite club
+          </dt>
+          <dd className="font-medium text-zinc-900 dark:text-zinc-100">
+            {favoriteClub}
+          </dd>
         </dl>
         <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
-          Sign in with Supabase Auth or Firebase to persist profile, avatar, and achievements.
+          Sign in with Supabase Auth or Firebase to persist profile, avatar, and
+          achievements.
         </p>
       </div>
     </div>
