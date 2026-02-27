@@ -65,7 +65,7 @@ export default function DailyQuizPage() {
           <p className="mt-2 text-zinc-700 dark:text-zinc-300">
             You scored <strong>{score}</strong> out of {questions.length}.
           </p>
-          <StreakBadge streak={streak} className="mt-3" />
+          <StreakBadge streak={streak} text={`${streak} day streak`} className="mt-3" />
         </div>
         <Leaderboard entries={MOCK_LEADERBOARD} title="Global leaderboard" />
       </div>
@@ -79,7 +79,7 @@ export default function DailyQuizPage() {
           ← Back to Home
         </Link>
         <div className="flex items-center gap-3">
-          <StreakBadge streak={streak} />
+          <StreakBadge streak={streak} text={`${streak} day streak`} />
           <span className="text-sm text-zinc-600 dark:text-zinc-400">
             Score: {score}/{questions.length}
           </span>

@@ -26,7 +26,7 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {displayName}
             </h2>
-            <StreakBadge streak={streak} className="mt-1" />
+            <StreakBadge streak={streak} text={`${streak} day streak`} className="mt-1" />
           </div>
         </div>
         <dl className="mt-6 grid gap-2 sm:grid-cols-2">

@@ -23,6 +23,8 @@ import {
 } from "../../_lib/standings-cache";
 import { saveRoomSession } from "../../_lib/room-session";
 import { InfoTooltip } from "../../_lib/InfoTooltip";
+import { Timer } from "@/components/quiz/Timer";
+import { StreakBadge } from "@/components/quiz/StreakBadge";
 import { useRouter } from "next/navigation";
 
 const POLL_INTERVAL_MS = 2000;
@@ -649,20 +651,12 @@ export default function StandingsDraftRoomPage() {
                             } to guess.`}
                       </p>
                       {remainingSeconds != null && (
-                        <p
-                          className={
-                            "mt-2 text-lg font-mono font-semibold " +
-                            (remainingSeconds === 0
-                              ? "text-amber-600 dark:text-amber-400"
-                              : "text-zinc-700 dark:text-zinc-300")
-                          }
-                        >
-                          {remainingSeconds === 0
-                            ? "Time's up!"
-                            : `${Math.floor(remainingSeconds / 60)}:${String(
-                                remainingSeconds % 60
-                              ).padStart(2, "0")}`}
-                        </p>
+                        <Timer
+                          seconds={remainingSeconds}
+                          running={false}
+                          format="seconds"
+                          className="mt-2 text-lg"
+                        />
                       )}
                     </>
                   )}
@@ -853,13 +847,10 @@ export default function StandingsDraftRoomPage() {
                           </div>
                           <div className="flex flex-col items-end gap-1.5 text-sm">
                             {me != null && (
-                              <span className="text-zinc-600 dark:text-zinc-400">
-                                Current:{" "}
-                                <strong className="text-zinc-800 dark:text-zinc-200">
-                                  {me.correctStreak ?? 0}
-                                </strong>{" "}
-                                in a row
-                              </span>
+                              <StreakBadge
+                                streak={me.correctStreak ?? 0}
+                                text={`${me.correctStreak ?? 0} in a row streak`}
+                              />
                             )}
                           </div>
                         </div>
