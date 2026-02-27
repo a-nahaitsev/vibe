@@ -875,7 +875,7 @@ export default function StandingsDraftRoomPage() {
                       </label>
                       <InfoTooltip
                         trigger={<FcInfo className="h-4 w-4" />}
-                        content="Points = rank − |rank − your guess| (min 1 for correct team). E.g. team 10th: guess 10th → 10 pts, 12th → 8 pts, 20th → 1 pt. Wrong team = 0."
+                        content="Points = number of teams − |rank − your guess|. E.g. 20 teams, team 10th: guess 10th → 20 pts, 12th → 18 pts, 20th → 10 pts. Wrong team = 0."
                         ariaLabel="Scoring example"
                       />
                     </div>

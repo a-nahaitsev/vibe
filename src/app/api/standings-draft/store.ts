@@ -177,8 +177,7 @@ export async function startGame(
   room.currentPlayerIndex = Math.floor(Math.random() * room.players.length);
   const now = Date.now();
   room.turnStartedAt = now;
-  room.turnEndsAt =
-    timerSeconds != null ? now + timerSeconds * 1000 : null;
+  room.turnEndsAt = timerSeconds != null ? now + timerSeconds * 1000 : null;
   await storageSet(room);
   return { ok: true };
 }
@@ -187,9 +186,13 @@ function normalizeTeamName(s: string): string {
   return s.trim().toLowerCase();
 }
 
-/** Margin-of-error points: actualRank - |actualRank - guessedRank|, min 1 when team is correct (wrong team = 0). */
-function marginPoints(actualRank: number, guessedRank: number): number {
-  return Math.max(1, actualRank - Math.abs(actualRank - guessedRank));
+/** Points for correct team: totalTeams - |actualRank - guessedRank|. Wrong team = 0. */
+function marginPoints(
+  totalTeams: number,
+  actualRank: number,
+  guessedRank: number
+): number {
+  return totalTeams - Math.abs(actualRank - guessedRank);
 }
 
 const JOKER_WRONG_PENALTY = 10;
@@ -225,15 +228,15 @@ export async function pickByTeamName(
   if (!currentPlayer || currentPlayer.playerId !== playerId) {
     return { ok: false, error: "Not your turn" };
   }
-  if (
-    room.missLimit != null &&
-    (currentPlayer.misses ?? 0) >= room.missLimit
-  ) {
+  if (room.missLimit != null && (currentPlayer.misses ?? 0) >= room.missLimit) {
     return { ok: false, error: "You're out (miss limit reached)" };
   }
 
   if (useJoker && useBadgeHint) {
-    return { ok: false, error: "Cannot use Joker and Badge Hint on the same turn" };
+    return {
+      ok: false,
+      error: "Cannot use Joker and Badge Hint on the same turn",
+    };
   }
   if (useJoker && currentPlayer.usedJoker) {
     return { ok: false, error: "Joker already used this game" };
@@ -325,7 +328,7 @@ export async function pickByTeamName(
     return { ok: true, correct: false, points };
   }
 
-  let points = marginPoints(row.rank, guessedPlace);
+  let points = marginPoints(totalTeams, row.rank, guessedPlace);
   if (applyJoker) {
     points = points * 2;
   }
@@ -397,14 +400,10 @@ export async function getOrSetBadgeHintLogo(
   if (unrevealed.length === 0) {
     return { ok: false, error: "No unrevealed teams" };
   }
-  if (
-    room.badgeHintThisTurn &&
-    room.badgeHintThisTurn.playerId === playerId
-  ) {
+  if (room.badgeHintThisTurn && room.badgeHintThisTurn.playerId === playerId) {
     return { ok: true, logoUrl: room.badgeHintThisTurn.logoUrl };
   }
-  const randomRow =
-    unrevealed[Math.floor(Math.random() * unrevealed.length)];
+  const randomRow = unrevealed[Math.floor(Math.random() * unrevealed.length)];
   const logoUrl = randomRow?.team.logo ?? "";
   if (!logoUrl) {
     return { ok: false, error: "No logo URL" };
