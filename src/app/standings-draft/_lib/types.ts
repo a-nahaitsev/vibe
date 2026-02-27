@@ -34,6 +34,20 @@ export type MissLimit = 3 | 5 | null;
 
 export type StandingsDraftPhase = "lobby" | "playing" | "finished";
 
+/** Single pick result (last pick or history item). */
+export interface LastPick {
+  rank?: number;
+  guessedRank?: number;
+  playerId: string;
+  teamName: string;
+  correct: boolean;
+  points: number;
+  timeout?: boolean;
+  jokerUsed?: boolean;
+  badgeHintUsed?: boolean;
+  streakBonus?: number;
+}
+
 export interface StandingsDraftRoom {
   roomId: string;
   creatorId: string;
@@ -51,24 +65,9 @@ export interface StandingsDraftRoom {
   /** Whose turn: index into players. */
   currentPlayerIndex: number;
   /** Last pick for UI feedback. */
-  lastPick: {
-    /** Actual rank of the team (1..N). */
-    rank?: number;
-    /** Position the player guessed (1..N). */
-    guessedRank?: number;
-    playerId: string;
-    teamName: string;
-    correct: boolean;
-    points: number;
-    /** True when turn ended by timeout (no guess submitted). */
-    timeout?: boolean;
-    /** True when the pick was made with Joker (Triple Captain). */
-    jokerUsed?: boolean;
-    /** True when the pick was made with Badge Hint. */
-    badgeHintUsed?: boolean;
-    /** Extra points from correct-streak milestone this pick (3→5, 5→10, 7→15). */
-    streakBonus?: number;
-  } | null;
+  lastPick: LastPick | null;
+  /** History of picks (oldest first); lastPick is the most recent. */
+  pickHistory?: LastPick[];
   /** Timer per turn in seconds; null = no timer. */
   timerSeconds: number | null;
   /** Server timestamp (ms) when the current turn started. */

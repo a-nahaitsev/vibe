@@ -60,6 +60,7 @@ function processTimeoutIfNeeded(room: StandingsDraftRoom): boolean {
     points: 0,
     timeout: true,
   };
+  (room.pickHistory ??= []).push({ ...room.lastPick });
   const totalTeams = room.standings.length;
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";
@@ -163,6 +164,7 @@ export async function startGame(
   room.season = season;
   room.revealedRanks = [];
   room.lastPick = null;
+  room.pickHistory = [];
   room.timerSeconds = timerSeconds;
   room.players.forEach((p) => {
     p.score = 0;
@@ -285,6 +287,7 @@ export async function pickByTeamName(
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
     };
+    (room.pickHistory ??= []).push({ ...room.lastPick });
     const totalTeams = room.standings.length;
     if (room.revealedRanks.length >= totalTeams) {
       room.phase = "finished";
@@ -310,6 +313,7 @@ export async function pickByTeamName(
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
     };
+    (room.pickHistory ??= []).push({ ...room.lastPick });
     const totalTeams = room.standings.length;
     if (room.revealedRanks.length >= totalTeams) {
       room.phase = "finished";
@@ -351,6 +355,7 @@ export async function pickByTeamName(
     badgeHintUsed: applyBadgeHint,
     ...(streakBonusThisPick > 0 && { streakBonus: streakBonusThisPick }),
   };
+  (room.pickHistory ??= []).push({ ...room.lastPick });
 
   if (room.revealedRanks.length >= totalTeams) {
     room.phase = "finished";

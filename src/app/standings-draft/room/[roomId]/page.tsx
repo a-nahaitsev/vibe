@@ -3,9 +3,19 @@
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { StandingsDraftRoom, StandingRow, StandingsDraftPlayer } from "../../_lib/types";
+import type {
+  StandingsDraftRoom,
+  StandingRow,
+  StandingsDraftPlayer,
+  LastPick,
+} from "../../_lib/types";
 import { LEAGUES, LEAGUE_TO_COUNTRY } from "../../_lib/leagues";
-import { FcCancel } from "react-icons/fc";
+import {
+  FcLike,
+  FcLikePlaceholder,
+  FcCheckmark,
+  FcCancel,
+} from "react-icons/fc";
 import {
   getCachedStandings,
   setCachedStandings,
@@ -51,7 +61,9 @@ export default function StandingsDraftRoomPage() {
   const [guessedPlace, setGuessedPlace] = useState<number | "">("");
   const [useJokerForThisTurn, setUseJokerForThisTurn] = useState(false);
   const [useBadgeHintForThisTurn, setUseBadgeHintForThisTurn] = useState(false);
-  const [badgeHintImageUrl, setBadgeHintImageUrl] = useState<string | null>(null);
+  const [badgeHintImageUrl, setBadgeHintImageUrl] = useState<string | null>(
+    null
+  );
   const [badgeHintLoading, setBadgeHintLoading] = useState(false);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,7 +79,8 @@ export default function StandingsDraftRoomPage() {
   // Clear badge hint image when turn advances (no longer our turn)
   const isMyTurnRef = useRef(false);
   useEffect(() => {
-    const myTurn = room?.players[room?.currentPlayerIndex ?? 0]?.playerId === playerId;
+    const myTurn =
+      room?.players[room?.currentPlayerIndex ?? 0]?.playerId === playerId;
     if (isMyTurnRef.current && !myTurn && badgeHintImageUrl) {
       if (badgeHintImageUrl.startsWith("blob:")) {
         URL.revokeObjectURL(badgeHintImageUrl);
@@ -140,9 +153,7 @@ export default function StandingsDraftRoomPage() {
   const currentPlayer = room?.players[room?.currentPlayerIndex ?? 0];
   const isMyTurn = currentPlayer?.playerId === playerId;
   const isPlayerOut = (p: StandingsDraftPlayer) =>
-    room != null &&
-    room.missLimit != null &&
-    (p.misses ?? 0) >= room.missLimit;
+    room != null && room.missLimit != null && (p.misses ?? 0) >= room.missLimit;
   const iAmOut = me != null && isPlayerOut(me);
   const country = room?.league != null ? LEAGUE_TO_COUNTRY[room.league] : null;
   const needsToJoin = room && !me;
@@ -630,10 +641,10 @@ export default function StandingsDraftRoomPage() {
                         {iAmOut
                           ? "You're out (miss limit reached)."
                           : isMyTurn
-                            ? "Your turn — type a team name to guess."
-                            : `Waiting for ${
-                                currentPlayer?.name ?? "…"
-                              } to guess.`}
+                          ? "Your turn — type a team name to guess."
+                          : `Waiting for ${
+                              currentPlayer?.name ?? "…"
+                            } to guess.`}
                       </p>
                       {remainingSeconds != null && (
                         <p
@@ -655,245 +666,221 @@ export default function StandingsDraftRoomPage() {
                   )}
                 </div>
 
-                {/* Last pick feedback */}
-                {room.lastPick && room.phase === "playing" && (
-                  <div
-                    className={
-                      "rounded-xl border px-4 py-3 " +
-                      (room.lastPick.correct
-                        ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
-                        : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
-                    }
-                  >
-                    <p className="text-sm text-zinc-800 dark:text-zinc-200">
-                      {room.lastPick.timeout ? (
-                        <>
-                          {room.players.find(
-                            (p) => p.playerId === room.lastPick!.playerId
-                          )?.name ?? "Someone"}{" "}
-                          ran out of time — 0 pts
-                        </>
-                      ) : (
-                        <>
-                          {room.players.find(
-                            (p) => p.playerId === room.lastPick!.playerId
-                          )?.name ?? "Someone"}{" "}
-                          guessed &ldquo;{room.lastPick.teamName}&rdquo;
-                          {room.lastPick.guessedRank != null && (
-                            <>
-                              {" "}
-                              at {room.lastPick.guessedRank}
-                              {room.lastPick.guessedRank === 1
-                                ? "st"
-                                : room.lastPick.guessedRank === 2
-                                ? "nd"
-                                : room.lastPick.guessedRank === 3
-                                ? "rd"
-                                : "th"}
-                            </>
-                          )}
-                          {room.lastPick.jokerUsed && " (Joker)"}
-                          {room.lastPick.badgeHintUsed &&
-                            (room.lastPick.correct
-                              ? " (Badge Hint — hint helped)"
-                              : " (Badge Hint — hint didn't help)")}
-                          {" — "}
-                          {room.lastPick.correct ? (
-                            <>
-                              {room.lastPick.rank != null &&
-                              room.lastPick.guessedRank != null &&
-                              room.lastPick.rank !== room.lastPick.guessedRank
-                                ? `was ${room.lastPick.rank}${
-                                    room.lastPick.rank === 1
-                                      ? "st"
-                                      : room.lastPick.rank === 2
-                                      ? "nd"
-                                      : room.lastPick.rank === 3
-                                      ? "rd"
-                                      : "th"
-                                  } → `
-                                : ""}
-                              {room.lastPick.points >= 0 ? "+" : ""}
-                              {room.lastPick.points} pts
-                              {room.lastPick.streakBonus != null &&
-                                room.lastPick.streakBonus > 0 && (
-                                  <> (Correct streak +{room.lastPick.streakBonus} pts)</>
-                                )}
-                            </>
-                          ) : (
-                            <>wrong, {room.lastPick.points} pts</>
-                          )}
-                        </>
-                      )}
-                  </p>
-                </div>
-              )}
+                {/* Pick history accordion */}
+                {room.lastPick &&
+                  (room.phase === "playing" || room.phase === "finished") && (
+                    <PickHistoryAccordion
+                      lastPick={room.lastPick}
+                      pickHistory={room.pickHistory ?? []}
+                      players={room.players}
+                    />
+                  )}
 
-              {/* Bonuses / Multipliers panel */}
-              {(room.phase === "playing" || room.phase === "finished") && (
-                <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-                  <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                    Bonuses
-                  </h3>
-                  <div className="mt-3 space-y-3">
-                    <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
-                      <div>
-                        <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                          Triple Captain (Joker)
-                        </span>
-                        <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                          Once per game. Right: 2× points. Wrong: −10 pts.
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {me?.usedJoker ? (
-                          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                            Used
+                {/* Bonuses / Multipliers panel */}
+                {(room.phase === "playing" || room.phase === "finished") && (
+                  <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+                    <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                      Bonuses
+                    </h3>
+                    <div className="mt-3 space-y-3">
+                      <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                        <div>
+                          <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            Triple Captain (Joker)
                           </span>
-                        ) : isMyTurn ? (
-                          <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                            <input
-                              type="checkbox"
-                              checked={useJokerForThisTurn}
-                              onChange={(e) => {
-                                const checked = e.target.checked;
-                                setUseJokerForThisTurn(checked);
-                                if (checked) {
-                                  setUseBadgeHintForThisTurn(false);
-                                  if (badgeHintImageUrl?.startsWith("blob:")) {
-                                    URL.revokeObjectURL(badgeHintImageUrl);
-                                  }
-                                  setBadgeHintImageUrl(null);
-                                }
-                              }}
-                              disabled={useBadgeHintForThisTurn}
-                              className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
-                            />
-                            Use this turn
-                          </label>
-                        ) : (
-                          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                            Available
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
-                      <div>
-                        <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                          Badge Hint
-                        </span>
-                        <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                          Once per game. See a blurred club logo for one position. Can&apos;t use with Joker same turn.
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        {me?.usedBadgeHint ? (
-                          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                            Used
-                          </span>
-                        ) : isMyTurn ? (
-                          <>
+                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                            Once per game. Right: 2× points. Wrong: −10 pts.
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {me?.usedJoker ? (
+                            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                              Used
+                            </span>
+                          ) : isMyTurn ? (
                             <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
                               <input
                                 type="checkbox"
-                                checked={useBadgeHintForThisTurn}
+                                checked={useJokerForThisTurn}
                                 onChange={(e) => {
                                   const checked = e.target.checked;
-                                  setUseBadgeHintForThisTurn(checked);
+                                  setUseJokerForThisTurn(checked);
                                   if (checked) {
-                                    setUseJokerForThisTurn(false);
-                                    if (badgeHintImageUrl?.startsWith("blob:")) {
+                                    setUseBadgeHintForThisTurn(false);
+                                    if (
+                                      badgeHintImageUrl?.startsWith("blob:")
+                                    ) {
                                       URL.revokeObjectURL(badgeHintImageUrl);
                                     }
                                     setBadgeHintImageUrl(null);
                                   }
                                 }}
-                                disabled={useJokerForThisTurn}
+                                disabled={useBadgeHintForThisTurn}
                                 className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
                               />
                               Use this turn
                             </label>
-                            {useBadgeHintForThisTurn && availablePlaces.length > 0 && (
-                              <>
-                                <button
-                                  type="button"
-                                  disabled={badgeHintImageUrl !== null || badgeHintLoading}
-                                  onClick={async () => {
-                                    if (!roomId || !playerId) return;
-                                    setBadgeHintLoading(true);
-                                    try {
-                                      const res = await fetch(
-                                        `/api/standings-draft/room/${roomId}/badge-hint?playerId=${encodeURIComponent(playerId)}`
-                                      );
-                                      if (!res.ok) return;
-                                      const blob = await res.blob();
-                                      if (badgeHintImageUrl?.startsWith("blob:")) {
-                                        URL.revokeObjectURL(badgeHintImageUrl);
-                                      }
-                                      setBadgeHintImageUrl(URL.createObjectURL(blob));
-                                    } finally {
-                                      setBadgeHintLoading(false);
-                                    }
-                                  }}
-                                  className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
-                                >
-                                  {badgeHintLoading ? "Loading…" : "Show badge"}
-                                </button>
-                                {badgeHintImageUrl && (
-                                  <img
-                                    src={badgeHintImageUrl}
-                                    alt="Blurred club badge hint"
-                                    width={100}
-                                    height={100}
-                                    className="h-[100px] w-[100px] select-none object-contain"
-                                    draggable={false}
-                                  />
-                                )}
-                              </>
-                            )}
-                          </>
-                        ) : (
-                          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                            Available
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <div>
-                          <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                            Correct streak
-                          </span>
-                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                            3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a row: +15 pts
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-end gap-1.5 text-sm">
-                          {me != null && (
-                            <span className="text-zinc-600 dark:text-zinc-400">
-                              Current: <strong className="text-zinc-800 dark:text-zinc-200">{me.correctStreak ?? 0}</strong> in a row
+                          ) : (
+                            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                              Available
                             </span>
                           )}
-                          <div className="flex items-center gap-3">
-                            {[3, 5, 7].map((m) => (
-                              <span key={m} className="flex items-center gap-1">
-                                <span className="text-zinc-600 dark:text-zinc-400">{m}→+{m === 3 ? 5 : m === 5 ? 10 : 15}</span>
-                                {me?.streakMilestones?.includes(m) && (
-                                  <svg className="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                  </svg>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                        <div>
+                          <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            Badge Hint
+                          </span>
+                          <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                            Once per game. See a blurred club logo for one
+                            position. Can&apos;t use with Joker same turn.
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {me?.usedBadgeHint ? (
+                            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                              Used
+                            </span>
+                          ) : isMyTurn ? (
+                            <>
+                              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                <input
+                                  type="checkbox"
+                                  checked={useBadgeHintForThisTurn}
+                                  onChange={(e) => {
+                                    const checked = e.target.checked;
+                                    setUseBadgeHintForThisTurn(checked);
+                                    if (checked) {
+                                      setUseJokerForThisTurn(false);
+                                      if (
+                                        badgeHintImageUrl?.startsWith("blob:")
+                                      ) {
+                                        URL.revokeObjectURL(badgeHintImageUrl);
+                                      }
+                                      setBadgeHintImageUrl(null);
+                                    }
+                                  }}
+                                  disabled={useJokerForThisTurn}
+                                  className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
+                                />
+                                Use this turn
+                              </label>
+                              {useBadgeHintForThisTurn &&
+                                availablePlaces.length > 0 && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      disabled={
+                                        badgeHintImageUrl !== null ||
+                                        badgeHintLoading
+                                      }
+                                      onClick={async () => {
+                                        if (!roomId || !playerId) return;
+                                        setBadgeHintLoading(true);
+                                        try {
+                                          const res = await fetch(
+                                            `/api/standings-draft/room/${roomId}/badge-hint?playerId=${encodeURIComponent(
+                                              playerId
+                                            )}`
+                                          );
+                                          if (!res.ok) return;
+                                          const blob = await res.blob();
+                                          if (
+                                            badgeHintImageUrl?.startsWith(
+                                              "blob:"
+                                            )
+                                          ) {
+                                            URL.revokeObjectURL(
+                                              badgeHintImageUrl
+                                            );
+                                          }
+                                          setBadgeHintImageUrl(
+                                            URL.createObjectURL(blob)
+                                          );
+                                        } finally {
+                                          setBadgeHintLoading(false);
+                                        }
+                                      }}
+                                      className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
+                                    >
+                                      {badgeHintLoading
+                                        ? "Loading…"
+                                        : "Show badge"}
+                                    </button>
+                                    {badgeHintImageUrl && (
+                                      <img
+                                        src={badgeHintImageUrl}
+                                        alt="Blurred club badge hint"
+                                        width={100}
+                                        height={100}
+                                        className="h-[100px] w-[100px] select-none object-contain"
+                                        draggable={false}
+                                      />
+                                    )}
+                                  </>
                                 )}
+                            </>
+                          ) : (
+                            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                              Available
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <div>
+                            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                              Correct streak
+                            </span>
+                            <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                              3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a
+                              row: +15 pts
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1.5 text-sm">
+                            {me != null && (
+                              <span className="text-zinc-600 dark:text-zinc-400">
+                                Current:{" "}
+                                <strong className="text-zinc-800 dark:text-zinc-200">
+                                  {me.correctStreak ?? 0}
+                                </strong>{" "}
+                                in a row
                               </span>
-                            ))}
+                            )}
+                            <div className="flex items-center gap-3">
+                              {[3, 5, 7].map((m) => (
+                                <span
+                                  key={m}
+                                  className="flex items-center gap-1"
+                                >
+                                  <span className="text-zinc-600 dark:text-zinc-400">
+                                    {m}→+{m === 3 ? 5 : m === 5 ? 10 : 15}
+                                  </span>
+                                  {me?.streakMilestones?.includes(m) && (
+                                    <svg
+                                      className="h-4 w-4 text-emerald-600 dark:text-emerald-400"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                      aria-hidden
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                  )}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
                 {/* Guess input (current player only) — pulse when your turn; hidden when out */}
                 {room.phase === "playing" && isMyTurn && !iAmOut && (
@@ -929,8 +916,8 @@ export default function StandingsDraftRoomPage() {
                         </svg>
                       </span>
                     </p>
-                    <div className="mt-3 space-y-3">
-                      <div>
+                    <div className="mt-3 flex flex-row flex-wrap items-end gap-3">
+                      <div className="w-fit shrink-0">
                         <label
                           htmlFor="guess-place"
                           className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
@@ -944,7 +931,7 @@ export default function StandingsDraftRoomPage() {
                             const v = e.target.value;
                             setGuessedPlace(v === "" ? "" : Number(v));
                           }}
-                          className="w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
+                          className="w-fit min-w-[6rem] rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200"
                           disabled={
                             actionLoading || availablePlaces.length === 0
                           }
@@ -967,7 +954,7 @@ export default function StandingsDraftRoomPage() {
                           )}
                         </select>
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <label
                           htmlFor="guess-team"
                           className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400"
@@ -1070,16 +1057,34 @@ export default function StandingsDraftRoomPage() {
                             <span className="flex flex-wrap items-center gap-1.5 font-medium text-zinc-900 dark:text-zinc-100">
                               {p.name}
                               {p.playerId === room.creatorId ? " (host)" : ""}
-                              {misses > 0 && (
-                                <span className="flex items-center gap-0.5" title={`${misses} miss${misses === 1 ? "" : "es"}`}>
-                                  {Array.from({ length: misses }, (_, i) => (
-                                    <FcCancel key={i} className="h-4 w-4" aria-hidden />
-                                  ))}
+                              {room.missLimit != null && (
+                                <span
+                                  className="flex items-center gap-0.5"
+                                  title={`${misses} miss${
+                                    misses === 1 ? "" : "es"
+                                  }, ${room.missLimit - misses} left`}
+                                >
+                                  {Array.from(
+                                    { length: room.missLimit },
+                                    (_, i) =>
+                                      i < room.missLimit! - misses ? (
+                                        <FcLike
+                                          key={i}
+                                          className="h-4 w-4"
+                                          aria-hidden
+                                        />
+                                      ) : (
+                                        <FcLikePlaceholder
+                                          key={i}
+                                          className="h-4 w-4"
+                                          aria-hidden
+                                        />
+                                      )
+                                  )}
                                 </span>
                               )}
                               {room.missLimit != null && (
                                 <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
-                                  {misses}/{room.missLimit}
                                   {out && " (out)"}
                                 </span>
                               )}
@@ -1174,6 +1179,141 @@ export default function StandingsDraftRoomPage() {
     </main>
   );
 }
+
+/** Renders one pick line: icon + text with team name highlighted. */
+function PickLineContent({
+  pick,
+  players,
+  asParagraph = false,
+}: {
+  pick: LastPick;
+  players: StandingsDraftPlayer[];
+  asParagraph?: boolean;
+}) {
+  const playerName =
+    players.find((p) => p.playerId === pick.playerId)?.name ?? "Someone";
+  const ord = (n: number) =>
+    n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+  const content = pick.timeout ? (
+    <>{playerName} ran out of time — 0 pts</>
+  ) : (
+    <>
+      {playerName} guessed
+      <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+        {`"${pick.teamName}"`}
+      </span>
+      {pick.guessedRank != null && (
+        <>
+          {" "}
+          at {pick.guessedRank}
+          {ord(pick.guessedRank)}
+        </>
+      )}
+      {pick.jokerUsed && " (Joker)"}
+      {pick.badgeHintUsed &&
+        (pick.correct
+          ? " (Badge Hint — hint helped)"
+          : " (Badge Hint — hint didn't help)")}
+      {" — "}
+      {pick.correct ? (
+        <>
+          {pick.rank != null &&
+            pick.guessedRank != null &&
+            pick.rank !== pick.guessedRank &&
+            `was ${pick.rank}${ord(pick.rank)} → `}
+          {pick.points >= 0 ? "+" : ""}
+          {pick.points} pts
+          {pick.streakBonus != null && pick.streakBonus > 0 && (
+            <> (Correct streak +{pick.streakBonus} pts)</>
+          )}
+        </>
+      ) : (
+        <>wrong, {pick.points} pts</>
+      )}
+    </>
+  );
+  const Wrapper = asParagraph ? "p" : "span";
+  return (
+    <Wrapper className="inline-flex items-center gap-2 text-sm text-zinc-800 dark:text-zinc-200">
+      {pick.correct ? (
+        <FcCheckmark className="h-5 w-5 shrink-0" aria-hidden />
+      ) : (
+        <FcCancel className="h-5 w-5 shrink-0" aria-hidden />
+      )}
+      {content}
+    </Wrapper>
+  );
+}
+
+const PickHistoryAccordion = ({
+  lastPick,
+  pickHistory,
+  players,
+}: {
+  lastPick: LastPick;
+  pickHistory: LastPick[];
+  players: StandingsDraftPlayer[];
+}) => {
+  const [open, setOpen] = useState(false);
+  const previousPicks =
+    pickHistory.length > 0 ? pickHistory.slice(0, -1).reverse() : [];
+  const hasPrevious = previousPicks.length > 0;
+
+  return (
+    <div
+      className={
+        "rounded-xl border px-4 py-2 " +
+        (lastPick.correct
+          ? "border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
+          : "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20")
+      }
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center gap-2 py-2 text-left"
+        aria-expanded={open}
+      >
+        <PickLineContent pick={lastPick} players={players} />
+        {hasPrevious && (
+          <span
+            className={
+              "ml-auto shrink-0 text-zinc-500 transition-transform " +
+              (open ? "rotate-180" : "")
+            }
+            aria-hidden
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </span>
+        )}
+      </button>
+      {open && hasPrevious && (
+        <ul className="border-t border-zinc-200/50 py-2 dark:border-zinc-700/50">
+          {previousPicks.map((pick, i) => (
+            <li
+              key={i}
+              className="flex items-center gap-2 border-b border-zinc-200/50 py-2 last:border-b-0 dark:border-zinc-700/50"
+            >
+              <PickLineContent pick={pick} players={players} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 const StandingTableRow = ({
   row,
