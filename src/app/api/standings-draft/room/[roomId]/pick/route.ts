@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pickByTeamName } from "../../../store";
+import { pickByTeamId } from "../../../store";
 
 export async function POST(
   request: Request,
@@ -8,6 +8,7 @@ export async function POST(
   const { roomId } = await params;
   let body: {
     playerId?: string;
+    teamId?: number;
     teamName?: string;
     guessedPlace?: number;
     useJoker?: boolean;
@@ -19,7 +20,13 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const playerId = (body.playerId ?? "").trim();
-  const teamName = typeof body.teamName === "string" ? body.teamName : "";
+  const teamId =
+    typeof body.teamId === "number"
+      ? body.teamId
+      : typeof body.teamId === "string"
+        ? parseInt(body.teamId, 10)
+        : NaN;
+  const teamName = typeof body.teamName === "string" ? body.teamName.trim() : "";
   const guessedPlace =
     typeof body.guessedPlace === "number"
       ? body.guessedPlace
@@ -34,9 +41,9 @@ export async function POST(
       { status: 400 }
     );
   }
-  if (!teamName.trim()) {
+  if (!Number.isInteger(teamId) || teamId < 1) {
     return NextResponse.json(
-      { error: "teamName is required" },
+      { error: "teamId is required (from team list)" },
       { status: 400 }
     );
   }
@@ -46,13 +53,14 @@ export async function POST(
       { status: 400 }
     );
   }
-  const result = await pickByTeamName(
+  const result = await pickByTeamId(
     roomId,
     playerId,
-    teamName,
+    teamId,
     guessedPlace,
     useJoker,
-    useBadgeHint
+    useBadgeHint,
+    teamName || undefined
   );
   if (!result.ok) {
     return NextResponse.json(

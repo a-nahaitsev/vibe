@@ -90,7 +90,7 @@ export default function StandingsDraftRoomPage() {
   const [guessInput, setGuessInput] = useState("");
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [suggestionHighlight, setSuggestionHighlight] = useState(0);
-  const [teamNames, setTeamNames] = useState<string[]>([]);
+  const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([]);
   const [joinName, setJoinName] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [copyLinkFeedback, setCopyLinkFeedback] = useState(false);
@@ -269,8 +269,8 @@ export default function StandingsDraftRoomPage() {
     fetch(`/api/standings-draft/teams?country=${country}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled && Array.isArray(data.names)) {
-          setTeamNames(data.names);
+        if (!cancelled && Array.isArray(data.teams)) {
+          setTeamList(data.teams);
         }
       })
       .catch(() => {});
@@ -284,10 +284,15 @@ export default function StandingsDraftRoomPage() {
       return [];
     }
     const q = guessInput.trim().toLowerCase();
-    return teamNames
-      .filter((name) => name.toLowerCase().includes(q))
+    return teamList
+      .filter((t) => t.name.toLowerCase().includes(q))
       .slice(0, MAX_SUGGESTIONS);
-  }, [teamNames, guessInput]);
+  }, [teamList, guessInput]);
+
+  const teamIdToName = useMemo(
+    () => Object.fromEntries(teamList.map((t) => [t.id, t.name])),
+    [teamList]
+  );
 
   const showSuggestions = isMyTurn && suggestionsOpen && suggestions.length > 0;
   const remainingSeconds =
@@ -361,15 +366,27 @@ export default function StandingsDraftRoomPage() {
     }
   };
 
-  const handleSubmitGuess = async (teamName: string) => {
-    const trimmed = teamName.trim();
+  const handleSubmitGuess = async (
+    teamOrNull: { id: number; name: string } | null
+  ) => {
+    const team =
+      teamOrNull ??
+      teamList.find(
+        (t) =>
+          t.name.trim().toLowerCase() === guessInput.trim().toLowerCase()
+      ) ?? null;
+    if (!team) {
+      setError("Team not found. Pick from the suggestions list.");
+      return;
+    }
     const place =
       typeof guessedPlace === "number" && availablePlaces.includes(guessedPlace)
         ? guessedPlace
         : availablePlaces[0];
-    if (!roomId || !playerId || !trimmed || place == null) {
+    if (!roomId || !playerId || place == null) {
       return;
     }
+    setError("");
     setActionLoading(true);
     setGuessInput("");
     setSuggestionsOpen(false);
@@ -379,7 +396,8 @@ export default function StandingsDraftRoomPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           playerId,
-          teamName: trimmed,
+          teamId: team.id,
+          teamName: team.name,
           guessedPlace: place,
           useJoker: useJokerForThisTurn,
           useBadgeHint: useBadgeHintForThisTurn,
@@ -403,8 +421,8 @@ export default function StandingsDraftRoomPage() {
     }
   };
 
-  const pickSuggestion = (name: string) => {
-    setGuessInput(name);
+  const pickSuggestion = (team: { id: number; name: string }) => {
+    setGuessInput(team.name);
     setSuggestionsOpen(false);
     setSuggestionHighlight(0);
   };
@@ -421,7 +439,7 @@ export default function StandingsDraftRoomPage() {
       setSuggestionHighlight((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const toSubmit = suggestions[highlightedIndex] ?? guessInput.trim();
+      const toSubmit = suggestions[highlightedIndex] ?? null;
       if (toSubmit) {
         handleSubmitGuess(toSubmit);
       }
@@ -977,9 +995,9 @@ export default function StandingsDraftRoomPage() {
                               className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-600 dark:bg-zinc-800"
                               role="listbox"
                             >
-                              {suggestions.map((name, i) => (
+                              {suggestions.map((team, i) => (
                                 <li
-                                  key={name}
+                                  key={team.id}
                                   role="option"
                                   aria-selected={i === highlightedIndex}
                                   className={
@@ -990,10 +1008,10 @@ export default function StandingsDraftRoomPage() {
                                   }
                                   onMouseDown={(e) => {
                                     e.preventDefault();
-                                    pickSuggestion(name);
+                                    pickSuggestion(team);
                                   }}
                                 >
-                                  {name}
+                                  {team.name}
                                 </li>
                               ))}
                             </ul>
@@ -1003,7 +1021,7 @@ export default function StandingsDraftRoomPage() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleSubmitGuess(guessInput.trim())}
+                      onClick={() => handleSubmitGuess(null)}
                       disabled={
                         actionLoading ||
                         !guessInput.trim() ||
@@ -1164,6 +1182,8 @@ export default function StandingsDraftRoomPage() {
                       const highlightUnrevealed =
                         room.phase === "finished" &&
                         room.revealedRanks.length < room.standings.length;
+                      const displayName =
+                        teamIdToName[row.team.id] ?? row.team.name;
                       return (
                         <StandingTableRow
                           key={row.rank}
@@ -1171,6 +1191,7 @@ export default function StandingsDraftRoomPage() {
                           revealed={revealed}
                           highlightUnrevealed={highlightUnrevealed}
                           showTeamAlways={room.phase === "finished"}
+                          displayName={displayName}
                         />
                       );
                     })}
@@ -1324,12 +1345,15 @@ const StandingTableRow = ({
   revealed,
   highlightUnrevealed = false,
   showTeamAlways = false,
+  displayName,
 }: {
   row: StandingRow;
   revealed: boolean;
   highlightUnrevealed?: boolean;
   /** When true (game finished), show team name/logo for every row; only unguessed rows get highlighted. */
   showTeamAlways?: boolean;
+  /** Team name from JSON (preferred over row.team.name from standings API). */
+  displayName?: string;
 }) => {
   const { rank, team, points, goalsDiff, all, form } = row;
   const gd = goalsDiff >= 0 ? `+${goalsDiff}` : String(goalsDiff);
@@ -1337,6 +1361,7 @@ const StandingTableRow = ({
   const unguessed = !revealed;
   const highlight = unguessed && highlightUnrevealed;
   const showTeam = revealed || showTeamAlways;
+  const name = displayName ?? team.name;
 
   return (
     <tr
@@ -1359,7 +1384,7 @@ const StandingTableRow = ({
               height={24}
               className="h-6 w-6 object-contain"
             />
-            {team.name}
+            {name}
           </span>
         ) : (
           <span className="text-zinc-400 dark:text-zinc-500">???</span>

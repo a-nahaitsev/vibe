@@ -13,7 +13,9 @@ import Belgium from "@/lib/Belgium.json";
 const COUNTRIES = new Set(Object.values(LEAGUE_TO_COUNTRY));
 const VALID_COUNTRIES = Array.from(COUNTRIES).sort().join(", ");
 
-type TeamResponse = { response: Array<{ team: { name: string } }> };
+type TeamResponse = {
+  response: Array<{ team: { id: number; name: string } }>;
+};
 
 const DATA: Record<string, TeamResponse> = {
   England: England as unknown as TeamResponse,
@@ -43,6 +45,8 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-  const names = data.response.map((r) => r.team?.name).filter(Boolean);
-  return NextResponse.json({ names });
+  const teams = data.response
+    .map((r) => r.team?.id != null && r.team?.name ? { id: r.team.id, name: r.team.name } : null)
+    .filter(Boolean) as { id: number; name: string }[];
+  return NextResponse.json({ teams });
 }

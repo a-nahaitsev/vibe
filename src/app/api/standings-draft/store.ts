@@ -371,6 +371,167 @@ export async function pickByTeamName(
   return { ok: true, correct: true, points };
 }
 
+/** Pick by team id (from JSON/suggestions). Compare with standings row team.id; display name from teamNameForDisplay (JSON name). */
+export async function pickByTeamId(
+  roomId: string,
+  playerId: string,
+  teamId: number,
+  guessedPlace: number,
+  useJoker?: boolean,
+  useBadgeHint?: boolean,
+  teamNameForDisplay?: string
+): Promise<{
+  ok: boolean;
+  error?: string;
+  correct?: boolean;
+  points?: number;
+}> {
+  const room = await storageGet(roomId);
+  if (!room) {
+    return { ok: false, error: "Room not found" };
+  }
+  if (room.phase !== "playing") {
+    return { ok: false, error: "Game not in play" };
+  }
+
+  const currentPlayer = room.players[room.currentPlayerIndex];
+  if (!currentPlayer || currentPlayer.playerId !== playerId) {
+    return { ok: false, error: "Not your turn" };
+  }
+  if (room.missLimit != null && (currentPlayer.misses ?? 0) >= room.missLimit) {
+    return { ok: false, error: "You're out (miss limit reached)" };
+  }
+
+  if (useJoker && useBadgeHint) {
+    return {
+      ok: false,
+      error: "Cannot use Joker and Badge Hint on the same turn",
+    };
+  }
+  if (useJoker && currentPlayer.usedJoker) {
+    return { ok: false, error: "Joker already used this game" };
+  }
+  if (useBadgeHint && currentPlayer.usedBadgeHint) {
+    return { ok: false, error: "Badge Hint already used this game" };
+  }
+
+  const totalTeams = room.standings.length;
+  if (
+    typeof guessedPlace !== "number" ||
+    guessedPlace < 1 ||
+    guessedPlace > totalTeams
+  ) {
+    return { ok: false, error: "Pick a place from 1 to " + totalTeams };
+  }
+  if (room.revealedRanks.includes(guessedPlace)) {
+    return { ok: false, error: "That place was already guessed" };
+  }
+
+  const row = room.standings.find((r) => r.team.id === teamId);
+  const alreadyRevealed = row && room.revealedRanks.includes(row.rank);
+  const displayName = teamNameForDisplay?.trim() || row?.team.name || "?";
+
+  const applyJoker = useJoker === true;
+  const applyBadgeHint = useBadgeHint === true;
+  if (applyJoker) {
+    currentPlayer.usedJoker = true;
+  }
+  if (applyBadgeHint) {
+    currentPlayer.usedBadgeHint = true;
+  }
+
+  if (!row) {
+    currentPlayer.correctStreak = 0;
+    currentPlayer.misses = (currentPlayer.misses ?? 0) + 1;
+    const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
+    currentPlayer.score += points;
+    room.lastPick = {
+      guessedRank: guessedPlace,
+      playerId,
+      teamName: displayName,
+      correct: false,
+      points,
+      jokerUsed: applyJoker,
+      badgeHintUsed: applyBadgeHint,
+    };
+    (room.pickHistory ??= []).push({ ...room.lastPick });
+    if (room.revealedRanks.length >= totalTeams) {
+      room.phase = "finished";
+      await storageSet(room);
+      return { ok: true, correct: false, points };
+    }
+    advanceToNextTurn(room);
+    await storageSet(room);
+    return { ok: true, correct: false, points };
+  }
+
+  if (alreadyRevealed) {
+    currentPlayer.correctStreak = 0;
+    currentPlayer.misses = (currentPlayer.misses ?? 0) + 1;
+    const points = applyJoker ? -JOKER_WRONG_PENALTY : 0;
+    currentPlayer.score += points;
+    room.lastPick = {
+      guessedRank: guessedPlace,
+      playerId,
+      teamName: displayName,
+      correct: false,
+      points,
+      jokerUsed: applyJoker,
+      badgeHintUsed: applyBadgeHint,
+    };
+    (room.pickHistory ??= []).push({ ...room.lastPick });
+    if (room.revealedRanks.length >= totalTeams) {
+      room.phase = "finished";
+      await storageSet(room);
+      return { ok: true, correct: false, points };
+    }
+    advanceToNextTurn(room);
+    await storageSet(room);
+    return { ok: true, correct: false, points };
+  }
+
+  let points = marginPoints(totalTeams, row.rank, guessedPlace);
+  if (applyJoker) {
+    points = points * 2;
+  }
+  const streak = (currentPlayer.correctStreak ?? 0) + 1;
+  currentPlayer.correctStreak = streak;
+  const milestones = currentPlayer.streakMilestones ?? [];
+  let streakBonusThisPick = 0;
+  for (const [milestone, bonus] of STREAK_BONUSES) {
+    if (streak >= milestone && !milestones.includes(milestone)) {
+      points += bonus;
+      streakBonusThisPick += bonus;
+      milestones.push(milestone);
+    }
+  }
+  currentPlayer.streakMilestones = milestones;
+  room.revealedRanks.push(row.rank);
+  currentPlayer.score += points;
+  room.lastPick = {
+    rank: row.rank,
+    guessedRank: guessedPlace,
+    playerId,
+    teamName: displayName,
+    correct: true,
+    points,
+    jokerUsed: applyJoker,
+    badgeHintUsed: applyBadgeHint,
+    ...(streakBonusThisPick > 0 && { streakBonus: streakBonusThisPick }),
+  };
+  (room.pickHistory ??= []).push({ ...room.lastPick });
+
+  if (room.revealedRanks.length >= totalTeams) {
+    room.phase = "finished";
+    await storageSet(room);
+    return { ok: true, correct: true, points };
+  }
+
+  advanceToNextTurn(room);
+  await storageSet(room);
+  return { ok: true, correct: true, points };
+}
+
 /** Get or set the badge-hint logo URL for the current turn. Only the current player can request; server picks a random unrevealed team and returns its logo URL (for server-side blur). */
 export async function getOrSetBadgeHintLogo(
   roomId: string,
