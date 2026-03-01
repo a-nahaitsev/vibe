@@ -16,7 +16,12 @@ import {
   FcCheckmark,
   FcCancel,
   FcInfo,
+  FcCurrencyExchange,
+  FcPicture,
+  FcRemoveImage,
+  FcExpired,
 } from "react-icons/fc";
+import { IoFlame } from "react-icons/io5";
 import {
   getCachedStandings,
   setCachedStandings,
@@ -372,9 +377,9 @@ export default function StandingsDraftRoomPage() {
     const team =
       teamOrNull ??
       teamList.find(
-        (t) =>
-          t.name.trim().toLowerCase() === guessInput.trim().toLowerCase()
-      ) ?? null;
+        (t) => t.name.trim().toLowerCase() === guessInput.trim().toLowerCase()
+      ) ??
+      null;
     if (!team) {
       setError("Team not found. Pick from the suggestions list.");
       return;
@@ -726,11 +731,15 @@ export default function StandingsDraftRoomPage() {
                     <div className="mt-3 space-y-3">
                       <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                         <div className="flex items-center gap-1.5">
+                          <FcCurrencyExchange
+                            className="h-5 w-5 shrink-0"
+                            aria-hidden
+                          />
                           <span className="font-medium text-zinc-800 dark:text-zinc-200">
                             Double Joker
                           </span>
                           <InfoTooltip
-                            trigger={<FcInfo className="h-4 w-4" />}
+                            trigger={<FcInfo className="h-4 w-4 grayscale" />}
                             content="Once per game. Right: 2× points. Wrong: −10 pts."
                             ariaLabel="Double Joker description"
                           />
@@ -772,11 +781,12 @@ export default function StandingsDraftRoomPage() {
                       </div>
                       <div className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                         <div className="flex items-center gap-1.5">
+                          <FcPicture className="h-5 w-5 shrink-0" aria-hidden />
                           <span className="font-medium text-zinc-800 dark:text-zinc-200">
                             Badge Hint
                           </span>
                           <InfoTooltip
-                            trigger={<FcInfo className="h-4 w-4" />}
+                            trigger={<FcInfo className="h-4 w-4 grayscale" />}
                             content={
                               <>
                                 Once per game. See a blurred random club logo
@@ -881,11 +891,15 @@ export default function StandingsDraftRoomPage() {
                       <div className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div className="flex items-center gap-1.5">
+                            <IoFlame
+                              className="h-5 w-5 shrink-0 text-orange-500"
+                              aria-hidden
+                            />
                             <span className="font-medium text-zinc-800 dark:text-zinc-200">
                               Correct streak
                             </span>
                             <InfoTooltip
-                              trigger={<FcInfo className="h-4 w-4" />}
+                              trigger={<FcInfo className="h-4 w-4 grayscale" />}
                               content="3 in a row: +5 pts · 5 in a row: +10 pts · 7 in a row: +15 pts"
                               ariaLabel="Correct streak description"
                             />
@@ -919,7 +933,7 @@ export default function StandingsDraftRoomPage() {
                         Guess a team and its position in table
                       </label>
                       <InfoTooltip
-                        trigger={<FcInfo className="h-4 w-4" />}
+                        trigger={<FcInfo className="h-4 w-4 grayscale" />}
                         content="Points = number of teams − |rank − your guess|. E.g. 20 teams, team 10th: guess 10th → 20 pts, 12th → 18 pts, 20th → 10 pts. Wrong team = 0."
                         ariaLabel="Scoring example"
                       />
@@ -1041,7 +1055,7 @@ export default function StandingsDraftRoomPage() {
                   <h3 className="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Scores
                     <InfoTooltip
-                      trigger={<FcInfo className="h-4 w-4" />}
+                      trigger={<FcInfo className="h-4 w-4 grayscale" />}
                       content={
                         <>
                           Closer position guess = more points
@@ -1220,7 +1234,14 @@ function PickLineContent({
   const ord = (n: number) =>
     n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
   const content = pick.timeout ? (
-    <>{playerName} ran out of time — 0 pts</>
+    <>
+      {playerName} ran out of time{" "}
+      <FcExpired
+        className="inline-block h-4 w-4 shrink-0 align-middle"
+        aria-hidden
+      />{" "}
+      — 0 pts
+    </>
   ) : (
     <>
       {playerName} guessed
@@ -1234,11 +1255,37 @@ function PickLineContent({
           {ord(pick.guessedRank)}
         </>
       )}
-      {pick.jokerUsed && " (Double Joker)"}
-      {pick.badgeHintUsed &&
-        (pick.correct
-          ? " (Badge Hint — hint helped)"
-          : " (Badge Hint — hint didn't help)")}
+      {(pick.jokerUsed || pick.badgeHintUsed) && " "}
+      {pick.jokerUsed && (
+        <span
+          className="inline-flex shrink-0 align-middle"
+          title="Double Joker"
+          aria-label="Double Joker"
+        >
+          <FcCurrencyExchange className="h-4 w-4" />
+        </span>
+      )}
+      {pick.badgeHintUsed && (
+        <span
+          className="inline-flex shrink-0 align-middle"
+          title={
+            pick.correct
+              ? "Badge Hint — hint helped"
+              : "Badge Hint — hint didn't help"
+          }
+          aria-label={
+            pick.correct
+              ? "Badge Hint — hint helped"
+              : "Badge Hint — hint didn't help"
+          }
+        >
+          {pick.correct ? (
+            <FcPicture className="h-4 w-4" />
+          ) : (
+            <FcRemoveImage className="h-4 w-4" />
+          )}
+        </span>
+      )}
       {" — "}
       {pick.correct ? (
         <>
@@ -1249,7 +1296,17 @@ function PickLineContent({
           {pick.points >= 0 ? "+" : ""}
           {pick.points} pts
           {pick.streakBonus != null && pick.streakBonus > 0 && (
-            <> (Correct streak +{pick.streakBonus} pts)</>
+            <span className="text-zinc-600 dark:text-zinc-400">
+              (
+              <span
+                className="inline-flex shrink-0 align-middle"
+                title="Correct streak"
+                aria-label="Correct streak"
+              >
+                <IoFlame className="h-4 w-4 text-orange-500" />
+              </span>{" "}
+              +{pick.streakBonus} pts )
+            </span>
           )}
         </>
       ) : (

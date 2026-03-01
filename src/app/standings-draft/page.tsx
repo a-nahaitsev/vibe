@@ -45,8 +45,11 @@ export default function StandingsDraftHomePage() {
       if (!res.ok) throw new Error(data.error ?? "Failed to create room");
       const rid = data.roomId;
       const pid = data.playerId;
-      const redirectUrl = `/standings-draft/room/${rid}?playerId=${encodeURIComponent(pid)}`;
-      if (!rid || !pid) throw new Error("Invalid response: missing room or player id");
+      const redirectUrl = `/standings-draft/room/${rid}?playerId=${encodeURIComponent(
+        pid
+      )}`;
+      if (!rid || !pid)
+        throw new Error("Invalid response: missing room or player id");
       saveRoomSession(rid, pid, name);
       router.push(redirectUrl);
     } catch (err) {
@@ -95,7 +98,10 @@ export default function StandingsDraftHomePage() {
             Standings Draft (Multiplayer)
           </h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Pick teams and guess their position in the standings. Points = how close your guess is (formula: rank − |rank − your guess|, min 1 for correct team; wrong team = 0). E.g. team is 10th: guess 10th → 10 pts; guess 12th → 8 pts; guess 20th → 1 pt. Wrong team = 0. When all teams are revealed, the player with the most points wins.
+            Pick teams and guess their position in the standings. Points =
+            number of teams − |rank − your guess|. E.g. 20 teams, team 10th:
+            guess 10th → 20 pts, 12th → 18 pts, 20th → 10 pts. Wrong team = 0.
+            When all teams are revealed, the player with the most points wins.
           </p>
         </div>
 
