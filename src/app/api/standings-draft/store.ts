@@ -96,12 +96,16 @@ export async function createRoom(
   return { roomId, playerId };
 }
 
+/** Join room in lobby, playing, or finished. New players in an active game start with 0 points and get a turn in rotation. */
 export async function joinRoom(
   roomId: string,
   playerName: string
 ): Promise<{ playerId: string } | null> {
   const room = await storageGet(roomId);
-  if (!room || room.phase !== "lobby") {
+  if (!room) {
+    return null;
+  }
+  if (room.phase !== "lobby" && room.phase !== "playing" && room.phase !== "finished") {
     return null;
   }
   const playerId = generateId("player");
@@ -109,6 +113,11 @@ export async function joinRoom(
     playerId,
     name: playerName,
     score: 0,
+    misses: 0,
+    usedJoker: false,
+    usedBadgeHint: false,
+    correctStreak: 0,
+    streakMilestones: [],
   };
   room.players.push(player);
   await storageSet(room);
@@ -178,6 +187,44 @@ export async function startGame(
   const now = Date.now();
   room.turnStartedAt = now;
   room.turnEndsAt = timerSeconds != null ? now + timerSeconds * 1000 : null;
+  await storageSet(room);
+  return { ok: true };
+}
+
+/** Reset room to lobby so host can start a new game. Only creator can reset. */
+export async function resetRoom(
+  roomId: string,
+  requestingPlayerId: string
+): Promise<{ ok: boolean; error?: string }> {
+  const room = await storageGet(roomId);
+  if (!room) {
+    return { ok: false, error: "Room not found" };
+  }
+  if (room.creatorId !== requestingPlayerId) {
+    return { ok: false, error: "Only host can start a new game" };
+  }
+  room.phase = "lobby";
+  room.standings = [];
+  room.revealedRanks = [];
+  room.lastPick = null;
+  room.pickHistory = [];
+  room.league = 39;
+  room.leagueName = "";
+  room.season = 2022;
+  room.timerSeconds = null;
+  room.turnStartedAt = null;
+  room.turnEndsAt = null;
+  room.missLimit = null;
+  room.currentPlayerIndex = 0;
+  delete room.badgeHintThisTurn;
+  room.players.forEach((p) => {
+    p.score = 0;
+    p.misses = 0;
+    p.usedJoker = false;
+    p.usedBadgeHint = false;
+    p.correctStreak = 0;
+    p.streakMilestones = [];
+  });
   await storageSet(room);
   return { ok: true };
 }

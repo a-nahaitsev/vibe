@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const result = await joinRoom(roomId, playerName);
   if (!result) {
     return NextResponse.json(
-      { error: "Room not found or game already started" },
+      { error: "Room not found" },
       { status: 404 }
     );
   }

@@ -20,6 +20,7 @@ import {
   FcPicture,
   FcRemoveImage,
   FcExpired,
+  FcApproval,
 } from "react-icons/fc";
 import { IoFlame } from "react-icons/io5";
 import {
@@ -497,6 +498,12 @@ export default function StandingsDraftRoomPage() {
               You were invited to room{" "}
               <code className="font-mono">{roomId}</code>. Enter your name to
               join.
+              {room.phase !== "lobby" && (
+                <span className="mt-1 block">
+                  This game has already started. You can still join and play —
+                  you&apos;ll start with 0 points and get a turn in rotation.
+                </span>
+              )}
             </p>
             {error && (
               <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
@@ -1155,12 +1162,50 @@ export default function StandingsDraftRoomPage() {
                         highlighted in the table.
                       </p>
                     )}
-                    <Link
-                      href="/standings-draft"
-                      className="mt-4 inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
-                    >
-                      Leave room
-                    </Link>
+                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                      {isCreator && (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!roomId || !playerId) return;
+                            setActionLoading(true);
+                            try {
+                              const res = await fetch(
+                                `/api/standings-draft/room/${roomId}/reset`,
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({ playerId }),
+                                }
+                              );
+                              const data = await res.json();
+                              if (!res.ok) {
+                                throw new Error(data.error ?? "Failed to reset");
+                              }
+                              await fetchRoom();
+                            } catch (err) {
+                              setError(
+                                err instanceof Error ? err.message : "Failed"
+                              );
+                            } finally {
+                              setActionLoading(false);
+                            }
+                          }}
+                          disabled={actionLoading}
+                          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                        >
+                          {actionLoading ? "Resetting…" : "New game"}
+                        </button>
+                      )}
+                      <Link
+                        href="/standings-draft"
+                        className="inline-block rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                      >
+                        Leave room
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1219,6 +1264,26 @@ export default function StandingsDraftRoomPage() {
   );
 }
 
+/** Distinct colors for player names in history (stable by player index). */
+const PLAYER_NAME_COLORS = [
+  "text-blue-600 dark:text-blue-400 font-medium",
+  "text-amber-600 dark:text-amber-400 font-medium",
+  "text-violet-600 dark:text-violet-400 font-medium",
+  "text-emerald-600 dark:text-emerald-400 font-medium",
+  "text-rose-600 dark:text-rose-400 font-medium",
+  "text-cyan-600 dark:text-cyan-400 font-medium",
+  "text-orange-600 dark:text-orange-400 font-medium",
+  "text-fuchsia-600 dark:text-fuchsia-400 font-medium",
+] as const;
+
+function getPlayerColorClass(
+  playerId: string,
+  players: StandingsDraftPlayer[]
+): string {
+  const i = players.findIndex((p) => p.playerId === playerId);
+  return PLAYER_NAME_COLORS[i >= 0 ? i % PLAYER_NAME_COLORS.length : 0];
+}
+
 /** Renders one pick line: icon + text with team name highlighted. */
 function PickLineContent({
   pick,
@@ -1231,11 +1296,15 @@ function PickLineContent({
 }) {
   const playerName =
     players.find((p) => p.playerId === pick.playerId)?.name ?? "Someone";
+  const playerColorClass = getPlayerColorClass(pick.playerId, players);
   const ord = (n: number) =>
     n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+  const nameSpan = (
+    <span className={playerColorClass}>{playerName}</span>
+  );
   const content = pick.timeout ? (
     <>
-      {playerName} ran out of time{" "}
+      {nameSpan} ran out of time{" "}
       <FcExpired
         className="inline-block h-4 w-4 shrink-0 align-middle"
         aria-hidden
@@ -1244,7 +1313,7 @@ function PickLineContent({
     </>
   ) : (
     <>
-      {playerName} guessed
+      {nameSpan} guessed
       <span className="font-semibold text-emerald-700 dark:text-emerald-400">
         {`"${pick.teamName}"`}
       </span>
@@ -1308,6 +1377,23 @@ function PickLineContent({
               +{pick.streakBonus} pts )
             </span>
           )}
+          {pick.rank != null &&
+            pick.guessedRank != null &&
+            pick.rank === pick.guessedRank && (
+              <>
+                {" "}
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  BINGO!
+                </span>
+                <span
+                  className="inline-flex shrink-0 align-middle"
+                  title="Exact position and team"
+                  aria-hidden
+                >
+                  <FcApproval className="h-4 w-4" />
+                </span>
+              </>
+            )}
         </>
       ) : (
         <>wrong, {pick.points} pts</>
