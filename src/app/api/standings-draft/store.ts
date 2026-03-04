@@ -480,6 +480,11 @@ export async function pickByTeamId(
 
   const applyJoker = useJoker === true;
   const applyBadgeHint = useBadgeHint === true;
+  // Hint helped only when guessed team id matches the blurred badge team id (same team).
+  // Correct guess other team → points as usual, hint didn't help. Wrong team / not in standings → 0 pts, hint didn't help.
+  const badgeHintHelped =
+    applyBadgeHint &&
+    (room.badgeHintThisTurn?.teamId === teamId);
   if (applyJoker) {
     currentPlayer.usedJoker = true;
   }
@@ -500,6 +505,7 @@ export async function pickByTeamId(
       points,
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
+      ...(applyBadgeHint && { badgeHintHelped }),
     };
     (room.pickHistory ??= []).push({ ...room.lastPick });
     if (room.revealedRanks.length >= totalTeams) {
@@ -525,6 +531,7 @@ export async function pickByTeamId(
       points,
       jokerUsed: applyJoker,
       badgeHintUsed: applyBadgeHint,
+      ...(applyBadgeHint && { badgeHintHelped }),
     };
     (room.pickHistory ??= []).push({ ...room.lastPick });
     if (room.revealedRanks.length >= totalTeams) {
@@ -564,6 +571,7 @@ export async function pickByTeamId(
     points,
     jokerUsed: applyJoker,
     badgeHintUsed: applyBadgeHint,
+    ...(applyBadgeHint && { badgeHintHelped }),
     ...(streakBonusThisPick > 0 && { streakBonus: streakBonusThisPick }),
   };
   (room.pickHistory ??= []).push({ ...room.lastPick });
@@ -616,7 +624,11 @@ export async function getOrSetBadgeHintLogo(
   if (!logoUrl) {
     return { ok: false, error: "No logo URL" };
   }
-  room.badgeHintThisTurn = { playerId, logoUrl };
+  room.badgeHintThisTurn = {
+    playerId,
+    logoUrl,
+    teamId: randomRow?.team?.id,
+  };
   await storageSet(room);
   return { ok: true, logoUrl };
 }

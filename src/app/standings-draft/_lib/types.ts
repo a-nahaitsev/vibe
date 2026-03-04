@@ -63,6 +63,8 @@ export interface LastPick {
   timeout?: boolean;
   jokerUsed?: boolean;
   badgeHintUsed?: boolean;
+  /** True when badge hint was used and the guessed team matched the blurred badge team. */
+  badgeHintHelped?: boolean;
   streakBonus?: number;
 }
 
@@ -96,7 +98,11 @@ export interface StandingsDraftRoom {
   serverNow?: number;
   /** Remaining seconds in the current turn, computed on the server for clients; null when no timer. */
   remainingSeconds?: number | null;
-  /** For Badge Hint: which logo we're showing this turn (cleared when turn advances). Never sent to client. */
-  badgeHintThisTurn?: { playerId: string; logoUrl: string };
+  /** For Badge Hint: which logo/team we're showing this turn (cleared when turn advances). Never sent to client. */
+  badgeHintThisTurn?: {
+    playerId: string;
+    logoUrl: string;
+    teamId?: number;
+  };
   createdAt: number;
 }

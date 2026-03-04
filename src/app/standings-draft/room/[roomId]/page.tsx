@@ -811,11 +811,19 @@ export default function StandingsDraftRoomPage() {
                             </span>
                           ) : isMyTurn ? (
                             <>
-                              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                              <label
+                                className={
+                                  "flex cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300 " +
+                                  (badgeHintImageUrl
+                                    ? "cursor-default opacity-80"
+                                    : "")
+                                }
+                              >
                                 <input
                                   type="checkbox"
                                   checked={useBadgeHintForThisTurn}
                                   onChange={(e) => {
+                                    if (badgeHintImageUrl) return;
                                     const checked = e.target.checked;
                                     setUseBadgeHintForThisTurn(checked);
                                     if (checked) {
@@ -828,7 +836,9 @@ export default function StandingsDraftRoomPage() {
                                       setBadgeHintImageUrl(null);
                                     }
                                   }}
-                                  disabled={useJokerForThisTurn}
+                                  disabled={
+                                    useJokerForThisTurn || !!badgeHintImageUrl
+                                  }
                                   className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800"
                                 />
                                 Use this turn
@@ -836,45 +846,44 @@ export default function StandingsDraftRoomPage() {
                               {useBadgeHintForThisTurn &&
                                 availablePlaces.length > 0 && (
                                   <>
-                                    <button
-                                      type="button"
-                                      disabled={
-                                        badgeHintImageUrl !== null ||
-                                        badgeHintLoading
-                                      }
-                                      onClick={async () => {
-                                        if (!roomId || !playerId) return;
-                                        setBadgeHintLoading(true);
-                                        try {
-                                          const res = await fetch(
-                                            `/api/standings-draft/room/${roomId}/badge-hint?playerId=${encodeURIComponent(
-                                              playerId
-                                            )}`
-                                          );
-                                          if (!res.ok) return;
-                                          const blob = await res.blob();
-                                          if (
-                                            badgeHintImageUrl?.startsWith(
-                                              "blob:"
-                                            )
-                                          ) {
-                                            URL.revokeObjectURL(
-                                              badgeHintImageUrl
+                                    {!badgeHintImageUrl && (
+                                      <button
+                                        type="button"
+                                        disabled={badgeHintLoading}
+                                        onClick={async () => {
+                                          if (!roomId || !playerId) return;
+                                          setBadgeHintLoading(true);
+                                          try {
+                                            const res = await fetch(
+                                              `/api/standings-draft/room/${roomId}/badge-hint?playerId=${encodeURIComponent(
+                                                playerId
+                                              )}`
                                             );
+                                            if (!res.ok) return;
+                                            const blob = await res.blob();
+                                            if (
+                                              badgeHintImageUrl?.startsWith(
+                                                "blob:"
+                                              )
+                                            ) {
+                                              URL.revokeObjectURL(
+                                                badgeHintImageUrl
+                                              );
+                                            }
+                                            setBadgeHintImageUrl(
+                                              URL.createObjectURL(blob)
+                                            );
+                                          } finally {
+                                            setBadgeHintLoading(false);
                                           }
-                                          setBadgeHintImageUrl(
-                                            URL.createObjectURL(blob)
-                                          );
-                                        } finally {
-                                          setBadgeHintLoading(false);
-                                        }
-                                      }}
-                                      className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
-                                    >
-                                      {badgeHintLoading
-                                        ? "Loading…"
-                                        : "Show badge"}
-                                    </button>
+                                        }}
+                                        className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-amber-500 dark:hover:bg-amber-600"
+                                      >
+                                        {badgeHintLoading
+                                          ? "Loading…"
+                                          : "Show badge"}
+                                      </button>
+                                    )}
                                     {badgeHintImageUrl && (
                                       <img
                                         src={badgeHintImageUrl}
@@ -1338,17 +1347,25 @@ function PickLineContent({
         <span
           className="inline-flex shrink-0 align-middle"
           title={
-            pick.correct
+            pick.badgeHintHelped === true
               ? "Badge Hint — hint helped"
-              : "Badge Hint — hint didn't help"
+              : pick.badgeHintHelped === false
+                ? "Badge Hint — hint didn't help"
+                : pick.correct
+                  ? "Badge Hint — hint helped"
+                  : "Badge Hint — hint didn't help"
           }
           aria-label={
-            pick.correct
+            pick.badgeHintHelped === true
               ? "Badge Hint — hint helped"
-              : "Badge Hint — hint didn't help"
+              : pick.badgeHintHelped === false
+                ? "Badge Hint — hint didn't help"
+                : pick.correct
+                  ? "Badge Hint — hint helped"
+                  : "Badge Hint — hint didn't help"
           }
         >
-          {pick.correct ? (
+          {(pick.badgeHintHelped ?? pick.correct) ? (
             <FcPicture className="h-4 w-4" />
           ) : (
             <FcRemoveImage className="h-4 w-4" />
